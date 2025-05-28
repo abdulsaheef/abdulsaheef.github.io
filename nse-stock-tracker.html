@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NSE Stock Tracker</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f9fafc;
+      color: #333;
+    }
+    header {
+      background-color: #004080;
+      color: white;
+      padding: 30px 20px;
+      text-align: center;
+    }
+    section {
+      max-width: 800px;
+      margin: 30px auto;
+      padding: 0 20px;
+    }
+    h2 {
+      border-bottom: 2px solid #004080;
+      padding-bottom: 5px;
+      color: #004080;
+    }
+    a {
+      color: #004080;
+      text-decoration: none;
+    }
+    footer {
+      text-align: center;
+      padding: 20px;
+      background: #eee;
+      margin-top: 40px;
+      font-size: 14px;
+    }
+    #greeting {
+      font-size: 1.5em;
+      margin-top: 20px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>NSE Stock Tracker</h1>
+    <p>Live Greeting + Date | Coming Soon: Real Stock Data</p>
+  </header>
+
+  <section>
+    <h2>📅 Live Time</h2>
+    <div id="greeting">Loading...</div>
+  </section>
+
+  <footer>
+    <p><a href="index.html">← Back to Home</a></p>
+    &copy; 2025 Abdul Saheef. All rights reserved.
+  </footer>
+
+  <script>
+    function updateGreeting() {
+      const now = new Date();
+      const hour = now.getHours();
+      let greeting;
+
+      if (hour < 12) {
+        greeting = "Good Morning!";
+      } else if (hour < 18) {
+        greeting = "Good Afternoon!";
+      } else {
+        greeting = "Good Evening!";
+      }
+
+      const dateStr = now.toLocaleString();
+      document.getElementById('greeting').textContent = `${greeting} It’s now ${dateStr}`;
+    }
+
+    setInterval(updateGreeting, 1000);
+    updateGreeting();
+  </script>
+
+</body>
+</html>
