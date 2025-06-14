@@ -1,0 +1,95 @@
+:root {
+  --primary: #3D52A0;
+  --secondary: #7091E6;
+  --accent: #8697C4;
+  --light: #ADBBDA;
+  --soft: #EDE8F5;
+  --bg: #1C1F2B;
+  --text: #EDE8F5;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  background-color: var(--bg);
+  color: var(--text);
+  scroll-behavior: smooth;
+}
+
+.hero {
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  background-image: url('https://www.svgbackgrounds.com/wp-content/uploads/2021/05/wave-haikei-3.svg');
+  background-size: cover;
+  background-position: center;
+  height: 60vh;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.overlay {
+  background: rgba(28, 31, 43, 0.5);
+  padding: 40px;
+  border-radius: 12px;
+}
+
+.hero h1 {
+  font-size: 48px;
+  color: var(--soft);
+  margin: 0;
+}
+
+.hero p {
+  font-size: 20px;
+  color: var(--light);
+  margin-top: 10px;
+}
+
+main {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 0 20px;
+}
+
+.card {
+  background-color: #252A3B;
+  padding: 30px;
+  margin-bottom: 30px;
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+  transition: transform 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+}
+
+.card h2 {
+  color: var(--secondary);
+  font-size: 26px;
+  margin-top: 0;
+}
+
+.card ul {
+  padding-left: 20px;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+a:hover {
+  color: var(--light);
+}
+
+footer {
+  text-align: center;
+  padding: 30px;
+  font-size: 14px;
+  background: #10121A;
+  color: var(--light);
+}
