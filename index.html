@@ -4,175 +4,63 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Abdul Saheef</title>
+  <link rel="stylesheet" href="style.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --primary: #3D52A0;
-      --secondary: #7091E6;
-      --accent: #8697C4;
-      --light: #ADBBDA;
-      --background: #EDE8F5;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      font-family: 'Inter', sans-serif;
-      background-color: var(--background);
-      color: var(--primary);
-      line-height: 1.6;
-      scroll-behavior: smooth;
-    }
-
-    header {
-      background: linear-gradient(135deg, var(--primary), var(--secondary));
-      color: white;
-      text-align: center;
-      padding: 80px 20px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    }
-
-    header h1 {
-      font-size: 3rem;
-      font-weight: 700;
-    }
-
-    header p {
-      font-size: 1.2rem;
-      opacity: 0.9;
-      margin-top: 10px;
-    }
-
-    section {
-      max-width: 900px;
-      margin: 60px auto;
-      padding: 0 20px;
-    }
-
-    section h2 {
-      font-size: 2rem;
-      font-weight: 600;
-      color: var(--secondary);
-      margin-bottom: 16px;
-    }
-
-    .card {
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 6px 20px rgba(61, 82, 160, 0.1);
-      padding: 24px;
-      margin-top: 10px;
-    }
-
-    a {
-      color: var(--primary);
-      text-decoration: none;
-    }
-
-    a:hover {
-      color: var(--secondary);
-    }
-
-    ul {
-      padding-left: 20px;
-    }
-
-    li {
-      margin-bottom: 10px;
-    }
-
-    iframe {
-      width: 100%;
-      border: none;
-      border-radius: 8px;
-      height: 400px;
-    }
-
-    footer {
-      text-align: center;
-      padding: 30px 20px;
-      font-size: 0.9rem;
-      color: var(--accent);
-      background-color: var(--light);
-      margin-top: 60px;
-    }
-
-    @media (max-width: 600px) {
-      header h1 {
-        font-size: 2.2rem;
-      }
-
-      section h2 {
-        font-size: 1.5rem;
-      }
-
-      .card {
-        padding: 18px;
-      }
-    }
-  </style>
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 </head>
 <body>
-
-  <header>
-    <h1>Abdul Saheef</h1>
-    <p>Data Analyst · Tech Enthusiast · Blogger</p>
-  </header>
-
-  <section>
-    <h2>About</h2>
-    <div class="card">
-      <p>
-        I'm Saheef, an Indian passionate about data, markets, and storytelling. I use technology to explore insights and share ideas through blogging and trading.
-      </p>
+  <div class="hero">
+    <div class="overlay">
+      <h1 data-aos="fade-down">Abdul Saheef</h1>
+      <p data-aos="fade-up" data-aos-delay="200">Data Analyst • Tech Enthusiast • Blogger</p>
     </div>
-  </section>
+  </div>
 
-  <section>
-    <h2>Projects</h2>
-    <div class="card">
+  <main>
+    <section class="card" data-aos="fade-up">
+      <h2>About</h2>
+      <p>I’m Saheef, an Indian passionate about data, markets, and storytelling. I use tech to uncover insights and share them through blogging and trading.</p>
+    </section>
+
+    <section class="card" data-aos="fade-up">
+      <h2>Projects</h2>
       <ul>
-        <li><strong><a href="nse-stock-tracker.html">NSE Stock Tracker</a></strong> — Track short-term stock performance for active traders.</li>
-        <li><strong>Scholarly Shadows</strong> — A book uncovering failures in the education system.</li>
-        <li><strong>Mollywood Film Script</strong> — A psychological thriller in progress set in 2030.</li>
+        <li><strong>NSE Stock Tracker</strong> – A tool to monitor short-term stock performance.</li>
+        <li><strong>Scholarly Shadows</strong> – A book on the decline of education through real stories.</li>
+        <li><strong>Mollywood Script</strong> – A youth-centered psychological thriller screenplay.</li>
       </ul>
-    </div>
-  </section>
+    </section>
 
-  <section>
-    <h2>Skills</h2>
-    <div class="card">
+    <section class="card" data-aos="fade-up">
+      <h2>Skills</h2>
       <ul>
         <li>Python, Data Analysis, Excel</li>
         <li>Stock Market Research & Trading</li>
         <li>HTML, GitHub, Blogging</li>
       </ul>
-    </div>
-  </section>
+    </section>
 
-  <section>
-    <h2>Blog</h2>
-    <div class="card">
-      <ul>
-        <li><a href="psychology-of-holding-stocks.html">The Psychology of Holding a Stock</a></li>
-      </ul>
-    </div>
-  </section>
+    <section class="card" data-aos="fade-up">
+      <h2>Blog</h2>
+      <p><a href="psychology-of-holding-stocks.html">The Psychology of Holding a Stock</a></p>
+    </section>
 
-  <section>
-    <h2>Contact</h2>
-    <div class="card">
-      <iframe src="https://forms.office.com/Pages/ResponsePage.aspx?id=DQSIkWdsW0yxEjajBLZtrQAAAAAAAAAAAAYAAD34DZFUMEg0ME1KOVEwVUlHVkFTQk5CUTc0MjRKTC4u&embed=true" allowfullscreen></iframe>
-    </div>
-  </section>
+    <section class="card" data-aos="fade-up">
+      <h2>Contact</h2>
+      <iframe src="https://forms.office.com/Pages/ResponsePage.aspx?id=DQSIkWdsW0yxEjajBLZtrQAAAAAAAAAAAAYAAD34DZFUMEg0ME1KOVEwVUlHVkFTQk5CUTc0MjRKTC4u&embed=true" width="100%" height="380" frameborder="0" style="border: none;"></iframe>
+    </section>
+  </main>
 
   <footer>
-    &copy; 2025 Abdul Saheef. All rights reserved.
+    &copy; 2025 Abdul Saheef
   </footer>
 
+  <script>
+    AOS.init({
+      duration: 1000,
+      once: true
+    });
+  </script>
 </body>
 </html>
