@@ -11,111 +11,95 @@
 body {
   margin: 0;
   font-family: 'Inter', sans-serif;
-  background-color: var(--bg);
+  background: var(--bg);
   color: var(--text);
   scroll-behavior: smooth;
 }
 
 .hero {
-  background-image:
-    linear-gradient(135deg, var(--primary), var(--secondary)),
-    url('hero-bg.svg');
-  background-size: cover;
-  background-position: center;
-  background-blend-mode: overlay;
-  height: 60vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  position: relative;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  color: var(--soft);
+  padding: 100px 20px 60px;
   text-align: center;
-  animation: fadeIn 1.5s ease-in-out, backgroundMove 20s infinite linear;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(30px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes backgroundMove {
-  0% { background-position: center top; }
-  100% { background-position: center bottom; }
 }
 
 .overlay {
-  background: rgba(28, 31, 43, 0.5);
-  padding: 40px;
-  border-radius: 12px;
+  z-index: 2;
+  position: relative;
+  max-width: 800px;
+  margin: 0 auto;
 }
 
 .hero h1 {
   font-size: 48px;
-  color: var(--soft);
-  margin: 0;
+  margin-bottom: 10px;
 }
 
 .hero p {
   font-size: 20px;
   color: var(--light);
-  margin-top: 10px;
+}
+
+.wave {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
 }
 
 main {
-  max-width: 900px;
-  margin: 40px auto;
-  padding: 0 20px;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.intro {
+  text-align: center;
+  margin-bottom: 60px;
+}
+
+.intro h2 {
+  font-size: 32px;
+  color: var(--secondary);
+}
+
+.projects h2 {
+  font-size: 32px;
+  color: var(--secondary);
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.project-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 24px;
 }
 
 .card {
   background-color: #252A3B;
-  padding: 30px;
-  margin-bottom: 30px;
-  border-radius: 16px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
-  transition: transform 0.3s ease;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s;
 }
-
 .card:hover {
   transform: translateY(-4px);
 }
-
-.card h2 {
-  color: var(--secondary);
-  font-size: 26px;
-  margin-top: 0;
-}
-
-.card ul {
-  padding-left: 20px;
-}
-
-a {
+.card h3 {
   color: var(--accent);
-  text-decoration: none;
-  transition: color 0.3s ease;
-}
-
-a:hover {
-  color: var(--light);
 }
 
 footer {
   text-align: center;
-  padding: 30px;
+  padding: 20px;
   font-size: 14px;
   background: #10121A;
   color: var(--light);
 }
 
-@media (max-width: 600px) {
-  .hero h1 {
-    font-size: 32px;
-  }
-
-  .hero p {
-    font-size: 16px;
-  }
-
-  .overlay {
-    padding: 20px;
-  }
+footer a {
+  color: var(--accent);
+  text-decoration: none;
 }
