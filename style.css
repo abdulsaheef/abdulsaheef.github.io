@@ -17,18 +17,30 @@ body {
 }
 
 .hero {
-  background-image: 
+  background-image:
     linear-gradient(135deg, var(--primary), var(--secondary)),
     url('https://www.svgbackgrounds.com/wp-content/uploads/2021/05/wave-haikei-3.svg');
   background-size: cover;
   background-position: center;
   background-blend-mode: overlay;
+  background-attachment: fixed;
   height: 60vh;
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   text-align: center;
+  animation: fadeIn 1.5s ease-in-out, backgroundMove 20s infinite linear;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes backgroundMove {
+  0% { background-position: center top; }
+  100% { background-position: center bottom; }
 }
 
 .overlay {
@@ -94,4 +106,18 @@ footer {
   font-size: 14px;
   background: #10121A;
   color: var(--light);
+}
+
+@media (max-width: 600px) {
+  .hero h1 {
+    font-size: 32px;
+  }
+
+  .hero p {
+    font-size: 16px;
+  }
+
+  .overlay {
+    padding: 20px;
+  }
 }
