@@ -3,64 +3,48 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Abdul Saheef</title>
-  <link rel="stylesheet" href="style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <title>Saheef | Portfolio</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 </head>
 <body>
-  <div class="hero">
+
+  <header class="hero">
     <div class="overlay">
-      <h1 data-aos="fade-down">Abdul Saheef</h1>
-      <p data-aos="fade-up" data-aos-delay="200">Data Analyst • Tech Enthusiast • Blogger</p>
+      <h1>Hi, I'm Saheef</h1>
+      <p>Trading Enthusiast • Data Learner • Writer</p>
     </div>
-  </div>
+    <svg class="wave" viewBox="0 0 1440 320"><path fill="#3D52A0" fill-opacity="1" d="M0,160L60,154.7C120,149,240,139,360,144C480,149,600,171,720,170.7C840,171,960,149,1080,133.3C1200,117,1320,107,1380,101.3L1440,96L1440,0L1380,0C1320,0,1200,0,1080,0C960,0,840,0,720,0C600,0,480,0,360,0C240,0,120,0,60,0L0,0Z"></path></svg>
+  </header>
 
   <main>
-    <section class="card" data-aos="fade-up">
-      <h2>About</h2>
-      <p>I’m Saheef, an Indian passionate about data, markets, and storytelling. I use tech to uncover insights and share them through blogging and trading.</p>
+    <section class="intro">
+      <h2>About Me</h2>
+      <p>I’m a curious trader and a passionate learner currently exploring data analytics and financial systems. Based in Dubai, I blend insights from the Indian stock market with storytelling.</p>
     </section>
 
-    <section class="card" data-aos="fade-up">
+    <section class="projects">
       <h2>Projects</h2>
-      <ul>
-        <li><strong>NSE Stock Tracker</strong> – A tool to monitor short-term stock performance.</li>
-        <li><strong>Scholarly Shadows</strong> – A book on the decline of education through real stories.</li>
-        <li><strong>Mollywood Script</strong> – A youth-centered psychological thriller screenplay.</li>
-      </ul>
-    </section>
-
-    <section class="card" data-aos="fade-up">
-      <h2>Skills</h2>
-      <ul>
-        <li>Python, Data Analysis, Excel</li>
-        <li>Stock Market Research & Trading</li>
-        <li>HTML, GitHub, Blogging</li>
-      </ul>
-    </section>
-
-    <section class="card" data-aos="fade-up">
-      <h2>Blog</h2>
-      <p><a href="psychology-of-holding-stocks.html">The Psychology of Holding a Stock</a></p>
-    </section>
-
-    <section class="card" data-aos="fade-up">
-      <h2>Contact</h2>
-      <iframe src="https://forms.office.com/Pages/ResponsePage.aspx?id=DQSIkWdsW0yxEjajBLZtrQAAAAAAAAAAAAYAAD34DZFUMEg0ME1KOVEwVUlHVkFTQk5CUTc0MjRKTC4u&embed=true" width="100%" height="380" frameborder="0" style="border: none;"></iframe>
+      <div class="project-grid">
+        <div class="card">
+          <h3>NSE Stock Tracker</h3>
+          <p>A web tool that tracks live stock data from NSE using Python and Replit Agents.</p>
+        </div>
+        <div class="card">
+          <h3>Blog: Stock Psychology</h3>
+          <p>2000-word article exploring the mental game behind long-term stock holding.</p>
+        </div>
+        <div class="card">
+          <h3>GitHub Portfolio</h3>
+          <p>This very site! Built with HTML, CSS, and hosted on GitHub Pages.</p>
+        </div>
+      </div>
     </section>
   </main>
 
   <footer>
-    &copy; 2025 Abdul Saheef
+    <p>© 2025 Saheef | <a href="https://github.com/abdulsaheef" target="_blank">GitHub</a></p>
   </footer>
 
-  <script>
-    AOS.init({
-      duration: 1000,
-      once: true
-    });
-  </script>
 </body>
 </html>
