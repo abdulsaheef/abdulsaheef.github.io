@@ -86,12 +86,13 @@ body {
 }
 
 .hero {
-  min-height: 100vh;
-  background: linear-gradient(to right, #7091E6, #8697C4);
+  height: 100vh;
+  background: linear-gradient(120deg, #2c3e50, #4ca1af); /* Meyawo-style gradient */
   display: flex;
   align-items: center;
-  color: white;
+  justify-content: center;
   text-align: center;
+  padding: 0 20px;
 }
 
 .hero .btn {
@@ -231,6 +232,10 @@ body.dark-mode .project {
 body.dark-mode footer {
   background-color: #2a2d3e;
   color: #EDE8F5;
+}
+
+body.dark-mode .hero {
+  background: linear-gradient(120deg, #000428, #004e92); /* Dark mode variant */
 }
 
 
