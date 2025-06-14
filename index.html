@@ -3,103 +3,131 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Saheef</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet"/>
+  <title>Abdul Saheef</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --primary: #002244;
-      --accent: #009688;
-      --background: #f9fafc;
+      --bg: linear-gradient(135deg, #00bcd4, #2196f3);
       --text: #222;
-      --light-text: #555;
+      --accent: #ff4081;
+      --card-bg: #fff;
+      --nav-bg: rgba(255, 255, 255, 0.9);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
 
     body {
-      margin: 0;
-      font-family: 'Poppins', sans-serif;
-      background: var(--background);
+      font-family: 'Inter', sans-serif;
+      background: #f0f4f8;
       color: var(--text);
-      line-height: 1.6;
+      scroll-behavior: smooth;
     }
 
     header {
-      background: var(--primary);
+      background: var(--bg);
       color: white;
-      padding: 20px 40px;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
+      padding: 60px 20px 80px;
+      text-align: center;
+      position: relative;
     }
 
-    .logo {
-      font-size: 1.5rem;
-      font-weight: 600;
+    header h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    header p {
+      font-size: 1.2rem;
+      font-weight: 400;
+      opacity: 0.9;
     }
 
     nav {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--nav-bg);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+      border-radius: 40px;
+      padding: 10px 30px;
       display: flex;
-      flex-wrap: wrap;
       gap: 20px;
     }
 
     nav a {
-      color: white;
       text-decoration: none;
-      font-weight: 500;
-      transition: color 0.3s;
+      color: #333;
+      font-weight: 600;
+      padding: 8px 16px;
+      border-radius: 20px;
+      transition: background 0.3s, color 0.3s;
     }
 
     nav a:hover {
-      color: var(--accent);
+      background: var(--accent);
+      color: white;
     }
 
     section {
       max-width: 960px;
-      margin: 60px auto;
+      margin: 80px auto;
       padding: 0 20px;
     }
 
-    h2 {
-      color: var(--primary);
-      border-bottom: 2px solid var(--accent);
-      padding-bottom: 5px;
-      font-size: 1.8rem;
+    section h2 {
+      font-size: 2rem;
+      margin-bottom: 10px;
+      color: #2196f3;
+      border-bottom: 2px solid #2196f3;
+      display: inline-block;
     }
 
-    p, li {
-      font-size: 1.05rem;
-      color: var(--light-text);
+    section p, li {
+      font-size: 1rem;
+      margin: 10px 0;
+      line-height: 1.6;
     }
 
     ul {
       padding-left: 20px;
     }
 
+    .card {
+      background: var(--card-bg);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+      padding: 20px;
+      border-radius: 12px;
+      margin-top: 20px;
+    }
+
     footer {
       text-align: center;
       padding: 30px 20px;
-      background: #eee;
+      background: #e8f0fe;
       margin-top: 60px;
       font-size: 0.9rem;
       color: #777;
     }
 
-    @media (max-width: 768px) {
-      header {
-        flex-direction: column;
-        align-items: flex-start;
+    @media (max-width: 600px) {
+      header h1 {
+        font-size: 2rem;
       }
 
       nav {
-        width: 100%;
-        justify-content: flex-start;
-        margin-top: 10px;
-        flex-direction: column;
-        gap: 10px;
+        flex-wrap: wrap;
+        padding: 10px 20px;
+      }
+
+      nav a {
+        padding: 6px 12px;
+        font-size: 0.9rem;
       }
     }
   </style>
@@ -107,62 +135,64 @@
 <body>
 
   <header>
-    <div class="logo">Abdul Saheef</div>
+    <h1>Abdul Saheef</h1>
+    <p>Data Analyst | Tech Enthusiast | Blogger</p>
     <nav>
-      <a href="#about">About</a>
-      <a href="#projects">Projects</a>
-      <a href="#skills">Skills</a>
-      <a href="#contact">Contact</a>
-      <a href="#blog">Blog</a>
+      <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="projects.html">Projects</a>
+      <a href="skills.html">Skills</a>
+      <a href="blog.html">Blog</a>
+      <a href="contact.html">Contact</a>
     </nav>
   </header>
 
-  <section id="about">
-    <h2>About Me</h2>
-    <p>
-      I’m Saheef, a data analyst and market enthusiast from India. With a strong curiosity for numbers, insights, and human behavior, I merge data and storytelling to explore markets and ideas. I blog, build tools, and aim to create meaningful digital experiences.
-    </p>
+  <section>
+    <h2>About</h2>
+    <div class="card">
+      <p>
+        I'm Saheef, an Indian passionate about data, markets, and meaningful storytelling. 
+        I use technology to explore insights and share ideas through blogging and trading.
+      </p>
+    </div>
   </section>
 
-  <section id="projects">
+  <section>
     <h2>Projects</h2>
-    <ul>
-      <li><strong><a href="nse-stock-tracker.html">NSE Stock Tracker</a></strong> — A web-based tool for short-term market performance analysis.</li>
-      <li><strong>Scholarly Shadows</strong> — A book examining education failure through real classroom experiences.</li>
-      <li><strong>Mollywood Film Script</strong> — A psychological thriller rooted in youth-driven financial conflicts (work in progress).</li>
-    </ul>
+    <div class="card">
+      <ul>
+        <li><strong><a href="nse-stock-tracker.html">NSE Stock Tracker</a></strong> — A web tool to monitor stock performance for active traders.</li>
+        <li><strong>Scholarly Shadows</strong> — A book exploring the failure of the education system through classroom stories.</li>
+        <li><strong>Mollywood Film Script</strong> — A psychological thriller screenplay in progress.</li>
+      </ul>
+    </div>
   </section>
 
-  <section id="skills">
+  <section>
     <h2>Skills</h2>
-    <ul>
-      <li>Python, Data Analysis, Excel</li>
-      <li>Stock Market Research & Trading</li>
-      <li>HTML, GitHub, Blogging</li>
-    </ul>
+    <div class="card">
+      <ul>
+        <li>Python, Data Analysis, Excel</li>
+        <li>Stock Market Research & Trading</li>
+        <li>HTML, GitHub, Blogging</li>
+      </ul>
+    </div>
   </section>
 
-  <section id="contact">
-    <h2>Contact</h2>
-    <p>Feel free to reach out via the form below.</p>
-    <iframe 
-      width="100%" 
-      height="500" 
-      src="https://forms.office.com/Pages/ResponsePage.aspx?id=DQSIkWdsW0yxEjajBLZtrQAAAAAAAAAAAAYAAD34DZFUMEg0ME1KOVEwVUlHVkFTQk5CUTc0MjRKTC4u&embed=true" 
-      frameborder="0" 
-      style="border:none; max-width:100%;" 
-      allowfullscreen 
-      webkitallowfullscreen 
-      mozallowfullscreen 
-      msallowfullscreen>
-    </iframe>
-  </section>
-
-  <section id="blog">
+  <section>
     <h2>Blog</h2>
-    <ul>
-      <li><a href="psychology-of-holding-stocks.html">The Psychology of Holding a Stock</a></li>
-    </ul>
+    <div class="card">
+      <ul>
+        <li><a href="psychology-of-holding-stocks.html">The Psychology of Holding a Stock</a></li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <h2>Contact</h2>
+    <div class="card">
+      <iframe width="100%" height="400px" src="https://forms.office.com/Pages/ResponsePage.aspx?id=DQSIkWdsW0yxEjajBLZtrQAAAAAAAAAAAAYAAD34DZFUMEg0ME1KOVEwVUlHVkFTQk5CUTc0MjRKTC4u&embed=true" frameborder="0" style="border:none;" allowfullscreen></iframe>
+    </div>
   </section>
 
   <footer>
