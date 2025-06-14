@@ -19,18 +19,16 @@ body {
 .hero {
   background-image:
     linear-gradient(135deg, var(--primary), var(--secondary)),
-    url('https://www.svgbackgrounds.com/wp-content/uploads/2021/05/wave-haikei-3.svg');
+    url('https://www.svgbackgrounds.com/wp-content/uploads/2021/05/stacked-waves-haikei.svg');
   background-size: cover;
   background-position: center;
   background-blend-mode: overlay;
-  background-attachment: fixed;
   height: 60vh;
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   text-align: center;
-  animation: fadeIn 1.5s ease-in-out, backgroundMove 20s infinite linear;
 }
 
 @keyframes fadeIn {
