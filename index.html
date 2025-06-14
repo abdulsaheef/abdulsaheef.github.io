@@ -4,98 +4,102 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Abdul Saheef</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet"/>
   <style>
+    :root {
+      --primary: #002244;
+      --accent: #009688;
+      --background: #f9fafc;
+      --text: #222;
+      --light-text: #555;
+    }
+
     body {
-      font-family: 'Segoe UI', sans-serif;
       margin: 0;
-      padding: 0;
-      background: #f9fafc;
-      color: #333;
+      font-family: 'Poppins', sans-serif;
+      background: var(--background);
+      color: var(--text);
+      line-height: 1.6;
     }
 
     header {
-      background-color: #004080;
+      background: var(--primary);
       color: white;
-      padding: 30px 20px;
-      text-align: center;
-    }
-
-    /* Menu bar */
-    nav {
-      background: #002f5f;
+      padding: 20px 40px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
       display: flex;
-      flex-wrap: wrap;
       justify-content: space-between;
       align-items: center;
-      padding: 10px 20px;
+      flex-wrap: wrap;
     }
 
-    nav .menu {
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 600;
+    }
+
+    nav {
       display: flex;
       flex-wrap: wrap;
-      gap: 15px;
+      gap: 20px;
     }
 
-    nav .menu a {
+    nav a {
       color: white;
       text-decoration: none;
       font-weight: 500;
-      padding: 6px 10px;
+      transition: color 0.3s;
     }
 
-    nav .menu a:hover {
-      background: #0059b3;
-      border-radius: 4px;
-    }
-
-    .search-bar {
-      margin-left: auto;
-    }
-
-    .search-bar input[type="text"] {
-      padding: 5px 8px;
-      border-radius: 4px;
-      border: 1px solid #ccc;
+    nav a:hover {
+      color: var(--accent);
     }
 
     section {
-      max-width: 800px;
-      margin: 30px auto;
+      max-width: 960px;
+      margin: 60px auto;
       padding: 0 20px;
     }
 
     h2 {
-      border-bottom: 2px solid #004080;
+      color: var(--primary);
+      border-bottom: 2px solid var(--accent);
       padding-bottom: 5px;
-      color: #004080;
+      font-size: 1.8rem;
     }
 
-    a {
-      color: #004080;
-      text-decoration: none;
+    p, li {
+      font-size: 1.05rem;
+      color: var(--light-text);
+    }
+
+    ul {
+      padding-left: 20px;
     }
 
     footer {
       text-align: center;
-      padding: 20px;
+      padding: 30px 20px;
       background: #eee;
-      margin-top: 40px;
-      font-size: 14px;
+      margin-top: 60px;
+      font-size: 0.9rem;
+      color: #777;
     }
 
-    @media (max-width: 600px) {
-      nav {
+    @media (max-width: 768px) {
+      header {
         flex-direction: column;
         align-items: flex-start;
       }
 
-      .search-bar {
+      nav {
         width: 100%;
+        justify-content: flex-start;
         margin-top: 10px;
-      }
-
-      .search-bar input {
-        width: 100%;
+        flex-direction: column;
+        gap: 10px;
       }
     }
   </style>
@@ -103,42 +107,34 @@
 <body>
 
   <header>
-    <h1>Abdul Saheef</h1>
-    <p>Data Analyst | Tech Enthusiast | Blogger</p>
-  </header>
-
-  <!-- Menu bar + Search -->
-  <nav>
-    <div class="menu">
+    <div class="logo">Abdul Saheef</div>
+    <nav>
       <a href="#about">About</a>
       <a href="#projects">Projects</a>
       <a href="#skills">Skills</a>
       <a href="#contact">Contact</a>
       <a href="#blog">Blog</a>
-    </div>
-    <div class="search-bar">
-      <form action="#">
-        <input type="text" placeholder="Search...">
-      </form>
-    </div>
-  </nav>
+    </nav>
+  </header>
 
   <section id="about">
-    <h2>🧠 About Me</h2>
-    <p>Saheef, an Indian, passionate about data, markets, and meaningful storytelling. I use technology to explore insights and share ideas through blogging and trading.</p>
+    <h2>About Me</h2>
+    <p>
+      I’m Saheef, a data analyst and market enthusiast from India. With a strong curiosity for numbers, insights, and human behavior, I merge data and storytelling to explore markets and ideas. I blog, build tools, and aim to create meaningful digital experiences.
+    </p>
   </section>
 
   <section id="projects">
-    <h2>💼 Projects</h2>
+    <h2>Projects</h2>
     <ul>
-      <li>📊 <strong><a href="nse-stock-tracker.html">NSE Stock Tracker</a></strong> — A web tool to monitor short-term stock performance for active traders.</li>
-      <li>📘 <strong>Scholarly Shadows</strong> — A book exploring the state of education through real classroom stories.</li>
-      <li>🎬 <strong>Mollywood Film Script</strong> — A youth-centered psychological thriller screenplay in progress.</li>
+      <li><strong><a href="nse-stock-tracker.html">NSE Stock Tracker</a></strong> — A web-based tool for short-term market performance analysis.</li>
+      <li><strong>Scholarly Shadows</strong> — A book examining education failure through real classroom experiences.</li>
+      <li><strong>Mollywood Film Script</strong> — A psychological thriller rooted in youth-driven financial conflicts (work in progress).</li>
     </ul>
   </section>
 
   <section id="skills">
-    <h2>🛠️ Skills</h2>
+    <h2>Skills</h2>
     <ul>
       <li>Python, Data Analysis, Excel</li>
       <li>Stock Market Research & Trading</li>
@@ -147,14 +143,25 @@
   </section>
 
   <section id="contact">
-    <h2>📫 Contact</h2>
-    <iframe width="640px" height="480px" src="https://forms.office.com/Pages/ResponsePage.aspx?id=DQSIkWdsW0yxEjajBLZtrQAAAAAAAAAAAAYAAD34DZFUMEg0ME1KOVEwVUlHVkFTQk5CUTc0MjRKTC4u&embed=true" frameborder="0" marginwidth="0" marginheight="0" style="border: none; max-width:100%; max-height:100vh" allowfullscreen webkitallowfullscreen mozallowfullscreen msallowfullscreen></iframe>
+    <h2>Contact</h2>
+    <p>Feel free to reach out via the form below.</p>
+    <iframe 
+      width="100%" 
+      height="500" 
+      src="https://forms.office.com/Pages/ResponsePage.aspx?id=DQSIkWdsW0yxEjajBLZtrQAAAAAAAAAAAAYAAD34DZFUMEg0ME1KOVEwVUlHVkFTQk5CUTc0MjRKTC4u&embed=true" 
+      frameborder="0" 
+      style="border:none; max-width:100%;" 
+      allowfullscreen 
+      webkitallowfullscreen 
+      mozallowfullscreen 
+      msallowfullscreen>
+    </iframe>
   </section>
 
   <section id="blog">
-    <h2>📝 Blog</h2>
+    <h2>Blog</h2>
     <ul>
-      <li><a href="psychology-of-holding-stocks.html">🧠 The Psychology of Holding a Stock</a></li>
+      <li><a href="psychology-of-holding-stocks.html">The Psychology of Holding a Stock</a></li>
     </ul>
   </section>
 
