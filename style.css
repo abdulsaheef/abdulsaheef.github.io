@@ -91,21 +91,6 @@ header, nav, .navbar, .nav-container {
   overflow-x: hidden;
 }
 
-/* Ensure menu doesn't stretch beyond screen */
-nav ul {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-  gap: 20px; /* Adjust as needed */
-  padding-right: 20px;
-  margin: 0;
-  list-style: none;
-}
-
-nav ul li {
-  white-space: nowrap;
-}
-
 .hero {
   min-height: 100vh;
   background: linear-gradient(to right, #7091E6, #8697C4);
