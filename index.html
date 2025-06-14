@@ -7,7 +7,6 @@
   <link href="style.css" rel="stylesheet" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 </head>
 <body>
   <nav class="navbar">
@@ -21,14 +20,9 @@
       </ul>
     </div>
   </nav>
-  <div class="toggle-theme">
-  <input type="checkbox" id="themeToggle" />
-  <label for="themeToggle" class="switch"></label>
-</div>
 
   <section id="home" class="hero">
     <div class="container center">
-      <button id="darkModeToggle"></button>
       <h1>Hello, I'm Saheef</h1>
       <p>A Curious Mind Crafting Digital Experiences</p>
       <a href="#projects" class="btn">See Projects</a>
@@ -69,42 +63,5 @@
   <script>
     document.getElementById("year").textContent = new Date().getFullYear();
   </script>
-  <script src="projects.js"></script>
-<script>
-  // Theme toggle logic
-  const toggle = document.getElementById('themeToggle');
-  const body = document.body;
-
-  // Load saved mode
-  if (localStorage.getItem('theme') === 'dark') {
-    body.classList.add('dark-mode');
-    toggle.checked = true;
-  }
-
-  toggle.addEventListener('change', () => {
-    if (toggle.checked) {
-      body.classList.add('dark-mode');
-      localStorage.setItem('theme', 'dark');
-    } else {
-      body.classList.remove('dark-mode');
-      localStorage.setItem('theme', 'light');
-    }
-  });
-
-  document.getElementById("year").textContent = new Date().getFullYear();
-</script>
-<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-<script>
-  AOS.init({
-    duration: 800,
-    once: true,
-  });
-</script>
-<div class="dark-mode-toggle">
-  <label class="switch">
-    <input type="checkbox" id="darkModeSwitch">
-    <span class="slider round"></span>
-  </label>
-</div>
 </body>
 </html>
