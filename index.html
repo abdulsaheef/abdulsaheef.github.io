@@ -1,50 +1,244 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Saheef | Portfolio</title>
-  <link rel="stylesheet" href="style.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abdul Saheef | Portfolio</title>
+    <!-- Favicon -->
+    <link rel="icon" href="assets/img/favicon.ico">
+    <!-- Bootstrap CSS -->
+    <link href="assets/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Main CSS -->
+    <link href="assets/css/style.css" rel="stylesheet">
 </head>
-<body>
+<body data-bs-spy="scroll" data-bs-target=".navbar">
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">Abdul Saheef</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link active" href="#home">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#services">Services</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#portfolio">Portfolio</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
 
-  <header class="hero">
-    <div class="overlay">
-      <h1>Hi, I'm Saheef</h1>
-      <p>Trading Enthusiast • Data Learner • Writer</p>
-    </div>
-    <svg class="wave" viewBox="0 0 1440 320"><path fill="#3D52A0" fill-opacity="1" d="M0,160L60,154.7C120,149,240,139,360,144C480,149,600,171,720,170.7C840,171,960,149,1080,133.3C1200,117,1320,107,1380,101.3L1440,96L1440,0L1380,0C1320,0,1200,0,1080,0C960,0,840,0,720,0C600,0,480,0,360,0C240,0,120,0,60,0L0,0Z"></path></svg>
-  </header>
-
-  <main>
-    <section class="intro">
-      <h2>About Me</h2>
-      <p>I’m a curious trader and a passionate learner currently exploring data analytics and financial systems. Based in Dubai, I blend insights from the Indian stock market with storytelling.</p>
+    <!-- Hero Section -->
+    <section id="home" class="hero d-flex align-items-center">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <h1 class="display-3 fw-bold mb-3">Hi, I'm Abdul Saheef</h1>
+                    <p class="lead mb-4">Full Stack Developer & UI/UX Designer</p>
+                    <div class="social-links mb-4">
+                        <a href="#"><i class="fab fa-github"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                    <a href="#portfolio" class="btn btn-primary me-2">View My Work</a>
+                    <a href="#contact" class="btn btn-outline-light">Hire Me</a>
+                </div>
+                <div class="col-lg-6">
+                    <img src="assets/img/profile.jpg" alt="Abdul Saheef" class="img-fluid rounded-circle">
+                </div>
+            </div>
+        </div>
     </section>
 
-    <section class="projects">
-      <h2>Projects</h2>
-      <div class="project-grid">
-        <div class="card">
-          <h3>NSE Stock Tracker</h3>
-          <p>A web tool that tracks live stock data from NSE using Python and Replit Agents.</p>
+    <!-- About Section -->
+    <section id="about" class="section-padding">
+        <div class="container">
+            <div class="section-title">
+                <h2>About Me</h2>
+                <p>Get to know me better</p>
+            </div>
+            <div class="row">
+                <div class="col-lg-5">
+                    <img src="assets/img/about.jpg" alt="About Me" class="img-fluid rounded">
+                </div>
+                <div class="col-lg-7">
+                    <h3>Who am I?</h3>
+                    <p>I'm a passionate full-stack developer with 5 years of experience creating digital solutions. I specialize in JavaScript frameworks and UI/UX design.</p>
+                    
+                    <div class="row mt-4">
+                        <div class="col-md-6">
+                            <ul class="info-list">
+                                <li><strong>Name:</strong> Abdul Saheef</li>
+                                <li><strong>Email:</strong> hello@abdulsaheef.com</li>
+                                <li><strong>Experience:</strong> 5+ Years</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <ul class="info-list">
+                                <li><strong>Freelance:</strong> Available</li>
+                                <li><strong>Phone:</strong> +123 456 7890</li>
+                                <li><strong>Country:</strong> India</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="skills mt-5">
+                        <h3>My Skills</h3>
+                        <div class="skill-item mb-3">
+                            <h6>HTML/CSS <span class="float-end">95%</span></h6>
+                            <div class="progress">
+                                <div class="progress-bar" role="progressbar" style="width: 95%"></div>
+                            </div>
+                        </div>
+                        <!-- Add more skills -->
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="card">
-          <h3>Blog: Stock Psychology</h3>
-          <p>2000-word article exploring the mental game behind long-term stock holding.</p>
-        </div>
-        <div class="card">
-          <h3>GitHub Portfolio</h3>
-          <p>This very site! Built with HTML, CSS, and hosted on GitHub Pages.</p>
-        </div>
-      </div>
     </section>
-  </main>
 
-  <footer>
-    <p>© 2025 Saheef | <a href="https://github.com/abdulsaheef" target="_blank">GitHub</a></p>
-  </footer>
+    <!-- Services Section -->
+    <section id="services" class="section-padding bg-light">
+        <div class="container">
+            <div class="section-title">
+                <h2>My Services</h2>
+                <p>What I offer</p>
+            </div>
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <div class="service-card">
+                        <div class="icon-box">
+                            <i class="fas fa-code"></i>
+                        </div>
+                        <h4>Web Development</h4>
+                        <p>Custom website development using modern technologies.</p>
+                    </div>
+                </div>
+                <!-- Add more services -->
+            </div>
+        </div>
+    </section>
 
+    <!-- Portfolio Section -->
+    <section id="portfolio" class="section-padding">
+        <div class="container">
+            <div class="section-title">
+                <h2>My Portfolio</h2>
+                <p>My recent work</p>
+            </div>
+            <div class="row">
+                <div class="col-md-12 mb-5">
+                    <ul class="portfolio-filter">
+                        <li class="active" data-filter="*">All</li>
+                        <li data-filter=".web">Web Design</li>
+                        <li data-filter=".app">Mobile App</li>
+                        <li data-filter=".branding">Branding</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="row portfolio-grid">
+                <div class="col-md-4 mb-4 portfolio-item web">
+                    <div class="portfolio-card">
+                        <img src="assets/img/projects/project1.jpg" class="img-fluid" alt="Project 1">
+                        <div class="portfolio-overlay">
+                            <div class="overlay-content">
+                                <h5>E-Commerce Website</h5>
+                                <p>Web Design</p>
+                                <a href="#" class="portfolio-link"><i class="fas fa-link"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Add more projects -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="section-padding bg-light">
+        <div class="container">
+            <div class="section-title">
+                <h2>Contact Me</h2>
+                <p>Get in touch</p>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <form class="contact-form">
+                        <div class="mb-3">
+                            <input type="text" class="form-control" placeholder="Your Name" required>
+                        </div>
+                        <div class="mb-3">
+                            <input type="email" class="form-control" placeholder="Your Email" required>
+                        </div>
+                        <div class="mb-3">
+                            <input type="text" class="form-control" placeholder="Subject">
+                        </div>
+                        <div class="mb-3">
+                            <textarea class="form-control" rows="5" placeholder="Message" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Send Message</button>
+                    </form>
+                </div>
+                <div class="col-lg-6">
+                    <div class="contact-info">
+                        <div class="contact-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <h4>Location</h4>
+                            <p>Kerala, India</p>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-envelope"></i>
+                            <h4>Email</h4>
+                            <p>hello@abdulsaheef.com</p>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-phone-alt"></i>
+                            <h4>Call Me</h4>
+                            <p>+91 123 456 7890</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-5 bg-dark text-white">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h3>Abdul Saheef</h3>
+                    <p>A passionate developer creating digital experiences.</p>
+                </div>
+                <div class="col-md-6">
+                    <div class="social-links float-md-end">
+                        <a href="#"><i class="fab fa-github"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+            <hr class="my-4">
+            <div class="row">
+                <div class="col-md-6">
+                    <p class="mb-0">&copy; <script>document.write(new Date().getFullYear())</script> Abdul Saheef. All rights reserved.</p>
+                </div>
+                <div class="col-md-6">
+                    <p class="mb-0 float-md-end">Designed with ❤️ by Abdul Saheef</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="assets/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/main.js"></script>
 </body>
 </html>
