@@ -8,11 +8,13 @@ fetch(`https://api.github.com/users/${username}/repos?sort=updated`)
     data.slice(0, 6).forEach(repo => {
       const project = document.createElement("div");
       project.className = "project";
-      project.innerHTML = `
-        <h3>${repo.name}</h3>
-        <p>${repo.description || "No description provided."}</p>
-        <a href="${repo.html_url}" target="_blank">View on GitHub</a>
-      `;
+project.setAttribute("data-aos", "fade-up");
+
+project.innerHTML = `
+  <h3>${repo.name}</h3>
+  <p>${repo.description || "No description provided."}</p>
+  <a href="${repo.html_url}" target="_blank">View on GitHub</a>
+`;
       container.appendChild(project);
     });
   })
