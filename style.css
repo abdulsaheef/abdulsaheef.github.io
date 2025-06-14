@@ -1,40 +1,3 @@
-#darkModeToggle {
-  position: relative;
-  top: auto;
-  right: auto;
-  margin: 20px;
-}
-
-.switch {
-  display: inline-block;
-  width: 50px;
-  height: 26px;
-  background-color: #ccc;
-  border-radius: 50px;
-  position: relative;
-  cursor: pointer;
-}
-
-.switch::before {
-  content: "";
-  position: absolute;
-  top: 3px;
-  left: 4px;
-  width: 20px;
-  height: 20px;
-  background-color: white;
-  border-radius: 50%;
-  transition: transform 0.3s;
-}
-
-input[type="checkbox"]:checked + .switch::before {
-  transform: translateX(24px);
-}
-
-input[type="checkbox"] {
-  display: none;
-}
-
 /* style.css */
 body {
   margin: 0;
@@ -53,7 +16,7 @@ body {
 .navbar {
   background-color: #ffffff;
   padding: 1rem 0;
-  position: relative;
+  position: sticky;
   top: 0;
   z-index: 10;
   box-shadow: 0 2px 10px rgba(0,0,0,0.05);
@@ -121,73 +84,25 @@ body {
 
 #project-list {
   display: grid;
-  gap: 2rem;
+  gap: 1.5rem;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  margin-top: 2rem;
 }
 
 .project {
   background-color: white;
-  border-radius: 12px;
-  padding: 1.5rem;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  position: relative;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-.project:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 20px 35px rgba(0, 0, 0, 0.15);
+  border-radius: 10px;
+  padding: 1rem;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
 }
 
 .project h3 {
-  font-size: 1.3rem;
+  margin: 0 0 0.5rem;
   color: #3D52A0;
-  margin-bottom: 0.5rem;
 }
 
 .project p {
-  font-size: 0.95rem;
-  color: #555;
-  flex-grow: 1;
-}
-
-.project a {
-  margin-top: 1rem;
-  display: inline-block;
-  text-decoration: none;
-  color: white;
-  background-color: #3D52A0;
-  padding: 8px 18px;
-  border-radius: 30px;
-  font-weight: 500;
   font-size: 0.9rem;
-  transition: background 0.3s ease;
-}
-
-.project a:hover {
-  background-color: #1e2e70;
-}
-
-body.dark-mode .project {
-  background-color: #3a3e50;
-  color: #EDE8F5;
-}
-
-body.dark-mode .project p {
-  color: #dcdcdc;
-}
-
-body.dark-mode .project a {
-  background-color: #7091E6;
-}
-
-body.dark-mode .project a:hover {
-  background-color: #3D52A0;
+  color: #555;
 }
 
 footer {
@@ -196,58 +111,3 @@ footer {
   text-align: center;
   padding: 1rem 0;
 }
-
-/* Dark Mode */
-body.dark-mode {
-  background-color: #1c1f2b;
-  color: #EDE8F5;
-}
-
-body.dark-mode .navbar {
-  background-color: #2a2d3e;
-}
-
-body.dark-mode .navbar .nav-links li a {
-  color: #EDE8F5;
-}
-
-body.dark-mode .hero {
-  background: linear-gradient(to right, #3D52A0, #1c1f2b);
-  color: white;
-}
-
-body.dark-mode .section,
-body.dark-mode .bg-alt {
-  background-color: #2a2d3e;
-  color: #EDE8F5;
-}
-
-body.dark-mode .project {
-  background-color: #3a3e50;
-  color: #EDE8F5;
-}
-
-body.dark-mode footer {
-  background-color: #2a2d3e;
-  color: #EDE8F5;
-}
-
-body.dark-mode .hero {
-  background: linear-gradient(120deg, #000428, #004e92); /* Dark mode variant */
-}
-
-body.dark-mode .hero {
-  background: linear-gradient(120deg, #000428, #004e92);
-}
-
-body.dark-mode .hero-text h1,
-body.dark-mode .hero-text p {
-  color: #fff;
-}
-
-body.dark-mode .hero .btn {
-  background-color: #fff;
-  color: #000428;
-}
-
-
