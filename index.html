@@ -67,5 +67,29 @@
   <script>
     document.getElementById("year").textContent = new Date().getFullYear();
   </script>
+  <script src="projects.js"></script>
+<script>
+  // Theme toggle logic
+  const toggle = document.getElementById('themeToggle');
+  const body = document.body;
+
+  // Load saved mode
+  if (localStorage.getItem('theme') === 'dark') {
+    body.classList.add('dark-mode');
+    toggle.checked = true;
+  }
+
+  toggle.addEventListener('change', () => {
+    if (toggle.checked) {
+      body.classList.add('dark-mode');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      body.classList.remove('dark-mode');
+      localStorage.setItem('theme', 'light');
+    }
+  });
+
+  document.getElementById("year").textContent = new Date().getFullYear();
+</script>
 </body>
 </html>
