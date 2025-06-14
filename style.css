@@ -17,10 +17,12 @@ body {
 }
 
 .hero {
-  background: linear-gradient(135deg, var(--primary), var(--secondary));
-  background-image: url('https://www.svgbackgrounds.com/wp-content/uploads/2021/05/wave-haikei-3.svg');
+  background-image: 
+    linear-gradient(135deg, var(--primary), var(--secondary)),
+    url('https://www.svgbackgrounds.com/wp-content/uploads/2021/05/wave-haikei-3.svg');
   background-size: cover;
   background-position: center;
+  background-blend-mode: overlay;
   height: 60vh;
   position: relative;
   display: flex;
