@@ -1,9 +1,8 @@
-/* Dark Mode Toggle Button */
-.toggle-theme {
-  position: fixed;
-  top: 1rem;
-  right: 1rem;
-  z-index: 100;
+#darkModeToggle {
+  position: relative;
+  top: auto;
+  right: auto;
+  margin: 20px;
 }
 
 .switch {
