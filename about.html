@@ -2,57 +2,165 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>About - Saheef's Site</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Abdul Saheef</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background: #fff4e5;
-      margin: 0; padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f9fafc;
+      color: #333;
     }
-    nav {
-      background: #ff7f50;
-      padding: 10px 20px;
-    }
-    nav a {
+
+    header {
+      background-color: #004080;
       color: white;
-      margin-right: 20px;
-      text-decoration: none;
-      font-weight: bold;
-    }
-    nav a:hover {
-      text-decoration: underline;
-    }
-    .container {
-      max-width: 700px;
-      margin: 50px auto;
-      padding: 20px;
-      background: white;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-    h1 {
-      color: #ff7f50;
+      padding: 30px 20px;
       text-align: center;
     }
-    p {
-      line-height: 1.6;
-      color: #333;
+
+    /* Menu bar */
+    nav {
+      background: #002f5f;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 20px;
+    }
+
+    nav .menu {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    nav .menu a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      padding: 6px 10px;
+    }
+
+    nav .menu a:hover {
+      background: #0059b3;
+      border-radius: 4px;
+    }
+
+    .search-bar {
+      margin-left: auto;
+    }
+
+    .search-bar input[type="text"] {
+      padding: 5px 8px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+
+    section {
+      max-width: 800px;
+      margin: 30px auto;
+      padding: 0 20px;
+    }
+
+    h2 {
+      border-bottom: 2px solid #004080;
+      padding-bottom: 5px;
+      color: #004080;
+    }
+
+    a {
+      color: #004080;
+      text-decoration: none;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      background: #eee;
+      margin-top: 40px;
+      font-size: 14px;
+    }
+
+    @media (max-width: 600px) {
+      nav {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .search-bar {
+        width: 100%;
+        margin-top: 10px;
+      }
+
+      .search-bar input {
+        width: 100%;
+      }
     }
   </style>
 </head>
 <body>
 
-<nav>
-  <a href="index.html">Home</a>
-  <a href="about.html">About</a>
-  <a href="contact.html">Contact</a>
-</nav>
+  <header>
+    <h1>Abdul Saheef</h1>
+    <p>Data Analyst | Tech Enthusiast | Blogger</p>
+  </header>
 
-<div class="container">
-  <h1>About Saheef</h1>
-  <p>Hello! I'm Saheef, a blogger and trader passionate about sharing knowledge and insights. This website is my personal space to connect, share ideas, and grow together.</p>
-  <p>Feel free to explore and reach out through the Contact page.</p>
-</div>
+  <!-- Menu bar + Search -->
+  <nav>
+    <div class="menu">
+      <a href="#about">About</a>
+      <a href="#projects">Projects</a>
+      <a href="#skills">Skills</a>
+      <a href="#contact">Contact</a>
+      <a href="#blog">Blog</a>
+    </div>
+    <div class="search-bar">
+      <form action="#">
+        <input type="text" placeholder="Search...">
+      </form>
+    </div>
+  </nav>
+
+  <section id="about">
+    <h2>🧠 About Me</h2>
+    <p>Saheef, an Indian, passionate about data, markets, and meaningful storytelling. I use technology to explore insights and share ideas through blogging and trading.</p>
+  </section>
+
+  <section id="projects">
+    <h2>💼 Projects</h2>
+    <ul>
+      <li>📊 <strong><a href="nse-stock-tracker.html">NSE Stock Tracker</a></strong> — A web tool to monitor short-term stock performance for active traders.</li>
+      <li>📘 <strong>Scholarly Shadows</strong> — A book exploring the state of education through real classroom stories.</li>
+      <li>🎬 <strong>Mollywood Film Script</strong> — A youth-centered psychological thriller screenplay in progress.</li>
+    </ul>
+  </section>
+
+  <section id="skills">
+    <h2>🛠️ Skills</h2>
+    <ul>
+      <li>Python, Data Analysis, Excel</li>
+      <li>Stock Market Research & Trading</li>
+      <li>HTML, GitHub, Blogging</li>
+    </ul>
+  </section>
+
+  <section id="contact">
+    <h2>📫 Contact</h2>
+    <iframe width="640px" height="480px" src="https://forms.office.com/Pages/ResponsePage.aspx?id=DQSIkWdsW0yxEjajBLZtrQAAAAAAAAAAAAYAAD34DZFUMEg0ME1KOVEwVUlHVkFTQk5CUTc0MjRKTC4u&embed=true" frameborder="0" marginwidth="0" marginheight="0" style="border: none; max-width:100%; max-height:100vh" allowfullscreen webkitallowfullscreen mozallowfullscreen msallowfullscreen></iframe>
+  </section>
+
+  <section id="blog">
+    <h2>📝 Blog</h2>
+    <ul>
+      <li><a href="psychology-of-holding-stocks.html">🧠 The Psychology of Holding a Stock</a></li>
+    </ul>
+  </section>
+
+  <footer>
+    &copy; 2025 Abdul Saheef. All rights reserved.
+  </footer>
 
 </body>
 </html>
