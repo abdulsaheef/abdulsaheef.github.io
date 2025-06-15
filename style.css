@@ -308,7 +308,7 @@ animation: scroll-left 40s linear infinite;
   color: #3D52A0;
   padding: 1.5rem;
   border-radius: 14px;
-  border: 1px solid #ADBBDA; /* soft lavender border */
+  border: 1px solid rgba(0, 0, 0, 0.1); /* if using light background */
   box-shadow: 0 8px 18px rgba(141, 153, 184, 0.2);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   min-height: 240px;
