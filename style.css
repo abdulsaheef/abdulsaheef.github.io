@@ -302,49 +302,43 @@ body.dark-mode footer {
 
 animation: scroll-left 40s linear infinite;
 
-/* Insight Section Styles */
-.insight-track {
-  display: flex;
-  gap: 20px;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  padding: 20px 0;
+/* Swiper container */
+.mySwiper {
+  padding-top: 20px;
+  padding-bottom: 40px;
 }
 
-.blog-card {
-  flex: 0 0 auto;
-  width: 250px;
+/* Individual blog card */
+.insight-card {
   border: 1px solid #ccc;
-  border-radius: 10px;
-  padding: 16px;
   background-color: #EDE8F5;
-  scroll-snap-align: start;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  padding: 20px;
+  border-radius: 12px;
+  height: 180px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
   transition: transform 0.3s ease;
 }
 
-.blog-card:hover {
-  transform: scale(1.05);
+.insight-card:hover {
+  transform: translateY(-5px);
 }
 
-.blog-card h3 {
+.insight-card h3 {
   font-size: 1.1rem;
-  margin-bottom: 10px;
   color: #3D52A0;
+  margin-bottom: 12px;
 }
 
-.blog-card a {
-  display: inline-block;
-  margin-top: 8px;
+.insight-card a {
+  align-self: flex-start;
   padding: 6px 14px;
+  font-size: 0.85rem;
   background-color: #7091E6;
-  color: #fff;
+  color: white;
   border-radius: 5px;
   text-decoration: none;
-  font-size: 0.9rem;
-}
-
-.blog-carousel:hover .carousel-track {
-  animation-play-state: paused;
-  cursor: grab;
+  font-weight: 500;
 }
