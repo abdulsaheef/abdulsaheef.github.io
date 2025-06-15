@@ -238,3 +238,48 @@ body.dark-mode footer {
   background-color: #2a2d3e;
   color: #EDE8F5;
 }
+
+:root {
+  --bg: #f7f7f7;
+  --text: #333;
+  --accent: #6c5ce7; /* or your brand accent */
+  --accent-hover: #5848c2;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: sans-serif;
+}
+
+/* Contact section styling */
+.contact-section {
+  padding: 4rem 1rem;
+  text-align: center;
+}
+
+.contact-btn {
+  display: inline-block;
+  margin-top: 1.5rem;
+  background: var(--accent);
+  color: white;
+  padding: 0.75rem 2rem;
+  font-size: 1.1rem;
+  border: none;
+  border-radius: 4px;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.3s ease;
+}
+
+/* Hover effect (micro-interaction) */
+.contact-btn:hover {
+  background: var(--accent-hover);
+}
+
+/* 3D bounce effect on click */
+.contact-btn:active {
+  transform: scale(0.98);
+}
