@@ -240,46 +240,27 @@ body.dark-mode footer {
 }
 
 /* At the end of style.css */
+/* At the end of style.css */
 .contact-btn {
-  display: inline-flex;
-  align-items: center;
-  text-decoration: none;
-  background: linear-gradient(135deg, #6c5ce7, #7158e2);
-  padding: 0.8rem 1.5rem;
-  border-radius: 8px;
-  color: #fff;
-  font-family: 'Poppins', sans-serif;
+  display: block;
+  margin-top: 1.5rem auto 0;
+  padding: 0.8rem 2rem;
   font-size: 1.1rem;
-  transition: transform 0.2s, box-shadow 0.3s;
-  box-shadow: 0 8px 20px rgba(108,92,231,0.3);
-  margin: 1.5rem auto 0;
-}
-.container.center .contact-btn {
-  margin-left: auto;
-  margin-right: auto;
-}
-.contact-btn:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 24px rgba(108,92,231,0.4);
+  font-weight: 500;
+  font-family: 'Poppins', sans-serif;
+  color: white;
+  background: linear-gradient(135deg, #6c5ce7, #7158e2);
+  border-radius: 8px;
+  text-decoration: none;
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+  box-shadow: 0 8px 20px rgba(108, 92, 231, 0.3);
 }
 
-.mail-icon {
-  width: 24px;
-  height: 24px;
-  margin-right: 0.7rem;
-  position: relative;
+.contact-btn:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(108, 92, 231, 0.4);
 }
-.mail-icon svg {
-  width: 100%;
-  height: 100%;
-}
-.mail-back, .mail-flap {
-  fill: rgba(255,255,255,0.9);
-}
-.mail-flap {
-  transform-origin: top center;
-  transition: transform 0.3s ease;
-}
-.contact-btn:hover .mail-flap {
-  transform: rotateX(150deg);
+
+.contact-btn:active {
+  transform: scale(0.98);
 }
