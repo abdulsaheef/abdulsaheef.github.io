@@ -46,29 +46,13 @@
   <!-- your other content -->
 
   <section id="insight" class="section">
-    <div class="container">
-      <h2>Insight</h2>
-      <div id="blogTrack" class="blog-track"></div>
+  <div class="container">
+    <h2>Insight</h2>
+    <div class="insight-track" id="blogTrack">
+      <!-- Cards will be injected here -->
     </div>
-  </section>
-
-  <script>
-    fetch('posts.json')
-      .then(response => response.json())
-      .then(posts => {
-        const track = document.getElementById('blogTrack');
-        posts.forEach(post => {
-          const card = document.createElement('div');
-          card.className = 'blog-card';
-          card.innerHTML = `
-            <h3>${post.title}</h3>
-            <a href="${post.link}" target="_blank" rel="noopener noreferrer">Open</a>
-          `;
-          track.appendChild(card);
-        });
-      })
-      .catch(error => console.error('Failed to load blog posts:', error));
-  </script>
+  </div>
+</section>
 </body>
 
   <section id="projects" class="section bg-alt">
