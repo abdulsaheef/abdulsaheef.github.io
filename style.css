@@ -269,3 +269,63 @@ body.dark-mode footer {
 .contact-btn:active {
   transform: scale(0.98);
 }
+
+.blog-carousel {
+  overflow: hidden;
+  position: relative;
+  margin-top: 2rem;
+}
+
+.carousel-track {
+  display: flex;
+  gap: 1.5rem;
+  animation: scroll-left 25s linear infinite;
+}
+
+@keyframes scroll-left {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.blog-card {
+  flex: 0 0 300px;
+  background-color: #3D52A0;
+  padding: 1.5rem;
+  border-radius: 12px;
+  color: #fff;
+  box-shadow: 0 8px 20px rgba(61, 82, 160, 0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  min-height: 240px;
+}
+
+.blog-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 30px rgba(61, 82, 160, 0.3);
+}
+
+.blog-card h3 {
+  margin-top: 0;
+  font-size: 1.3rem;
+}
+
+.blog-card p {
+  font-size: 1rem;
+  opacity: 0.9;
+}
+
+.blog-card a {
+  display: inline-block;
+  margin-top: 1rem;
+  text-decoration: none;
+  color: #EDE8F5;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.blog-card a:hover {
+  color: #ADBBDA;
+}
