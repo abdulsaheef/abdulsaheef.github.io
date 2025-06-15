@@ -1,5 +1,3 @@
-// insight.js
-
 document.addEventListener('DOMContentLoaded', () => {
   fetch('posts.json')
     .then(response => response.json())
@@ -10,10 +8,10 @@ document.addEventListener('DOMContentLoaded', () => {
         card.className = 'blog-card';
         card.innerHTML = `
           <h3>${post.title}</h3>
-          <a href="${post.link}" target="_blank" rel="noopener noreferrer">Open</a>
+          <a href="${post.link}" target="_blank">Open</a>
         `;
         track.appendChild(card);
       });
     })
-    .catch(error => console.error('Failed to load blog posts:', error));
+    .catch(error => console.error('Error loading posts:', error));
 });
