@@ -238,27 +238,3 @@ body.dark-mode footer {
   background-color: #2a2d3e;
   color: #EDE8F5;
 }
-
-.contact-btn {
-  display: inline-block;
-  margin-top: 1.5rem;
-  padding: 0.8rem 2rem;
-  font-size: 1.1rem;
-  font-weight: 500;
-  font-family: 'Poppins', sans-serif;
-  color: white;
-  background: linear-gradient(135deg, #6c5ce7, #7158e2);
-  border-radius: 8px;
-  text-decoration: none;
-  transition: transform 0.2s ease, box-shadow 0.3s ease;
-  box-shadow: 0 8px 20px rgba(108, 92, 231, 0.3);
-}
-
-.contact-btn:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 24px rgba(108, 92, 231, 0.4);
-}
-
-.contact-btn:active {
-  transform: scale(0.98);
-}
