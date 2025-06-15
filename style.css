@@ -291,6 +291,17 @@ body.dark-mode footer {
   }
 }
 
+@keyframes scroll-left {
+  0% {
+    transform: translateX(-50%);
+  }
+  100% {
+    transform: translateX(0%);
+  }
+}
+
+animation: scroll-left 40s linear infinite;
+
 .blog-card {
   flex: 0 0 300px;
   background-color: #3D52A0;
