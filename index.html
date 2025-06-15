@@ -42,18 +42,34 @@
     </div>
   </section>
   
-  <section id="insight" class="section" data-aos="fade-up">
-  <div class="container center">
-    <h2>Insights & Writings</h2>
-    <p>Thoughts, stories, and lessons from my digital and financial journey.</p>
+  <body>
+  <!-- your other content -->
 
-    <div class="blog-carousel">
-      <div class="carousel-track" id="blogTrack">
-        <!-- Cards will be inserted here by JavaScript -->
-      </div>
+  <section id="insight" class="section">
+    <div class="container">
+      <h2>Insight</h2>
+      <div id="blogTrack" class="blog-track"></div>
     </div>
-  </div>
-</section>
+  </section>
+
+  <script>
+    fetch('posts.json')
+      .then(response => response.json())
+      .then(posts => {
+        const track = document.getElementById('blogTrack');
+        posts.forEach(post => {
+          const card = document.createElement('div');
+          card.className = 'blog-card';
+          card.innerHTML = `
+            <h3>${post.title}</h3>
+            <a href="${post.link}" target="_blank" rel="noopener noreferrer">Open</a>
+          `;
+          track.appendChild(card);
+        });
+      })
+      .catch(error => console.error('Failed to load blog posts:', error));
+  </script>
+</body>
 
   <section id="projects" class="section bg-alt">
     <div class="container center" data-aos="fade-up">
