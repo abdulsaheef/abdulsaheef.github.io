@@ -241,7 +241,7 @@ body.dark-mode footer {
 
 /* At the end of style.css */
 .contact-btn {
-  display: inline-block;
+  display: block;
   margin-top: 1.5rem auto 0;
   padding: 0.8rem 2rem;
   font-size: 1.1rem;
