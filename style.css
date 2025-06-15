@@ -240,16 +240,21 @@ body.dark-mode footer {
 }
 
 /* At the end of style.css */
-/* At the end of style.css */
+/* Ensure the parent container centers the button */
+.container.center {
+  text-align: center;
+}
+
+/* Button styling */
 .contact-btn {
-  display: block;
-  margin-top: 1.5rem auto 0;
+  display: inline-block;
+  margin-top: 1.5rem;
   padding: 0.8rem 2rem;
   font-size: 1.1rem;
   font-weight: 500;
   font-family: 'Poppins', sans-serif;
   color: white;
-  background: linear-gradient(135deg, #6c5ce7, #7158e2);
+  background: linear-gradient(135deg, #6c5ce7, #7158e2); /* match your accent */
   border-radius: 8px;
   text-decoration: none;
   transition: transform 0.2s ease, box-shadow 0.3s ease;
