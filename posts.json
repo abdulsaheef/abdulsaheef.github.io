@@ -1,22 +1,14 @@
 [
   {
-    "title": "How to Start with Python Programming",
+    "title": "Understanding the Stock Market",
+    "link": "https://abdulsaheef.github.io/blog/stock-market"
+  },
+  {
+    "title": "How I Built My Portfolio Site",
+    "link": "https://abdulsaheef.github.io/blog/portfolio-site"
+  },
+  {
+    "title": "Learning Python as a Beginner",
     "link": "https://abdulsaheef.github.io/blog/python-start"
-  },
-  {
-    "title": "Understanding the Stock Market Basics",
-    "link": "https://abdulsaheef.github.io/blog/stock-market-basics"
-  },
-  {
-    "title": "My Journey into Data Analytics",
-    "link": "https://abdulsaheef.github.io/blog/data-analytics-journey"
-  },
-  {
-    "title": "Building Your First Website from Scratch",
-    "link": "https://abdulsaheef.github.io/blog/website-building-guide"
-  },
-  {
-    "title": "Tips for Better Blogging and Storytelling",
-    "link": "https://abdulsaheef.github.io/blog/blogging-tips"
   }
 ]
