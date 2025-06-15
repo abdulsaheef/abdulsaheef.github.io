@@ -1,0 +1,12 @@
+[
+  {
+    "title": "The Psychology of Holding a Stock",
+    "description": "A deep dive into what really happens in our minds when we refuse to sell — and when we do.",
+    "link": "blog/psychology-of-holding.html"
+  },
+  {
+    "title": "Building My First NSE Tracker",
+    "description": "How I built a GitHub-based project to track stock performance with live data integration.",
+    "link": "blog/nse-tracker.html"
+  }
+]
