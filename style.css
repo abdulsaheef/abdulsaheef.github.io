@@ -329,3 +329,8 @@ body.dark-mode footer {
 .blog-card a:hover {
   color: #ADBBDA;
 }
+
+.blog-carousel:hover .carousel-track {
+  animation-play-state: paused;
+  cursor: grab;
+}
