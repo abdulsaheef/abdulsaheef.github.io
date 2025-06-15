@@ -1,17 +1,36 @@
 document.addEventListener('DOMContentLoaded', () => {
   fetch('posts.json')
-    .then(response => response.json())
+    .then(res => res.json())
     .then(posts => {
-      const track = document.getElementById('blogTrack');
+      const wrapper = document.getElementById('insightCards');
       posts.forEach(post => {
-        const card = document.createElement('div');
-        card.className = 'blog-card';
-        card.innerHTML = `
-          <h3>${post.title}</h3>
-          <a href="${post.link}" target="_blank">Open</a>
+        const slide = document.createElement('div');
+        slide.className = 'swiper-slide';
+        slide.innerHTML = `
+          <div class="insight-card">
+            <h3>${post.title}</h3>
+            <a href="${post.link}" target="_blank">Open</a>
+          </div>
         `;
-        track.appendChild(card);
+        wrapper.appendChild(slide);
       });
-    })
-    .catch(error => console.error('Error loading posts:', error));
+
+      new Swiper('.mySwiper', {
+        slidesPerView: 1.2,
+        spaceBetween: 20,
+        loop: true,
+        autoplay: {
+          delay: 3000,
+          disableOnInteraction: false
+        },
+        breakpoints: {
+          768: {
+            slidesPerView: 2.5
+          },
+          1024: {
+            slidesPerView: 3.5
+          }
+        }
+      });
+    });
 });
