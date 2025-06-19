@@ -65,12 +65,16 @@
       contentDiv.innerHTML = `
         <h2>You're Invited!</h2>
         <form id="inviteForm">
-          <input type="text" name="name" placeholder="Your Name" required />
-          <input type="email" name="email" placeholder="Your Email" required />
-          <textarea name="message" rows="3" placeholder="Your Message (optional)"></textarea>
-          <input type="hidden" name="token" value="${token}" />
-          <button type="submit">Submit</button>
-        </form>
+  <input type="text" name="name" placeholder="Your Name" required />
+  <input type="email" name="email" placeholder="Your Email" required />
+
+  <!-- Password Setup -->
+  <input type="password" name="password" placeholder="Set Password" required />
+  <input type="password" name="confirm_password" placeholder="Confirm Password" required />
+
+  <input type="hidden" name="token" value="${token}" />
+  <button type="submit">Create Account</button>
+</form>
       `;
 
       document.getElementById("inviteForm").addEventListener("submit", function (e) {
