@@ -113,5 +113,20 @@
       once: true,
     });
   </script>
+  
+  <!-- other content above -->
+
+  <script>
+    window.addEventListener('DOMContentLoaded', function () {
+      const hashParams = new URLSearchParams(window.location.hash.slice(1));
+      const inviteToken = hashParams.get('invite_token');
+
+      if (inviteToken) {
+        // Redirect to a proper page or handle directly here
+        window.location.href = `/invite.html?token=${inviteToken}`;
+      }
+    });
+  </script>
+  
 </body>
 </html>
