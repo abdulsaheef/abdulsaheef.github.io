@@ -88,5 +88,50 @@
       contentDiv.innerHTML = `<p class="error">❌ Invalid or missing invite token.</p>`;
     }
   </script>
+  <script>
+  const token = new URLSearchParams(window.location.search).get('token');
+  const contentDiv = document.getElementById("content");
+
+  if (token) {
+    contentDiv.innerHTML = `
+      <h2>You're Invited!</h2>
+      <form id="inviteForm">
+        <input type="text" name="name" placeholder="Your Name" required />
+        <input type="email" name="email" placeholder="Your Email" required />
+        <input type="password" name="password" placeholder="Set Password" required />
+        <input type="password" name="confirm_password" placeholder="Confirm Password" required />
+        <input type="hidden" name="token" value="${token}" />
+        <button type="submit">Create Account</button>
+      </form>
+    `;
+
+    document.getElementById("inviteForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const form = e.target;
+      const name = form.name.value.trim();
+      const email = form.email.value.trim();
+      const password = form.password.value;
+      const confirmPassword = form.confirm_password.value;
+
+      if (password !== confirmPassword) {
+        alert("❌ Passwords do not match.");
+        return;
+      }
+
+      if (password.length < 6) {
+        alert("❌ Password must be at least 6 characters.");
+        return;
+      }
+
+      // ✅ Here’s where you'd send the data to your backend or store it securely
+      alert(`✅ Account created!\nName: ${name}\nEmail: ${email}\nToken: ${token}`);
+      
+      // Optional redirect: window.location.href = "/welcome.html";
+    });
+  } else {
+    contentDiv.innerHTML = `<p class="error">❌ Invalid or missing invite token.</p>`;
+  }
+</script>
 </body>
 </html>
