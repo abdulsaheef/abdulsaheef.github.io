@@ -59,7 +59,7 @@
       if (toggle.checked) { body.classList.add('dark-mode'); localStorage.setItem('theme', 'dark'); }
       else { body.classList.remove('dark-mode'); localStorage.setItem('theme', 'light'); }
     });
-    fetch('/posts/posts.json')
+    fetch('/posts.json')
       .then(res => res.json())
       .then(posts => {
         const related = document.getElementById('relatedPosts');
