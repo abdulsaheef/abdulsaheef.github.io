@@ -17,9 +17,9 @@
 <body>
   <nav class="navbar">
     <div class="toggle-theme">
-      <input type="checkbox" id="themeToggle" />
-      <label for="themeToggle" class="switch"></label>
-    </div>
+  <input type="checkbox" id="themeToggle" />
+  <label for="themeToggle" class="switch"></label>
+</div>
     <div class="container">
       <a href="#home" class="brand">Saheef</a>
       <ul class="nav-links">
@@ -46,21 +46,25 @@
       </p>
     </div>
   </section>
+  
+  
+  <!-- your other content -->
 
-  <!-- Insight Section -->
   <section id="insight" class="section">
-    <div class="container">
-      <h2>Insight</h2>
-      <div class="swiper mySwiper">
-        <div class="swiper-wrapper" id="insightCards">
-          <!-- Cards will be injected here -->
-        </div>
+  <div class="container">
+    <h2>Insight</h2>
+
+    <div class="swiper mySwiper">
+      <div class="swiper-wrapper" id="insightCards">
+        <!-- Cards will be injected here -->
       </div>
     </div>
-  </section>
+  </div>
+</section>
+</body>
 
-  <section id="projects" class="section bg-alt" data-aos="fade-up">
-    <div class="container center">
+  <section id="projects" class="section bg-alt">
+    <div class="container center" data-aos="fade-up">
       <h2>Projects</h2>
       <div id="project-list">
         <!-- GitHub repos will be inserted here -->
@@ -68,75 +72,76 @@
     </div>
   </section>
 
-  <section id="contact" class="section" data-aos="zoom-in">
-    <div class="container center">
-      <h2>Contact</h2>
-      <p>Feel free to connect or collaborate.</p>
-      <a href="mailto:saheef@hotmail.com?subject=Hello%20Saheef" class="contact-btn">
-        Write me an Email
-      </a>
-    </div>
-  </section>
+<section id="contact" class="section" data-aos="zoom-in">
+  <div class="container center">
+    <h2>Contact</h2>
+    <p>Feel free to connect or collaborate.</p>
+    <a href="mailto:saheef@hotmail.com?subject=Hello%20Saheef" class="contact-btn">
+      Write me an Email
+    </a>
+  </div>
+</section>
 
   <footer>
     © <span id="year"></span> Saheef. All rights reserved.
   </footer>
 
-  <!-- Scripts -->
-  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
   <script src="projects.js"></script>
-  <script src="insight.js"></script>
-  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-
   <script>
     document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
+  <script src="projects.js"></script>
+<script>
+  // Theme toggle logic
+  const toggle = document.getElementById('themeToggle');
+  const body = document.body;
 
-    // Theme toggle logic
-    const toggle = document.getElementById('themeToggle');
-    const body = document.body;
-    if (localStorage.getItem('theme') === 'dark') {
+  // Load saved mode
+  if (localStorage.getItem('theme') === 'dark') {
+    body.classList.add('dark-mode');
+    toggle.checked = true;
+  }
+
+  toggle.addEventListener('change', () => {
+    if (toggle.checked) {
       body.classList.add('dark-mode');
-      toggle.checked = true;
-    }
-    toggle.addEventListener('change', () => {
-      if (toggle.checked) {
-        body.classList.add('dark-mode');
-        localStorage.setItem('theme', 'dark');
-      } else {
-        body.classList.remove('dark-mode');
-        localStorage.setItem('theme', 'light');
-      }
-    });
-
-    AOS.init({
-      duration: 800,
-      once: true,
-    });
-  </script>
-  
-  <!-- other content above -->
-
-  <script>
-    window.addEventListener('DOMContentLoaded', function () {
-      const hashParams = new URLSearchParams(window.location.hash.slice(1));
-      const inviteToken = hashParams.get('invite_token');
-
-      if (inviteToken) {
-        // Redirect to a proper page or handle directly here
-        window.location.href = `/invite.html?token=${inviteToken}`;
-      }
-    });
-  </script>
-  <script>
-  window.addEventListener('DOMContentLoaded', function () {
-    const hashParams = new URLSearchParams(window.location.hash.slice(1));
-    const recoveryToken = hashParams.get('recovery_token');
-
-    if (recoveryToken) {
-      // Redirect to a recovery page
-      window.location.href = `/recovery.html?token=${recoveryToken}`;
+      localStorage.setItem('theme', 'dark');
+    } else {
+      body.classList.remove('dark-mode');
+      localStorage.setItem('theme', 'light');
     }
   });
+
+  document.getElementById("year").textContent = new Date().getFullYear();
 </script>
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+  AOS.init({
+    duration: 800,
+    once: true,
+  });
+</script>
+<script>
+  fetch('posts.json')
+    .then(response => response.json())
+    .then(posts => {
+      const track = document.getElementById('blogTrack');
+      posts.forEach(post => {
+        const card = document.createElement('div');
+        card.className = 'blog-card';
+        card.innerHTML = `
+          <h3>${post.title}</h3>
+          <p>${post.description}</p>
+          <a href="${post.link}" target="_blank">Read More →</a>
+        `;
+        track.appendChild(card);
+      });
+    })
+    .catch(error => console.error('Failed to load blog posts:', error));
+</script>
+<script src="insight.js"></script>
+<!-- Swiper JS -->
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 </body>
 </html>
+
