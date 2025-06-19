@@ -391,5 +391,52 @@ animation: scroll-left 40s linear infinite;
 }
 
 
+.post-meta {
+  margin-top: 10px;
+  margin-bottom: 30px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text-secondary, #888);
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  align-items: center;
+  animation: fadeInMeta 1.2s ease-in-out both;
+  border: 1px solid rgba(200, 200, 255, 0.2);
+  padding: 10px 20px;
+  border-radius: 30px;
+  backdrop-filter: blur(8px);
+  background: rgba(255, 255, 255, 0.04);
+  box-shadow: 0 0 15px rgba(0,0,0,0.05);
+  transition: all 0.3s ease;
+}
+
+.post-meta i {
+  color: var(--primary, #7091E6);
+  font-size: 1.1rem;
+}
+
+.post-meta span {
+  display: inline-block;
+}
+
+.post-meta .dot {
+  font-size: 1.2rem;
+  color: var(--text-muted, #bbb);
+}
+
+@keyframes fadeInMeta {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
 
 
