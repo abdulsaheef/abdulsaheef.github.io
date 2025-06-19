@@ -1,17 +1,87 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>You're Invited</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f7fa;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+      max-width: 400px;
+      width: 100%;
+    }
+    h2 {
+      color: #3D52A0;
+    }
+    input, textarea, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 12px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    button {
+      background-color: #3D52A0;
+      color: white;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    button:hover {
+      background-color: #2f3e85;
+    }
+    .error {
+      color: red;
+      font-weight: bold;
+    }
+  </style>
 </head>
 <body>
-  <h2>Processing your invite...</h2>
+  <div class="container" id="content">
+    <h2>Validating your invite...</h2>
+  </div>
+
   <script>
     const token = new URLSearchParams(window.location.search).get('token');
+    const contentDiv = document.getElementById("content");
+
     if (token) {
-      document.body.innerHTML = `<h2>Welcome! Your invite token is: <code>${token}</code></h2>`;
-      // You can validate the token here with backend if needed
+      // Optionally validate the token here via API
+      // For now, assume token is valid
+
+      contentDiv.innerHTML = `
+        <h2>You're Invited!</h2>
+        <form id="inviteForm">
+          <input type="text" name="name" placeholder="Your Name" required />
+          <input type="email" name="email" placeholder="Your Email" required />
+          <textarea name="message" rows="3" placeholder="Your Message (optional)"></textarea>
+          <input type="hidden" name="token" value="${token}" />
+          <button type="submit">Submit</button>
+        </form>
+      `;
+
+      document.getElementById("inviteForm").addEventListener("submit", function (e) {
+        e.preventDefault();
+        // Replace with real handling (e.g., send to backend)
+        alert("Form submitted with token: " + token);
+        // Optionally: window.location.href = "/thank-you.html";
+      });
+
     } else {
-      document.body.innerHTML = `<h2>Invalid or missing invite token.</h2>`;
+      contentDiv.innerHTML = `<p class="error">❌ Invalid or missing invite token.</p>`;
     }
   </script>
 </body>
