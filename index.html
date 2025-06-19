@@ -2,23 +2,24 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Saheef | Portfolio</title>
   <link href="style.css" rel="stylesheet" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet" />
-  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
-  <link
-    rel="stylesheet"
-    href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
-  />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <!-- Swiper CSS -->
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
+/>
 </head>
 <body>
   <nav class="navbar">
     <div class="toggle-theme">
-      <input type="checkbox" id="themeToggle" />
-      <label for="themeToggle" class="switch"></label>
-    </div>
+  <input type="checkbox" id="themeToggle" />
+  <label for="themeToggle" class="switch"></label>
+</div>
     <div class="container">
       <a href="#home" class="brand">Saheef</a>
       <ul class="nav-links">
@@ -45,21 +46,25 @@
       </p>
     </div>
   </section>
+  
+  
+  <!-- your other content -->
 
   <section id="insight" class="section">
-    <div class="container center" data-aos="fade-up">
-      <h2>Insight</h2>
-      <div class="swiper mySwiper">
-        <div class="swiper-wrapper" id="insightCards">
-          <!-- Blog cards auto-injected via JS -->
-        </div>
-        <div class="swiper-pagination"></div>
+  <div class="container">
+    <h2>Insight</h2>
+
+    <div class="swiper mySwiper">
+      <div class="swiper-wrapper" id="insightCards">
+        <!-- Cards will be injected here -->
       </div>
     </div>
-  </section>
+  </div>
+</section>
+</body>
 
-  <section id="projects" class="section bg-alt" data-aos="fade-up">
-    <div class="container center">
+  <section id="projects" class="section bg-alt">
+    <div class="container center" data-aos="fade-up">
       <h2>Projects</h2>
       <div id="project-list">
         <!-- GitHub repos will be inserted here -->
@@ -67,55 +72,75 @@
     </div>
   </section>
 
-  <section id="contact" class="section center" data-aos="zoom-in">
-    <div class="container">
-      <h2>Contact</h2>
-      <p>Feel free to connect or collaborate.</p>
-      <a href="mailto:saheef@hotmail.com?subject=Hello%20Saheef" class="contact-btn">
-        Write me an Email
-      </a>
-    </div>
-  </section>
+<section id="contact" class="section" data-aos="zoom-in">
+  <div class="container center">
+    <h2>Contact</h2>
+    <p>Feel free to connect or collaborate.</p>
+    <a href="mailto:saheef@hotmail.com?subject=Hello%20Saheef" class="contact-btn">
+      Write me an Email
+    </a>
+  </div>
+</section>
 
   <footer>
     © <span id="year"></span> Saheef. All rights reserved.
   </footer>
 
   <script src="projects.js"></script>
-  <script src="insight.js"></script>
   <script>
     document.getElementById("year").textContent = new Date().getFullYear();
-
-    // Theme toggle
-    const toggle = document.getElementById('themeToggle');
-    const body = document.body;
-    if (localStorage.getItem('theme') === 'dark') {
-      body.classList.add('dark-mode');
-      toggle.checked = true;
-    }
-    toggle.addEventListener('change', () => {
-      if (toggle.checked) {
-        body.classList.add('dark-mode');
-        localStorage.setItem('theme', 'dark');
-      } else {
-        body.classList.remove('dark-mode');
-        localStorage.setItem('theme', 'light');
-      }
-    });
-
-    // AOS
-    AOS.init({ duration: 800, once: true });
-
-    // Swiper setup
-    const swiper = new Swiper('.mySwiper', {
-      loop: true,
-      pagination: {
-        el: '.swiper-pagination',
-        clickable: true,
-      },
-    });
   </script>
-  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+  <script src="projects.js"></script>
+<script>
+  // Theme toggle logic
+  const toggle = document.getElementById('themeToggle');
+  const body = document.body;
+
+  // Load saved mode
+  if (localStorage.getItem('theme') === 'dark') {
+    body.classList.add('dark-mode');
+    toggle.checked = true;
+  }
+
+  toggle.addEventListener('change', () => {
+    if (toggle.checked) {
+      body.classList.add('dark-mode');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      body.classList.remove('dark-mode');
+      localStorage.setItem('theme', 'light');
+    }
+  });
+
+  document.getElementById("year").textContent = new Date().getFullYear();
+</script>
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+  AOS.init({
+    duration: 800,
+    once: true,
+  });
+</script>
+<script>
+  fetch('posts.json')
+    .then(response => response.json())
+    .then(posts => {
+      const track = document.getElementById('blogTrack');
+      posts.forEach(post => {
+        const card = document.createElement('div');
+        card.className = 'blog-card';
+        card.innerHTML = `
+          <h3>${post.title}</h3>
+          <p>${post.description}</p>
+          <a href="${post.link}" target="_blank">Read More →</a>
+        `;
+        track.appendChild(card);
+      });
+    })
+    .catch(error => console.error('Failed to load blog posts:', error));
+</script>
+<script src="insight.js"></script>
+<!-- Swiper JS -->
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 </body>
 </html>
