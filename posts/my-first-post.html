@@ -45,31 +45,35 @@
   <a href="mailto:?subject=Check%20this%20post&body=https://abdulsaheef.github.io/posts/post-title.html" class="btn-icon email" title="Share via Email"><i class="fas fa-envelope"></i></a>
 </div>
 
-<!-- FOOTER -->
-<footer>
-  © <span id="year"></span> Saheef. All rights reserved.
-</footer>
+    </div> <!-- closes post-content -->
+  </div> <!-- closes main container -->
 
-<!-- JS Scripts -->
-<script>
-  document.getElementById("year").textContent = new Date().getFullYear();
-  const toggle = document.getElementById('themeToggle');
-  const body = document.body;
+  <footer>
+    © <span id="year"></span> Saheef. All rights reserved.
+  </footer>
 
-  // Dark mode toggle
-  if (localStorage.getItem('theme') === 'dark') {
-    body.classList.add('dark-mode');
-    toggle.checked = true;
-  }
-  toggle.addEventListener('change', () => {
-    if (toggle.checked) {
+  <!-- JS: Theme Toggle + Footer Year -->
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+    const toggle = document.getElementById('themeToggle');
+    const body = document.body;
+
+    if (localStorage.getItem('theme') === 'dark') {
       body.classList.add('dark-mode');
-      localStorage.setItem('theme', 'dark');
-    } else {
-      body.classList.remove('dark-mode');
-      localStorage.setItem('theme', 'light');
+      toggle.checked = true;
     }
-  });
-</script>
+
+    toggle.addEventListener('change', () => {
+      if (toggle.checked) {
+        body.classList.add('dark-mode');
+        localStorage.setItem('theme', 'dark');
+      } else {
+        body.classList.remove('dark-mode');
+        localStorage.setItem('theme', 'light');
+      }
+    });
+  </script>
+
+  <!-- FontAwesome (already loaded in <head>) -->
 </body>
 </html>
