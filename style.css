@@ -345,27 +345,22 @@ animation: scroll-left 40s linear infinite;
 
 .share-buttons {
   display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 20px;
-}
-.btn-share {
-  text-decoration: none;
-  padding: 10px 16px;
-  border-radius: 30px;
-  font-weight: 500;
-  color: white;
-  display: inline-flex;
   align-items: center;
-  gap: 8px;
-  transition: background-color 0.3s ease;
+  gap: 10px;
 }
-.btn-share i {
-  font-size: 16px;
+
+.share-buttons a {
+  display: inline-block;
+  width: 32px;
+  height: 32px;
+  transition: transform 0.2s;
 }
-.btn-share.twitter { background: #1DA1F2; }
-.btn-share.facebook { background: #1877F2; }
-.btn-share.linkedin { background: #0A66C2; }
-.btn-share.whatsapp { background: #25D366; }
-.btn-share.email { background: #6c757d; }
-.btn-share:hover { opacity: 0.9; }
+
+.share-buttons a:hover {
+  transform: scale(1.1);
+}
+
+.share-buttons img {
+  width: 100%;
+  height: 100%;
+}
