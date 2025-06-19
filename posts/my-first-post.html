@@ -41,13 +41,21 @@
       <img src="/images/design.jpg" alt="Portfolio design" />
       <blockquote>"Great design is born of two things: simplicity and clarity." – Lindon Leader</blockquote>
 
-      <div class="share-buttons-icon">
-  <a href="https://twitter.com/intent/tweet?url=https://abdulsaheef.github.io/posts/post-title.html" class="btn-icon twitter" target="_blank" title="Share on Twitter"><i class="fab fa-twitter"></i></a>
-  <a href="https://www.facebook.com/sharer/sharer.php?u=https://abdulsaheef.github.io/posts/post-title.html" class="btn-icon facebook" target="_blank" title="Share on Facebook"><i class="fab fa-facebook-f"></i></a>
-  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://abdulsaheef.github.io/posts/post-title.html" class="btn-icon linkedin" target="_blank" title="Share on LinkedIn"><i class="fab fa-linkedin-in"></i></a>
-  <a href="https://api.whatsapp.com/send?text=https://abdulsaheef.github.io/posts/post-title.html" class="btn-icon whatsapp" target="_blank" title="Share on WhatsApp"><i class="fab fa-whatsapp"></i></a>
-  <a href="mailto:?subject=Check%20this%20post&body=https://abdulsaheef.github.io/posts/post-title.html" class="btn-icon email" title="Share via Email"><i class="fas fa-envelope"></i></a>
+      <div class="share-buttons-icon" id="shareButtons">
+  <!-- Buttons will be injected here -->
 </div>
+
+<script>
+  const shareURL = window.location.href;
+  const shareHTML = `
+    <a href="https://twitter.com/intent/tweet?url=${encodeURIComponent(shareURL)}" class="btn-icon twitter" target="_blank" title="Share on Twitter"><i class="fab fa-twitter"></i></a>
+    <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareURL)}" class="btn-icon facebook" target="_blank" title="Share on Facebook"><i class="fab fa-facebook-f"></i></a>
+    <a href="https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(shareURL)}" class="btn-icon linkedin" target="_blank" title="Share on LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+    <a href="https://api.whatsapp.com/send?text=${encodeURIComponent(shareURL)}" class="btn-icon whatsapp" target="_blank" title="Share on WhatsApp"><i class="fab fa-whatsapp"></i></a>
+    <a href="mailto:?subject=Check%20this%20post&body=${encodeURIComponent(shareURL)}" class="btn-icon email" title="Share via Email"><i class="fas fa-envelope"></i></a>
+  `;
+  document.getElementById('shareButtons').innerHTML = shareHTML;
+</script>
 
     </div> <!-- closes post-content -->
   </div> <!-- closes main container -->
