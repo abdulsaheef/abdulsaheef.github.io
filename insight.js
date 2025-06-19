@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
         slide.innerHTML = `
           <div class="insight-card">
             <h3>${post.title}</h3>
-            <a href="${post.link}" target="_blank">Open</a>
+            <a href="${post.link}" target="_blank" rel="noopener">Open</a>
           </div>
         `;
         wrapper.appendChild(slide);
@@ -32,5 +32,6 @@ document.addEventListener('DOMContentLoaded', () => {
           }
         }
       });
-    });
+    })
+    .catch(err => console.error('Error loading posts:', err));
 });
