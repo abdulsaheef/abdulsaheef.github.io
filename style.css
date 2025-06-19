@@ -343,24 +343,29 @@ animation: scroll-left 40s linear infinite;
   font-weight: 500;
 }
 
-.share-buttons {
+.share-buttons-icon {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 20px;
+}
+.btn-icon {
   display: flex;
   align-items: center;
-  gap: 10px;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  color: white;
+  font-size: 18px;
+  transition: transform 0.3s ease;
+  text-decoration: none;
 }
-
-.share-buttons a {
-  display: inline-block;
-  width: 32px;
-  height: 32px;
-  transition: transform 0.2s;
+.btn-icon:hover {
+  transform: scale(1.15);
 }
-
-.share-buttons a:hover {
-  transform: scale(1.1);
-}
-
-.share-buttons img {
-  width: 100%;
-  height: 100%;
-}
+.btn-icon.twitter { background: #1DA1F2; }
+.btn-icon.facebook { background: #1877F2; }
+.btn-icon.linkedin { background: #0A66C2; }
+.btn-icon.whatsapp { background: #25D366; }
+.btn-icon.email { background: #6c757d; }
