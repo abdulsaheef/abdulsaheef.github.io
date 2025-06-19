@@ -346,26 +346,46 @@ animation: scroll-left 40s linear infinite;
 .share-buttons-icon {
   display: flex;
   justify-content: center;
-  gap: 12px;
-  margin-top: 20px;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 24px;
 }
+
 .btn-icon {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 42px;
-  height: 42px;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
-  color: white;
+  border: 2px solid transparent;
+  background-color: white;
   font-size: 18px;
-  transition: transform 0.3s ease;
+  transition: transform 0.3s ease, border-color 0.3s ease;
   text-decoration: none;
 }
+
 .btn-icon:hover {
   transform: scale(1.15);
 }
-.btn-icon.twitter { background: #1DA1F2; }
-.btn-icon.facebook { background: #1877F2; }
-.btn-icon.linkedin { background: #0A66C2; }
-.btn-icon.whatsapp { background: #25D366; }
-.btn-icon.email { background: #6c757d; }
+
+.btn-icon.twitter {
+  color: #000000;
+  border-color: #000000;
+}
+.btn-icon.facebook {
+  color: #1877F2;
+  border-color: #1877F2;
+}
+.btn-icon.linkedin {
+  color: #0A66C2;
+  border-color: #0A66C2;
+}
+.btn-icon.whatsapp {
+  color: #25D366;
+  border-color: #25D366;
+}
+.btn-icon.email {
+  color: #6c757d;
+  border-color: #6c757d;
+}
