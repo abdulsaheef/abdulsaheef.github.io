@@ -1,19 +1,42 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Reset Your Password</title>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <style>
-    body {
-      font-family: sans-serif;
-      text-align: center;
-      padding: 40px;
-    }
-  </style>
+  <title>Password Recovery</title>
 </head>
 <body>
-  <h1>Password Reset</h1>
-  <p>Please check your inbox for a secure link to reset your password.</p>
+  <h2>Reset Your Password</h2>
+  <form id="recoveryForm">
+    <input type="password" name="password" placeholder="New Password" required />
+    <input type="password" name="confirm_password" placeholder="Confirm New Password" required />
+    <input type="hidden" name="token" />
+    <button type="submit">Reset Password</button>
+  </form>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get('token');
+    const form = document.getElementById("recoveryForm");
+
+    form.token.value = token;
+
+    form.addEventListener("submit", function(e) {
+      e.preventDefault();
+      const password = form.password.value;
+      const confirm = form.confirm_password.value;
+
+      if (password !== confirm) {
+        alert("❌ Passwords do not match.");
+        return;
+      }
+
+      if (password.length < 6) {
+        alert("❌ Password must be at least 6 characters.");
+        return;
+      }
+
+      alert(`✅ Password reset successful!\nToken: ${token}`);
+      // TODO: Send token + new password to backend
+    });
+  </script>
 </body>
 </html>
