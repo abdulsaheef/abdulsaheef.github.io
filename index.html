@@ -127,6 +127,16 @@
       }
     });
   </script>
-  
+  <script>
+  window.addEventListener('DOMContentLoaded', function () {
+    const hashParams = new URLSearchParams(window.location.hash.slice(1));
+    const recoveryToken = hashParams.get('recovery_token');
+
+    if (recoveryToken) {
+      // Redirect to a recovery page
+      window.location.href = `/recovery.html?token=${recoveryToken}`;
+    }
+  });
+</script>
 </body>
 </html>
