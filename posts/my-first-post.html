@@ -43,12 +43,10 @@
   <a href="mailto:?subject=Check%20this%20post&body=https://abdulsaheef.github.io/posts/post-title.html" class="btn-icon email" title="Share via Email"><i class="fas fa-envelope"></i></a>
 </div>
 
-      <div class="related-posts">
-        <h3>Recent Insights</h3>
-        <div class="related-grid" id="relatedPosts"></div>
-      </div>
-    </div>
-  </div>
+      <section class="related-posts">
+  <h3>Recent Insights</h3>
+  <div id="relatedPosts" class="related-grid"></div>
+</section>
 
   <footer>© <span id="year"></span> Saheef. All rights reserved.</footer>
 
@@ -74,5 +72,27 @@
         });
       });
   </script>
+  
+  <script>
+  fetch('/posts/posts.json')
+    .then(res => res.json())
+    .then(posts => {
+      const relatedContainer = document.getElementById('relatedPosts');
+      posts.slice(0, 5).forEach(post => {
+        const card = document.createElement('div');
+        card.className = 'insight-card';
+        card.innerHTML = `
+          <a href="${post.link}">
+            <div class="card-body">
+              <h4>${post.title}</h4>
+              <button class="open-btn">Open</button>
+            </div>
+          </a>
+        `;
+        relatedContainer.appendChild(card);
+      });
+    });
+</script>
+
 </body>
 </html>
