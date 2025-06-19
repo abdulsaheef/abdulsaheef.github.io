@@ -46,62 +46,46 @@
 </div>
 
       
+ <!-- INSIGHT Section -->
+<section id="insight" class="section">
   <div class="container">
     <h2>Insight</h2>
     <div class="swiper mySwiper">
       <div class="swiper-wrapper" id="insightCards">
-        <!-- Cards will be injected here -->
+        <!-- Cards injected via insight.js -->
       </div>
     </div>
   </div>
+</section>
 
-  <footer>© <span id="year"></span> Saheef. All rights reserved.</footer>
+<!-- FOOTER -->
+<footer>
+  © <span id="year"></span> Saheef. All rights reserved.
+</footer>
 
-  <script>
-    document.getElementById("year").textContent = new Date().getFullYear();
-    const toggle = document.getElementById('themeToggle');
-    const body = document.body;
-    if (localStorage.getItem('theme') === 'dark') { body.classList.add('dark-mode'); toggle.checked = true; }
-    toggle.addEventListener('change', () => {
-      if (toggle.checked) { body.classList.add('dark-mode'); localStorage.setItem('theme', 'dark'); }
-      else { body.classList.remove('dark-mode'); localStorage.setItem('theme', 'light'); }
-    });
-    fetch('/posts.json')
-      .then(res => res.json())
-      .then(posts => {
-        const related = document.getElementById('relatedPosts');
-        const current = 'post-title.html';
-        posts.filter(p => p.link !== current).slice(0, 3).forEach(post => {
-          const el = document.createElement('a');
-          el.href = post.link;
-          el.textContent = post.title;
-          related.appendChild(el);
-        });
-      });
-  </script>
-  
-  <script>
-  fetch('/posts/posts.json')
-    .then(res => res.json())
-    .then(posts => {
-      const relatedContainer = document.getElementById('relatedPosts');
-      posts.slice(0, 5).forEach(post => {
-        const card = document.createElement('div');
-        card.className = 'insight-card';
-        card.innerHTML = `
-          <a href="${post.link}">
-            <div class="card-body">
-              <h4>${post.title}</h4>
-              <button class="open-btn">Open</button>
-            </div>
-          </a>
-        `;
-        relatedContainer.appendChild(card);
-      });
-    });
+<!-- JS Scripts -->
+<script>
+  document.getElementById("year").textContent = new Date().getFullYear();
+  const toggle = document.getElementById('themeToggle');
+  const body = document.body;
+
+  // Dark mode toggle
+  if (localStorage.getItem('theme') === 'dark') {
+    body.classList.add('dark-mode');
+    toggle.checked = true;
+  }
+  toggle.addEventListener('change', () => {
+    if (toggle.checked) {
+      body.classList.add('dark-mode');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      body.classList.remove('dark-mode');
+      localStorage.setItem('theme', 'light');
+    }
+  });
 </script>
 
-<!-- Swiper JS -->
+<!-- Swiper + Insight Logic -->
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 <script src="/insight.js"></script>
 </body>
