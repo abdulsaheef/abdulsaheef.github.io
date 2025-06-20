@@ -4,31 +4,96 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Solar System Explorer</title>
-  <link rel="stylesheet" href="style.css" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body, html { width: 100%; height: 100%; overflow: hidden; font-family: sans-serif; }
+    #canvas-container { width: 100vw; height: 100vh; display: block; }
+  </style>
 </head>
 <body>
-  <!-- WebGL container -->
-<div id="canvas-container" style="width: 100vw; height: 100vh; overflow: hidden;"></div>
+  <div id="canvas-container"></div>
 
-<script type="module">
-  import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.148.0/build/three.module.js";
-  import { OrbitControls } from "https://cdn.jsdelivr.net/npm/three@0.148.0/examples/jsm/controls/OrbitControls.js";
-  import { EffectComposer } from "https://cdn.jsdelivr.net/npm/three@0.148.0/examples/jsm/postprocessing/EffectComposer.js";
-  import { RenderPass } from "https://cdn.jsdelivr.net/npm/three@0.148.0/examples/jsm/postprocessing/RenderPass.js";
-  import { UnrealBloomPass } from "https://cdn.jsdelivr.net/npm/three@0.148.0/examples/jsm/postprocessing/UnrealBloomPass.js";
+  <!-- ✅ Use module script with direct Three.js imports -->
+  <script type="module">
+    import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.148.0/build/three.module.js";
+    import { OrbitControls } from "https://cdn.jsdelivr.net/npm/three@0.148.0/examples/jsm/controls/OrbitControls.js";
+    import { EffectComposer } from "https://cdn.jsdelivr.net/npm/three@0.148.0/examples/jsm/postprocessing/EffectComposer.js";
+    import { RenderPass } from "https://cdn.jsdelivr.net/npm/three@0.148.0/examples/jsm/postprocessing/RenderPass.js";
+    import { UnrealBloomPass } from "https://cdn.jsdelivr.net/npm/three@0.148.0/examples/jsm/postprocessing/UnrealBloomPass.js";
 
-  // ⬇️ Your main.js logic, pasted directly here
-  const container = document.getElementById('canvas-container');
-  const scene = new THREE.Scene();
-  const renderer = new THREE.WebGLRenderer({ antialias:true });
-  renderer.setSize(container.clientWidth, container.clientHeight);
-  container.appendChild(renderer.domElement);
+    const container = document.getElementById('canvas-container');
+    const scene = new THREE.Scene();
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    container.appendChild(renderer.domElement);
 
-  const camera = new THREE.PerspectiveCamera(45, container.clientWidth/container.clientHeight, 0.1, 10000);
-  camera.position.set(0, 200, 500);
-  const controls = new OrbitControls(camera, renderer.domElement);
+    const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 10000);
+    camera.position.set(0, 200, 500);
+    const controls = new OrbitControls(camera, renderer.domElement);
 
-  // ... Continue rest of your code ...
-</script>
+    // Stars
+    const starCount = 20000;
+    const starPositions = new Float32Array(starCount * 3);
+    for (let i = 0; i < starCount * 3; i++) {
+      starPositions[i] = (Math.random() - 0.5) * 6000;
+    }
+    const starsGeom = new THREE.BufferGeometry();
+    starsGeom.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
+    const starField = new THREE.Points(starsGeom, new THREE.PointsMaterial({ color: 0xffffff, size: 1 }));
+    scene.add(starField);
+
+    // Light
+    const sunLight = new THREE.PointLight(0xffffff, 2, 0);
+    scene.add(sunLight);
+
+    // Bloom
+    const composer = new EffectComposer(renderer);
+    composer.addPass(new RenderPass(scene, camera));
+    composer.addPass(new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.4, 0.4, 0.85));
+
+    // Celestial Bodies
+    const textureLoader = new THREE.TextureLoader();
+    const bodies = [
+      { name: 'Sun', size: 50, texture: 'assets/textures/sun.jpg', distance: 0, period: 0 },
+      { name: 'Earth', size: 6, texture: 'assets/textures/earth.jpg', distance: 150, period: 365 },
+      { name: 'Moon', size: 1.6, texture: 'assets/textures/moon.jpg', distance: 160, period: 27 },
+      { name: 'Mars', size: 3.2, texture: 'assets/textures/mars.jpg', distance: 228, period: 687 },
+    ];
+    const objects = {};
+    bodies.forEach(body => {
+      const mat = new THREE.MeshStandardMaterial({ map: textureLoader.load(body.texture) });
+      const mesh = new THREE.Mesh(new THREE.SphereGeometry(body.size, 32, 32), mat);
+      mesh.position.set(body.distance, 0, 0);
+      scene.add(mesh);
+      objects[body.name] = { mesh, ...body };
+    });
+
+    // Animate
+    const clock = new THREE.Clock();
+    function animate() {
+      const t = clock.getElapsedTime() / 5;
+      bodies.forEach(b => {
+        if (b.period) {
+          const angle = t * (2 * Math.PI / b.period);
+          const x = Math.cos(angle) * b.distance;
+          const z = Math.sin(angle) * b.distance;
+          objects[b.name].mesh.position.set(x, 0, z);
+        }
+      });
+      composer.render();
+      requestAnimationFrame(animate);
+    }
+    animate();
+
+    // Responsive
+    window.addEventListener('resize', () => {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      renderer.setSize(w, h);
+      composer.setSize(w, h);
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+    });
+  </script>
 </body>
 </html>
