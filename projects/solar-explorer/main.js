@@ -1,3 +1,20 @@
+window.onerror = (msg, url, line, col, error) => {
+  const pre = document.createElement('pre');
+  pre.style.position = 'fixed';
+  pre.style.top = '0';
+  pre.style.left = '0';
+  pre.style.width = '100%';
+  pre.style.maxHeight = '40vh';
+  pre.style.overflowY = 'auto';
+  pre.style.background = 'rgba(255,0,0,0.8)';
+  pre.style.color = 'white';
+  pre.style.padding = '10px';
+  pre.style.zIndex = '9999';
+  pre.textContent = 
+    `Error: ${msg}\nAt: ${url}:${line}:${col}\n${error?.stack||''}`;
+  document.body.appendChild(pre);
+};
+
 // THREE.js setup
 const container = document.getElementById('canvas-container');
 const scene = new THREE.Scene();
@@ -66,8 +83,11 @@ window.addEventListener('resize', () => {
   camera.updateProjectionMatrix();
   composer.setSize(container.clientWidth, container.clientHeight);
 });
-new THREE.TextureLoader().load(b.texture, texture => {
-  mat.map = texture;
-}, undefined, err => {
-  console.error(`Failed to load ${b.texture}`, err);
-});
+new THREE.TextureLoader().load(
+  b.texture,
+  tex => mat.map = tex,
+  undefined,
+  err => {
+    console.error(`Failed to load texture: ${b.texture}`, err);
+  }
+);
