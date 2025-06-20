@@ -10,14 +10,25 @@
   <!-- WebGL container -->
 <div id="canvas-container" style="width: 100vw; height: 100vh; overflow: hidden;"></div>
 
-<!-- 🟢 Load THREE.js libraries FIRST — without defer -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r148/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.148.0/examples/js/controls/OrbitControls.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.148.0/examples/js/postprocessing/EffectComposer.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.148.0/examples/js/postprocessing/RenderPass.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.148.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
+<script type="module">
+  import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.148.0/build/three.module.js";
+  import { OrbitControls } from "https://cdn.jsdelivr.net/npm/three@0.148.0/examples/jsm/controls/OrbitControls.js";
+  import { EffectComposer } from "https://cdn.jsdelivr.net/npm/three@0.148.0/examples/jsm/postprocessing/EffectComposer.js";
+  import { RenderPass } from "https://cdn.jsdelivr.net/npm/three@0.148.0/examples/jsm/postprocessing/RenderPass.js";
+  import { UnrealBloomPass } from "https://cdn.jsdelivr.net/npm/three@0.148.0/examples/jsm/postprocessing/UnrealBloomPass.js";
 
-<!-- 🟢 Then load your main script -->
-<script src="main.js"></script>
+  // ⬇️ Your main.js logic, pasted directly here
+  const container = document.getElementById('canvas-container');
+  const scene = new THREE.Scene();
+  const renderer = new THREE.WebGLRenderer({ antialias:true });
+  renderer.setSize(container.clientWidth, container.clientHeight);
+  container.appendChild(renderer.domElement);
+
+  const camera = new THREE.PerspectiveCamera(45, container.clientWidth/container.clientHeight, 0.1, 10000);
+  camera.position.set(0, 200, 500);
+  const controls = new OrbitControls(camera, renderer.domElement);
+
+  // ... Continue rest of your code ...
+</script>
 </body>
 </html>
