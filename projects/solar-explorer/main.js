@@ -14,9 +14,6 @@ const light = new THREE.PointLight(0xffffff, 2);
 light.position.set(0, 0, 0);
 scene.add(light);
 
-const ambient = new THREE.AmbientLight(0xffffff, 0.4);
-scene.add(ambient);
-
 // Background
 const starsTexture = new THREE.TextureLoader().load('assets/textures/stars.jpg');
 scene.background = starsTexture;
@@ -47,10 +44,6 @@ bodies.forEach(b => {
   scene.add(mesh);
   objects[b.name] = { mesh, ...b };
 });
-
-// Orbit Controls
-const controls = new THREE.OrbitControls(camera, renderer.domElement);
-controls.enableDamping = true;
 
 const clock = new THREE.Clock();
 function animate() {
