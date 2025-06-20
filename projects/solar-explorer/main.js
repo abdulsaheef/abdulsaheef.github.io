@@ -2,8 +2,8 @@ const container = document.getElementById('container');
 const scene = new THREE.Scene();
 
 const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 1, 5000);
-camera.position.set(0, 80, 250); // try lowering Z value
-camera.lookAt(0, 0, 0); // keep this
+camera.position.set(0, 80, 250);
+camera.lookAt(0, 0, 0);
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(container.clientWidth, container.clientHeight);
@@ -48,6 +48,7 @@ bodies.forEach(b => {
   objects[b.name] = { mesh, ...b };
 });
 
+// Orbit Controls
 const controls = new THREE.OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
 
@@ -64,6 +65,8 @@ function animate() {
     // Rotate on axis
     objects[b.name].mesh.rotation.y += 0.002;
   });
+
+  controls.update(); // ✅ required for damping
   renderer.render(scene, camera);
   requestAnimationFrame(animate);
 }
