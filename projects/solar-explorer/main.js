@@ -1,74 +1,65 @@
-window.onerror = (msg, url, line, col, error) => {
-  const pre = document.createElement('pre');
-  pre.style.position = 'fixed';
-  pre.style.top = '0';
-  pre.style.left = '0';
-  pre.style.width = '100%';
-  pre.style.maxHeight = '40vh';
-  pre.style.overflowY = 'auto';
-  pre.style.background = 'rgba(255,0,0,0.8)';
-  pre.style.color = 'white';
-  pre.style.padding = '10px';
-  pre.style.zIndex = '9999';
-  pre.textContent = 
-    `Error: ${msg}\nAt: ${url}:${line}:${col}\n${error?.stack||''}`;
-  document.body.appendChild(pre);
-};
-
-// THREE.js setup
-const container = document.getElementById('canvas-container');
+const container = document.getElementById('container');
 const scene = new THREE.Scene();
-const renderer = new THREE.WebGLRenderer({ antialias:true });
+const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 10000);
+camera.position.set(0, 100, 400);
+
+const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(container.clientWidth, container.clientHeight);
 container.appendChild(renderer.domElement);
 
-const camera = new THREE.PerspectiveCamera(45, container.clientWidth/container.clientHeight, 0.1, 10000);
-camera.position.set(0, 200, 500);
-const controls = new THREE.OrbitControls(camera, renderer.domElement);
-
-// Starfield background
-const starsGeom = new THREE.BufferGeometry();
-const starCount = 20000;
-const posArr = new Float32Array(starCount * 3);
-for(let i = 0; i < starCount; i++) {
-  posArr[3*i] = (Math.random() - 0.5) * 6000;
-  posArr[3*i+1] = (Math.random() - 0.5) * 6000;
-  posArr[3*i+2] = (Math.random() - 0.5) * 6000;
-}
-starsGeom.setAttribute('position', new THREE.BufferAttribute(posArr,3));
-scene.add(new THREE.Points(starsGeom, new THREE.PointsMaterial({ color:0xffffff, size:1 })));
-
-// Lighting & Bloom effect
-const sunLight = new THREE.PointLight(0xffffff, 2, 0);
-scene.add(sunLight);
+// Bloom
 const composer = new THREE.EffectComposer(renderer);
 composer.addPass(new THREE.RenderPass(scene, camera));
-composer.addPass(new THREE.UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.4, 0.4, 0.85));
+composer.addPass(new THREE.UnrealBloomPass(
+  new THREE.Vector2(container.clientWidth, container.clientHeight), 1.5, 0.4, 0.85
+));
 
-// Celestial bodies setup
-const bodies = [
-  {name:'Sun', size:50, texture:'assets/textures/sun.jpg', distance:0, period:0 },
-  {name:'Earth', size:6, texture:'assets/textures/earth.jpg', distance:150, period:365 },
-  {name:'Moon', size:1.6, texture:'assets/textures/moon.jpg', distance:160, period:27 },
-  {name:'Mars', size:3.2, texture:'assets/textures/mars.jpg', distance:228, period:687 },
+// Lighting
+const sunLight = new THREE.PointLight(0xffffff, 2, 0);
+scene.add(sunLight);
+
+// Background
+const starsTexture = new THREE.TextureLoader().load('assets/textures/stars.jpg');
+scene.background = starsTexture;
+
+// Planet data
+const planets = [
+  { name: 'Earth',   size: 6,   distance: 120, period: 365,   texture: 'earth.jpg' },
+  { name: 'Jupiter', size: 10,  distance: 200, period: 4333,  texture: 'jupiter.jpg' },
+  { name: 'Mars',    size: 3.2, distance: 160, period: 687,   texture: 'mars.jpg' },
+  { name: 'Mercury', size: 2,   distance: 60,  period: 88,    texture: 'mercury.jpg' },
+  { name: 'Moon',    size: 1.6, distance: 130, period: 27,    texture: 'moon.jpg' },
+  { name: 'Neptune', size: 7,   distance: 320, period: 60190, texture: 'neptune.jpg' },
+  { name: 'Saturn',  size: 9,   distance: 240, period: 10759, texture: 'saturn.jpg' },
+  // "stars" is background, not a planet
+  { name: 'Sun',     size: 50,  distance: 0,   period: 0,     texture: 'sun.jpg' },
+  { name: 'Uranus',  size: 7,   distance: 280, period: 30687, texture: 'uranus.jpg' },
+  { name: 'Venus',   size: 3.5, distance: 90,  period: 225,   texture: 'venus.jpg' }
 ];
+
+// Load planets
 const objects = {};
-bodies.forEach(b => {
-  const mat = new THREE.MeshStandardMaterial({ map:new THREE.TextureLoader().load(b.texture) });
-  const mesh = new THREE.Mesh(new THREE.SphereGeometry(b.size,32,32), mat);
-  mesh.position.set(b.distance || 0, 0, 0);
+const loader = new THREE.TextureLoader();
+planets.forEach(body => {
+  const texture = loader.load(`assets/textures/${body.texture}`);
+  const material = new THREE.MeshStandardMaterial({ map: texture });
+  const geometry = new THREE.SphereGeometry(body.size, 32, 32);
+  const mesh = new THREE.Mesh(geometry, material);
+  mesh.position.set(body.distance, 0, 0);
   scene.add(mesh);
-  objects[b.name] = {mesh, ...b};
+  objects[body.name] = { mesh, ...body };
 });
 
-// Animation & orbit calculations
+// Animation
 const clock = new THREE.Clock();
-function animate(){
-  const t = clock.getElapsedTime() / 5;
-  bodies.forEach(b => {
-    if(b.period){
-      const angle = t * (2*Math.PI / b.period);
-      objects[b.name].mesh.position.set(Math.cos(angle)*b.distance, 0, Math.sin(angle)*b.distance);
+function animate() {
+  const elapsed = clock.getElapsedTime() / 5;
+  planets.forEach(b => {
+    if (b.period > 0) {
+      const angle = elapsed * (2 * Math.PI / b.period);
+      const x = Math.cos(angle) * b.distance;
+      const z = Math.sin(angle) * b.distance;
+      objects[b.name].mesh.position.set(x, 0, z);
     }
   });
   composer.render();
@@ -76,7 +67,7 @@ function animate(){
 }
 animate();
 
-// Responsive handling
+// Resize
 window.addEventListener('resize', () => {
   renderer.setSize(container.clientWidth, container.clientHeight);
   camera.aspect = container.clientWidth / container.clientHeight;
