@@ -30,12 +30,6 @@ const customProjects = [
     description: "An immersive 3D space exploration demo built with Three.js.",
     link: "/projects/solar-explorer/index.html",
     github: "https://github.com/abdulsaheef/solar-system-explorer"
-  },
-  {
-    title: "AI Blog Generator",
-    description: "Generate and post blogs using AI and Netlify CMS.",
-    link: "/projects/blog-ai/index.html",
-    github: "https://github.com/abdulsaheef/blog-generator"
   }
 ];
 
