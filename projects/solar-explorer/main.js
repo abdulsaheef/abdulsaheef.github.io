@@ -18,6 +18,16 @@ composer.addPass(new THREE.UnrealBloomPass(
 // Lighting
 const sunLight = new THREE.PointLight(0xffffff, 2, 0);
 scene.add(sunLight);
+sunLight.position.set(0, 0, 0); // 👈 explicitly place it at the sun
+
+const lightHelper = new THREE.PointLightHelper(sunLight);
+scene.add(lightHelper);
+
+const debugSphere = new THREE.Mesh(
+  new THREE.SphereGeometry(10, 32, 32),
+  new THREE.MeshStandardMaterial({ color: 0xff0000 })
+);
+scene.add(debugSphere);
 
 // Background
 const starsTexture = new THREE.TextureLoader().load('assets/textures/stars.jpg');
