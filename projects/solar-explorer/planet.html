@@ -2,23 +2,103 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>View Planet</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Solar Explorer</title>
   <style>
-    body, html { margin: 0; background: black; color: white; overflow: hidden; }
-    #container { width: 100vw; height: 100vh; }
-    .back-btn {
-      position: absolute; top: 10px; left: 10px; z-index: 10;
-      background: rgba(0,0,0,0.6); color: white; padding: 10px 15px;
-      text-decoration: none; border-radius: 5px;
+    body { margin: 0; }
+    canvas { display: block; }
+    #planetInfo {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background: rgba(0, 0, 0, 0.7);
+      color: white;
+      padding: 10px;
+      border-radius: 5px;
+      font-family: Arial, sans-serif;
+    }
+    #planetInfo h2 {
+      margin: 0;
+      font-size: 1.5em;
+    }
+    #planetInfo p {
+      margin: 5px 0;
     }
   </style>
 </head>
 <body>
-  <a href="index.html" class="back-btn">← Back to Planets</a>
-  <div id="container"></div>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.150.1/build/three.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.150.1/examples/js/controls/OrbitControls.js"></script>
-  <script src="js/main.js"></script>
+  <div id="planetInfo">
+    <h2>Planet Info</h2>
+    <p id="planetName">Select a planet to view details.</p>
+    <p id="planetDistance">Distance: N/A</p>
+    <p id="planetRadius">Radius: N/A</p>
+  </div>
+  <script src="assets/three.min.js"></script>
+  <script>
+    // Scene setup
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+
+    // Lighting
+    const light = new THREE.PointLight(0xffffff, 1, 100);
+    light.position.set(0, 0, 0);
+    scene.add(light);
+
+    // Planet data
+    const planets = {
+      mercury: { radius: 0.38, distance: 0.39, texture: 'textures/mercury.jpg' },
+      venus: { radius: 0.95, distance: 0.72, texture: 'textures/venus.jpg' },
+      earth: { radius: 1, distance: 1, texture: 'textures/earth.jpg' },
+      mars: { radius: 0.53, distance: 1.52, texture: 'textures/mars.jpg' },
+      jupiter: { radius: 11.21, distance: 5.2, texture: 'textures/jupiter.jpg' },
+      saturn: { radius: 9.45, distance: 9.58, texture: 'textures/saturn.jpg' },
+      uranus: { radius: 4.01, distance: 19.18, texture: 'textures/uranus.jpg' },
+      neptune: { radius: 3.88, distance: 30.07, texture: 'textures/neptune.jpg' }
+    };
+
+    // Load planet textures
+    const textureLoader = new THREE.TextureLoader();
+    const planetMeshes = {};
+    for (const [name, data] of Object.entries(planets)) {
+      const texture = textureLoader.load(data.texture);
+      const geometry = new THREE.SphereGeometry(data.radius, 32, 32);
+      const material = new THREE.MeshBasicMaterial({ map: texture });
+      const mesh = new THREE.Mesh(geometry, material);
+      mesh.position.set(data.distance, 0, 0);
+      scene.add(mesh);
+      planetMeshes[name] = mesh;
+    }
+
+    // Camera position
+    camera.position.z = 50;
+
+    // Animation loop
+    function animate() {
+      requestAnimationFrame(animate);
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    // Handle planet selection
+    const params = new URLSearchParams(window.location.search);
+    const selectedPlanet = params.get('planet');
+    if (selectedPlanet && planetMeshes[selectedPlanet]) {
+      const planet = planetMeshes[selectedPlanet];
+      camera.position.set(planet.position.x + 5, 0, 0);
+      document.getElementById('planetName').textContent = `Planet: ${selectedPlanet.charAt(0).toUpperCase() + selectedPlanet.slice(1)}`;
+      document.getElementById('planetDistance').textContent = `Distance from Sun: ${planets[selectedPlanet].distance} AU`;
+      document.getElementById('planetRadius').textContent = `Radius: ${planets[selectedPlanet].radius} Earth radii`;
+    }
+
+    // Handle window resizing
+    window.addEventListener('resize', () => {
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+    });
+  </script>
 </body>
 </html>
