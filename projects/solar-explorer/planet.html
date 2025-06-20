@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Solar Explorer</title>
+  <title>Planet Viewer</title>
   <style>
     body { margin: 0; }
     canvas { display: block; }
-    #planetInfo {
+    #backButton {
       position: absolute;
       top: 20px;
       left: 20px;
@@ -16,23 +16,15 @@
       padding: 10px;
       border-radius: 5px;
       font-family: Arial, sans-serif;
+      text-decoration: none;
     }
-    #planetInfo h2 {
-      margin: 0;
-      font-size: 1.5em;
-    }
-    #planetInfo p {
-      margin: 5px 0;
+    #backButton:hover {
+      background: rgba(0, 0, 0, 0.9);
     }
   </style>
 </head>
 <body>
-  <div id="planetInfo">
-    <h2>Planet Info</h2>
-    <p id="planetName">Select a planet to view details.</p>
-    <p id="planetDistance">Distance: N/A</p>
-    <p id="planetRadius">Radius: N/A</p>
-  </div>
+  <a id="backButton" href="index.html">Back to Planets</a>
   <script src="assets/three.min.js"></script>
   <script>
     // Scene setup
@@ -47,51 +39,26 @@
     light.position.set(0, 0, 0);
     scene.add(light);
 
-    // Planet data
-    const planets = {
-      mercury: { radius: 0.38, distance: 0.39, texture: 'textures/mercury.jpg' },
-      venus: { radius: 0.95, distance: 0.72, texture: 'textures/venus.jpg' },
-      earth: { radius: 1, distance: 1, texture: 'textures/earth.jpg' },
-      mars: { radius: 0.53, distance: 1.52, texture: 'textures/mars.jpg' },
-      jupiter: { radius: 11.21, distance: 5.2, texture: 'textures/jupiter.jpg' },
-      saturn: { radius: 9.45, distance: 9.58, texture: 'textures/saturn.jpg' },
-      uranus: { radius: 4.01, distance: 19.18, texture: 'textures/uranus.jpg' },
-      neptune: { radius: 3.88, distance: 30.07, texture: 'textures/neptune.jpg' }
-    };
-
-    // Load planet textures
+    // Load planet texture
+    const params = new URLSearchParams(window.location.search);
+    const planetName = params.get('planet');
     const textureLoader = new THREE.TextureLoader();
-    const planetMeshes = {};
-    for (const [name, data] of Object.entries(planets)) {
-      const texture = textureLoader.load(data.texture);
-      const geometry = new THREE.SphereGeometry(data.radius, 32, 32);
-      const material = new THREE.MeshBasicMaterial({ map: texture });
-      const mesh = new THREE.Mesh(geometry, material);
-      mesh.position.set(data.distance, 0, 0);
-      scene.add(mesh);
-      planetMeshes[name] = mesh;
-    }
+    const texture = textureLoader.load(`textures/${planetName}.jpg`);
+    const geometry = new THREE.SphereGeometry(1, 32, 32);
+    const material = new THREE.MeshBasicMaterial({ map: texture });
+    const planet = new THREE.Mesh(geometry, material);
+    scene.add(planet);
 
     // Camera position
-    camera.position.z = 50;
+    camera.position.z = 5;
 
     // Animation loop
     function animate() {
       requestAnimationFrame(animate);
+      planet.rotation.y += 0.01;
       renderer.render(scene, camera);
     }
     animate();
-
-    // Handle planet selection
-    const params = new URLSearchParams(window.location.search);
-    const selectedPlanet = params.get('planet');
-    if (selectedPlanet && planetMeshes[selectedPlanet]) {
-      const planet = planetMeshes[selectedPlanet];
-      camera.position.set(planet.position.x + 5, 0, 0);
-      document.getElementById('planetName').textContent = `Planet: ${selectedPlanet.charAt(0).toUpperCase() + selectedPlanet.slice(1)}`;
-      document.getElementById('planetDistance').textContent = `Distance from Sun: ${planets[selectedPlanet].distance} AU`;
-      document.getElementById('planetRadius').textContent = `Radius: ${planets[selectedPlanet].radius} Earth radii`;
-    }
 
     // Handle window resizing
     window.addEventListener('resize', () => {
