@@ -2,8 +2,8 @@ const container = document.getElementById('container');
 const scene = new THREE.Scene();
 
 const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 1, 5000);
-camera.position.set(0, 100, 400);
-camera.lookAt(0, 0, 0);
+camera.position.set(0, 80, 250); // try lowering Z value
+camera.lookAt(0, 0, 0); // keep this
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(container.clientWidth, container.clientHeight);
@@ -13,6 +13,9 @@ container.appendChild(renderer.domElement);
 const light = new THREE.PointLight(0xffffff, 2);
 light.position.set(0, 0, 0);
 scene.add(light);
+
+const ambient = new THREE.AmbientLight(0xffffff, 0.4);
+scene.add(ambient);
 
 // Background
 const starsTexture = new THREE.TextureLoader().load('assets/textures/stars.jpg');
@@ -44,6 +47,9 @@ bodies.forEach(b => {
   scene.add(mesh);
   objects[b.name] = { mesh, ...b };
 });
+
+const controls = new THREE.OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
 
 const clock = new THREE.Clock();
 function animate() {
