@@ -39,8 +39,7 @@
     scene.add(light);
 
     const loader = new THREE.TextureLoader();
-    loader.load(
-      `textures/${planetName}.jpg`,
+    loader.load(`assets/textures/${planetName}.jpg`,
       texture => {
         const geometry = new THREE.SphereGeometry(1, 64, 64);
         const material = new THREE.MeshStandardMaterial({ map: texture });
