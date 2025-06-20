@@ -26,46 +26,28 @@
 <body>
   <a id="backButton" href="index.html">Back to Planets</a>
   <script src="assets/three.min.js"></script>
-  <script>
-    // Scene setup
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    const renderer = new THREE.WebGLRenderer();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    document.body.appendChild(renderer.domElement);
+  <script src="https://cdn.jsdelivr.net/npm/three@0.150.1/build/three.min.js"></script>
+<script>
+  console.log("🧱 Minimal test starting...");
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+  const renderer = new THREE.WebGLRenderer();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  document.body.appendChild(renderer.domElement);
 
-    // Lighting
-    const light = new THREE.PointLight(0xffffff, 1, 100);
-    light.position.set(0, 0, 0);
-    scene.add(light);
+  const geometry = new THREE.BoxGeometry();
+  const material = new THREE.MeshBasicMaterial({ color: 0xaa00aa });
+  const cube = new THREE.Mesh(geometry, material);
+  scene.add(cube);
+  camera.position.z = 5;
 
-    // Load planet texture
-    const params = new URLSearchParams(window.location.search);
-    const planetName = params.get('planet');
-    const textureLoader = new THREE.TextureLoader();
-    const texture = textureLoader.load(`textures/${planetName}.jpg`);
-    const geometry = new THREE.SphereGeometry(1, 32, 32);
-    const material = new THREE.MeshBasicMaterial({ map: texture });
-    const planet = new THREE.Mesh(geometry, material);
-    scene.add(planet);
-
-    // Camera position
-    camera.position.z = 5;
-
-    // Animation loop
-    function animate() {
-      requestAnimationFrame(animate);
-      planet.rotation.y += 0.01;
-      renderer.render(scene, camera);
-    }
-    animate();
-
-    // Handle window resizing
-    window.addEventListener('resize', () => {
-      renderer.setSize(window.innerWidth, window.innerHeight);
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-    });
-  </script>
+  function animate() {
+    requestAnimationFrame(animate);
+    cube.rotation.x += 0.01;
+    cube.rotation.y += 0.01;
+    renderer.render(scene, camera);
+  }
+  animate();
+</script>
 </body>
 </html>
