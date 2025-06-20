@@ -22,3 +22,13 @@ project.innerHTML = `
     container.innerHTML = "<p>Could not load projects.</p>";
     console.error(err);
   });
+  
+  const projectList = document.getElementById('project-list');
+const card = document.createElement('div');
+card.className = 'project-card';
+card.innerHTML = `
+  <h3>Solar System Explorer</h3>
+  <p>An immersive 3D space exploration demo built with Three.js.</p>
+  <a href="projects/solar-explorer/" target="_blank" class="btn">Launch Explorer</a>
+`;
+projectList.appendChild(card);
