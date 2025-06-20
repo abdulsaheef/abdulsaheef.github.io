@@ -10,34 +10,37 @@ renderer.setSize(container.clientWidth, container.clientHeight);
 container.appendChild(renderer.domElement);
 
 // Lighting
-const ambient = new THREE.AmbientLight(0xffffff, 0.8);
-scene.add(ambient);
-
-const light = new THREE.PointLight(0xffffff, 3);
+const light = new THREE.PointLight(0xffffff, 2);
 light.position.set(0, 0, 0);
 scene.add(light);
 
-// Background color instead of stars texture for simplicity
-scene.background = new THREE.Color(0x000000);
+const ambient = new THREE.AmbientLight(0xffffff, 0.4);
+scene.add(ambient);
 
-// Celestial Bodies - colored spheres for debug
+// Background
+const starsTexture = new THREE.TextureLoader().load('assets/textures/stars.jpg');
+scene.background = starsTexture;
+
+// Celestial Bodies
 const bodies = [
-  { name: 'Sun',     size: 50,  distance: 0,   period: 0,     color: 0xffff00 }, // yellow
-  { name: 'Earth',   size: 6,   distance: 120, period: 365,   color: 0x0000ff }, // blue
-  { name: 'Moon',    size: 1.6, distance: 130, period: 27,    color: 0x888888 }, // grey
-  { name: 'Mars',    size: 3.2, distance: 160, period: 687,   color: 0xff0000 }, // red
-  { name: 'Mercury', size: 2,   distance: 60,  period: 88,    color: 0xaaaaaa }, // light grey
-  { name: 'Venus',   size: 3.5, distance: 90,  period: 225,   color: 0xffa500 }, // orange
-  { name: 'Jupiter', size: 10,  distance: 200, period: 4333,  color: 0xffd700 }, // gold
-  { name: 'Saturn',  size: 9,   distance: 240, period: 10759, color: 0xffe4b5 }, // light gold
-  { name: 'Uranus',  size: 7,   distance: 280, period: 30687, color: 0x00ffff }, // cyan
-  { name: 'Neptune', size: 7,   distance: 320, period: 60190, color: 0x00008b }  // dark blue
+  { name: 'Sun',     size: 50,  distance: 0,   period: 0,     texture: 'sun.jpg' },
+  { name: 'Earth',   size: 6,   distance: 120, period: 365,   texture: 'earth.jpg' },
+  { name: 'Moon',    size: 1.6, distance: 130, period: 27,    texture: 'moon.jpg' },
+  { name: 'Mars',    size: 3.2, distance: 160, period: 687,   texture: 'mars.jpg' },
+  { name: 'Mercury', size: 2,   distance: 60,  period: 88,    texture: 'mercury.jpg' },
+  { name: 'Venus',   size: 3.5, distance: 90,  period: 225,   texture: 'venus.jpg' },
+  { name: 'Jupiter', size: 10,  distance: 200, period: 4333,  texture: 'jupiter.jpg' },
+  { name: 'Saturn',  size: 9,   distance: 240, period: 10759, texture: 'saturn.jpg' },
+  { name: 'Uranus',  size: 7,   distance: 280, period: 30687, texture: 'uranus.jpg' },
+  { name: 'Neptune', size: 7,   distance: 320, period: 60190, texture: 'neptune.jpg' }
 ];
 
+const loader = new THREE.TextureLoader();
 const objects = {};
 
 bodies.forEach(b => {
-  const material = new THREE.MeshStandardMaterial({ color: b.color });
+  const texture = loader.load('assets/textures/' + b.texture);
+  const material = new THREE.MeshStandardMaterial({ map: texture });
   const geometry = new THREE.SphereGeometry(b.size, 32, 32);
   const mesh = new THREE.Mesh(geometry, material);
   mesh.position.set(b.distance, 0, 0);
@@ -59,14 +62,17 @@ function animate() {
       const z = Math.sin(angle) * b.distance;
       objects[b.name].mesh.position.set(x, 0, z);
     }
+    // Rotate on axis
     objects[b.name].mesh.rotation.y += 0.002;
   });
+
   controls.update();
   renderer.render(scene, camera);
   requestAnimationFrame(animate);
 }
 animate();
 
+// Responsive handling
 window.addEventListener('resize', () => {
   camera.aspect = container.clientWidth / container.clientHeight;
   camera.updateProjectionMatrix();
