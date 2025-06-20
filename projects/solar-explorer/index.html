@@ -1,128 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Solar System Explorer - Flat Demo</title>
+  <meta charset="UTF-8">
+  <title>Solar Explorer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
-    body, html { margin: 0; overflow: hidden; background: #000; color: #eee; font-family: sans-serif; }
-    #container { width: 100vw; height: 100vh; display: block; position: relative; }
-    .label {
-      position: absolute;
-      color: #fff;
-      font-size: 12px;
-      pointer-events: none;
-      user-select: none;
-      white-space: nowrap;
-      text-shadow: 0 0 5px black;
+    body { margin: 0; background: black; color: white; font-family: sans-serif; }
+    h1 { text-align: center; margin: 1em 0; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+      gap: 20px;
+      padding: 20px;
+      max-width: 900px;
+      margin: auto;
+    }
+    .planet {
+      text-align: center;
+      cursor: pointer;
+    }
+    .planet img {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      object-fit: cover;
     }
   </style>
 </head>
 <body>
-  <div id="container" style="width: 100vw; height: 100vh;"></div>
-
-  <script src="https://cdn.jsdelivr.net/npm/three@0.150.1/build/three.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.150.1/examples/js/controls/OrbitControls.js"></script>
-
-  <script>
-    const container = document.getElementById('container');
-    const scene = new THREE.Scene();
-
-    const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 1, 5000);
-    camera.position.set(0, 150, 400);
-    camera.lookAt(0, 0, 0);
-
-    const renderer = new THREE.WebGLRenderer({ antialias: true });
-    renderer.setSize(container.clientWidth, container.clientHeight);
-    container.appendChild(renderer.domElement);
-
-    // Lighting
-    const ambient = new THREE.AmbientLight(0xffffff, 0.6);
-    scene.add(ambient);
-
-    const sunLight = new THREE.PointLight(0xffffff, 2, 0);
-    sunLight.position.set(0, 0, 0);
-    scene.add(sunLight);
-
-    // Background black
-    scene.background = new THREE.Color(0x000000);
-
-    // Bodies with basic colors (replace with textures if you want)
-    const bodies = [
-      { name: 'Sun',     size: 50,  distance: 0,   period: 0,     color: 0xffff00 },
-      { name: 'Mercury', size: 2,   distance: 60,  period: 88,    color: 0xaaaaaa },
-      { name: 'Venus',   size: 3.5, distance: 90,  period: 225,   color: 0xffa500 },
-      { name: 'Earth',   size: 6,   distance: 120, period: 365,   color: 0x0000ff },
-      { name: 'Moon',    size: 1.6, distance: 130, period: 27,    color: 0x888888 },
-      { name: 'Mars',    size: 3.2, distance: 160, period: 687,   color: 0xff0000 },
-      { name: 'Jupiter', size: 10,  distance: 200, period: 4333,  color: 0xffd700 },
-      { name: 'Saturn',  size: 9,   distance: 240, period: 10759, color: 0xffe4b5 },
-      { name: 'Uranus',  size: 7,   distance: 280, period: 30687, color: 0x00ffff },
-      { name: 'Neptune', size: 7,   distance: 320, period: 60190, color: 0x00008b }
-    ];
-
-    const objects = {};
-    const labels = {};
-
-    // Create spheres and labels
-    bodies.forEach(b => {
-      const mat = new THREE.MeshStandardMaterial({ color: b.color });
-      const geo = new THREE.SphereGeometry(b.size, 32, 32);
-      const mesh = new THREE.Mesh(geo, mat);
-      mesh.position.set(b.distance, 0, 0);
-      scene.add(mesh);
-      objects[b.name] = mesh;
-
-      // Create label DOM elements
-      const label = document.createElement('div');
-      label.className = 'label';
-      label.textContent = b.name;
-      container.appendChild(label);
-      labels[b.name] = label;
-    });
-
-    // Orbit Controls
-    const controls = new THREE.OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = true;
-
-    const clock = new THREE.Clock();
-
-    function animate() {
-      const elapsed = clock.getElapsedTime() / 5;
-
-      bodies.forEach(b => {
-        if (b.period > 0) {
-          const angle = (elapsed * 2 * Math.PI) / b.period;
-          const x = Math.cos(angle) * b.distance;
-          const z = Math.sin(angle) * b.distance;
-          objects[b.name].position.set(x, 0, z);
-        }
-        objects[b.name].rotation.y += 0.002;
-
-        // Update label position
-        const vector = new THREE.Vector3();
-        vector.copy(objects[b.name].position);
-        vector.project(camera);
-
-        const x = (vector.x * 0.5 + 0.5) * container.clientWidth;
-        const y = ( -vector.y * 0.5 + 0.5) * container.clientHeight;
-
-        labels[b.name].style.transform = `translate(-50%, -50%) translate(${x}px,${y}px)`;
-        labels[b.name].style.zIndex = (1 - vector.z) * 100000 | 0;
-      });
-
-      controls.update();
-      renderer.render(scene, camera);
-      requestAnimationFrame(animate);
-    }
-
-    animate();
-
-    window.addEventListener('resize', () => {
-      camera.aspect = container.clientWidth / container.clientHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(container.clientWidth, container.clientHeight);
-    });
-  </script>
+  <h1>Solar Explorer</h1>
+  <div class="grid">
+    <div class="planet"><a href="planet.html?planet=sun"><img src="assets/textures/sun.jpg"><br>Sun</a></div>
+    <div class="planet"><a href="planet.html?planet=mercury"><img src="assets/textures/mercury.jpg"><br>Mercury</a></div>
+    <div class="planet"><a href="planet.html?planet=venus"><img src="assets/textures/venus.jpg"><br>Venus</a></div>
+    <div class="planet"><a href="planet.html?planet=earth"><img src="assets/textures/earth.jpg"><br>Earth</a></div>
+    <div class="planet"><a href="planet.html?planet=moon"><img src="assets/textures/moon.jpg"><br>Moon</a></div>
+    <div class="planet"><a href="planet.html?planet=mars"><img src="assets/textures/mars.jpg"><br>Mars</a></div>
+    <div class="planet"><a href="planet.html?planet=jupiter"><img src="assets/textures/jupiter.jpg"><br>Jupiter</a></div>
+    <div class="planet"><a href="planet.html?planet=saturn"><img src="assets/textures/saturn.jpg"><br>Saturn</a></div>
+    <div class="planet"><a href="planet.html?planet=uranus"><img src="assets/textures/uranus.jpg"><br>Uranus</a></div>
+    <div class="planet"><a href="planet.html?planet=neptune"><img src="assets/textures/neptune.jpg"><br>Neptune</a></div>
+  </div>
 </body>
 </html>
