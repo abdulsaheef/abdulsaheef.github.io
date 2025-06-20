@@ -83,11 +83,3 @@ window.addEventListener('resize', () => {
   camera.updateProjectionMatrix();
   composer.setSize(container.clientWidth, container.clientHeight);
 });
-new THREE.TextureLoader().load(
-  b.texture,
-  tex => mat.map = tex,
-  undefined,
-  err => {
-    console.error(`Failed to load texture: ${b.texture}`, err);
-  }
-);
