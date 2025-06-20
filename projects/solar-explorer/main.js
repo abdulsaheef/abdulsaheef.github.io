@@ -73,7 +73,7 @@ function animate() {
       objects[b.name].mesh.position.set(x, 0, z);
     }
   });
-  composer.render();
+  composer.render(scene, camera);
   requestAnimationFrame(animate);
 }
 animate();
