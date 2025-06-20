@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Planet Viewer</title>
   <style>
-    body { margin: 0; }
+    body { margin: 0; overflow: hidden; }
     canvas { display: block; }
     #backButton {
       position: absolute;
@@ -13,41 +13,58 @@
       left: 20px;
       background: rgba(0, 0, 0, 0.7);
       color: white;
-      padding: 10px;
-      border-radius: 5px;
-      font-family: Arial, sans-serif;
+      padding: 10px 14px;
+      border-radius: 6px;
       text-decoration: none;
-    }
-    #backButton:hover {
-      background: rgba(0, 0, 0, 0.9);
+      font-family: sans-serif;
     }
   </style>
 </head>
 <body>
-  <a id="backButton" href="index.html">Back to Planets</a>
-  <script src="assets/three.min.js"></script>
+  <a id="backButton" href="index.html">← Back to Planets</a>
   <script src="https://cdn.jsdelivr.net/npm/three@0.150.1/build/three.min.js"></script>
-<script>
-  console.log("🧱 Minimal test starting...");
-  const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
-  const renderer = new THREE.WebGLRenderer();
-  renderer.setSize(window.innerWidth, window.innerHeight);
-  document.body.appendChild(renderer.domElement);
+  <script>
+    const planetName = new URLSearchParams(window.location.search).get('planet') || 'earth';
 
-  const geometry = new THREE.BoxGeometry();
-  const material = new THREE.MeshBasicMaterial({ color: 0xaa00aa });
-  const cube = new THREE.Mesh(geometry, material);
-  scene.add(cube);
-  camera.position.z = 5;
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(70, window.innerWidth/window.innerHeight, 0.1, 1000);
+    camera.position.z = 3;
 
-  function animate() {
-    requestAnimationFrame(animate);
-    cube.rotation.x += 0.01;
-    cube.rotation.y += 0.01;
-    renderer.render(scene, camera);
-  }
-  animate();
-</script>
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+
+    const light = new THREE.PointLight(0xffffff, 1);
+    light.position.set(5, 5, 5);
+    scene.add(light);
+
+    const loader = new THREE.TextureLoader();
+    loader.load(
+      `textures/${planetName}.jpg`,
+      texture => {
+        const geometry = new THREE.SphereGeometry(1, 64, 64);
+        const material = new THREE.MeshStandardMaterial({ map: texture });
+        const sphere = new THREE.Mesh(geometry, material);
+        scene.add(sphere);
+
+        function animate() {
+          requestAnimationFrame(animate);
+          sphere.rotation.y += 0.003;
+          renderer.render(scene, camera);
+        }
+        animate();
+      },
+      undefined,
+      err => {
+        console.error(`❌ Failed to load texture: textures/${planetName}.jpg`, err);
+      }
+    );
+
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+  </script>
 </body>
 </html>
