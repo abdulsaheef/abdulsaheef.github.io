@@ -1,15 +1,24 @@
-const compass = document.getElementById('compass');
-const headingText = document.getElementById('heading');
+const dial = document.getElementById('dial');
+const needle = document.getElementById('needle');
+const numeric = document.getElementById('numeric');
+const cardinal = document.getElementById('cardinal');
+
+function updateCompass(alpha) {
+  const rotation = 360 - alpha;
+
+  dial.style.transform = `rotate(${rotation}deg)`;
+  needle.style.transform = `rotate(${rotation}deg)`;
+
+  const deg = Math.round(alpha);
+  numeric.textContent = `${deg}°`;
+
+  const directions = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW', 'N'];
+  cardinal.textContent = directions[Math.round(deg / 45)];
+}
 
 function handleOrientation(event) {
-  const heading = event.alpha;
-
-  if (typeof heading === 'number') {
-    const rotation = 360 - heading;
-    compass.style.transform = `rotate(${rotation}deg)`;
-    headingText.textContent = `${Math.round(heading)}°`;
-  } else {
-    headingText.textContent = 'Compass not supported';
+  if (event.alpha !== null) {
+    updateCompass(event.alpha);
   }
 }
 
@@ -18,43 +27,20 @@ function enableCompass() {
     typeof DeviceOrientationEvent !== 'undefined' &&
     typeof DeviceOrientationEvent.requestPermission === 'function'
   ) {
-    // iOS 13+ permission flow
     DeviceOrientationEvent.requestPermission()
-      .then(permissionState => {
-        if (permissionState === 'granted') {
+      .then(permission => {
+        if (permission === 'granted') {
           window.addEventListener('deviceorientation', handleOrientation, true);
         } else {
-          headingText.textContent = 'Permission denied';
+          numeric.textContent = 'Denied';
         }
       })
       .catch(() => {
-        headingText.textContent = 'Permission error';
+        numeric.textContent = 'Error';
       });
   } else {
-    // Non-iOS devices
     window.addEventListener('deviceorientation', handleOrientation, true);
   }
 }
 
-// Ask permission when user taps the screen
 document.body.addEventListener('click', enableCompass, { once: true });
-
-const needle = document.getElementById('needle');
-const numeric = document.getElementById('numeric');
-const cardinal = document.getElementById('cardinal');
-
-function handleOrientation(e) {
-  const h = e.alpha;
-  if (h == null) return;
-
-  const rot = 360 - h;
-  dial.style.transform = `rotate(${rot}deg)`;
-  needle.style.transform = `rotate(${rot}deg)`;
-
-  const rounded = Math.round(h);
-  numeric.textContent = `${rounded}°`;
-  
-  const dirs = ['N','NE','E','SE','S','SW','W','NW','N'];
-  const idx = Math.round(rounded / 45);
-  cardinal.textContent = dirs[idx];
-}
