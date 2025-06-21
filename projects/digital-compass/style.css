@@ -31,7 +31,6 @@ body {
   position: relative;
   width: 350px;
   height: 350px;
-  margin-top: 80px; /* push down so banner doesn't overlap */
 }
 
 #dial, #needle {
@@ -61,7 +60,7 @@ body {
 
 .cardinal-display {
   position: absolute;
-  bottom: -20px;
+  bottom: -20px;  /* moved 2x lower as requested */
   left: 50%;
   transform: translateX(-50%);
   font-size: 20px;
@@ -83,33 +82,4 @@ body {
   font-family: 'Segoe UI', sans-serif;
   text-align: center;
   opacity: 0.7;
-}
-
-.calibration-banner {
-  position: absolute;
-  top: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(200, 200, 200, 0.2);
-  color: #f3eccc;
-  font-family: 'Segoe UI', sans-serif;
-  font-size: 14px;
-  padding: 12px 20px;
-  border-radius: 12px;
-  text-align: center;
-  z-index: 999;
-  backdrop-filter: blur(8px);
-  box-shadow: 0 0 12px rgba(255, 255, 255, 0.08);
-  opacity: 0;
-  transition: opacity 0.4s ease;
-}
-
-.calibration-banner.visible {
-  opacity: 1;
-}
-
-.hidden {
-  opacity: 0;
-  pointer-events: none;
 }
