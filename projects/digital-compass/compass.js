@@ -38,3 +38,23 @@ function enableCompass() {
 
 // Ask permission when user taps the screen
 document.body.addEventListener('click', enableCompass, { once: true });
+
+const needle = document.getElementById('needle');
+const numeric = document.getElementById('numeric');
+const cardinal = document.getElementById('cardinal');
+
+function handleOrientation(e) {
+  const h = e.alpha;
+  if (h == null) return;
+
+  const rot = 360 - h;
+  dial.style.transform = `rotate(${rot}deg)`;
+  needle.style.transform = `rotate(${rot}deg)`;
+
+  const rounded = Math.round(h);
+  numeric.textContent = `${rounded}°`;
+  
+  const dirs = ['N','NE','E','SE','S','SW','W','NW','N'];
+  const idx = Math.round(rounded / 45);
+  cardinal.textContent = dirs[idx];
+}
