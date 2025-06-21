@@ -1,45 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Solar Explorer</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
-    body { margin: 0; background: black; color: white; font-family: sans-serif; }
-    h1 { text-align: center; margin: 1em 0; }
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-      gap: 20px;
-      padding: 20px;
-      max-width: 900px;
-      margin: auto;
+    body {
+      margin: 0;
+      font-family: sans-serif;
+      background: #000;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
     }
-    .planet {
-      text-align: center;
-      cursor: pointer;
+    h1 {
+      margin-bottom: 20px;
     }
-    .planet img {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      object-fit: cover;
+    .planet-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px;
+    }
+    .planet-grid a {
+      display: inline-block;
+      padding: 12px 18px;
+      border-radius: 8px;
+      background: #1e1e1e;
+      color: white;
+      text-decoration: none;
+      border: 1px solid #555;
+      transition: all 0.3s ease;
+    }
+    .planet-grid a:hover {
+      background: #333;
+      transform: scale(1.05);
     }
   </style>
 </head>
 <body>
-  <h1>Solar Explorer</h1>
-  <div class="grid">
-    <div class="planet"><a href="planet.html?planet=sun"><img src="assets/textures/sun.jpg"><br>Sun</a></div>
-    <div class="planet"><a href="planet.html?planet=mercury"><img src="assets/textures/mercury.jpg"><br>Mercury</a></div>
-    <div class="planet"><a href="planet.html?planet=venus"><img src="assets/textures/venus.jpg"><br>Venus</a></div>
-    <div class="planet"><a href="planet.html?planet=earth"><img src="assets/textures/earth.jpg"><br>Earth</a></div>
-    <div class="planet"><a href="planet.html?planet=moon"><img src="assets/textures/moon.jpg"><br>Moon</a></div>
-    <div class="planet"><a href="planet.html?planet=mars"><img src="assets/textures/mars.jpg"><br>Mars</a></div>
-    <div class="planet"><a href="planet.html?planet=jupiter"><img src="assets/textures/jupiter.jpg"><br>Jupiter</a></div>
-    <div class="planet"><a href="planet.html?planet=saturn"><img src="assets/textures/saturn.jpg"><br>Saturn</a></div>
-    <div class="planet"><a href="planet.html?planet=uranus"><img src="assets/textures/uranus.jpg"><br>Uranus</a></div>
-    <div class="planet"><a href="planet.html?planet=neptune"><img src="assets/textures/neptune.jpg"><br>Neptune</a></div>
+  <h1>🌌 Solar Explorer</h1>
+  <div class="planet-grid">
+    <a href="planet.html?planet=mercury">Mercury</a>
+    <a href="planet.html?planet=venus">Venus</a>
+    <a href="planet.html?planet=earth">Earth</a>
+    <a href="planet.html?planet=moon">Moon</a>
+    <a href="planet.html?planet=mars">Mars</a>
+    <a href="planet.html?planet=jupiter">Jupiter</a>
+    <a href="planet.html?planet=saturn">Saturn</a>
+    <a href="planet.html?planet=uranus">Uranus</a>
+    <a href="planet.html?planet=neptune">Neptune</a>
   </div>
 </body>
 </html>
