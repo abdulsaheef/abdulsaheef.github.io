@@ -34,7 +34,7 @@ const customProjects = [
   {
     title: "Digital Compass APP",
     description: "Analog-style web compass using device orientation",
-    image: "assets/thumb-compass.JPG",
+    image: "digital-compass/assets/thumb-compass.JPG",
     link: "projects/digital-compass/index.html"
   }
 ];
