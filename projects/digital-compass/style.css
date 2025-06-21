@@ -1,0 +1,28 @@
+body {
+  margin: 0;
+  background: black;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  flex-direction: column;
+  font-family: sans-serif;
+}
+
+.compass-container {
+  position: relative;
+  width: 200px;
+  height: 200px;
+}
+
+#compass {
+  width: 100%;
+  transition: transform 0.5s ease;
+}
+
+#heading {
+  margin-top: 20px;
+  font-size: 24px;
+  text-align: center;
+}
