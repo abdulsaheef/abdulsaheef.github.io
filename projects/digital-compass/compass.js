@@ -15,3 +15,12 @@ function handleOrientation(event) {
     headingText.textContent = 'Compass not supported';
   }
 }
+
+if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+  DeviceOrientationEvent.requestPermission()
+    .then(permissionState => {
+      if (permissionState === 'granted') {
+        window.addEventListener('deviceorientation', handleOrientation);
+      }
+    });
+}
