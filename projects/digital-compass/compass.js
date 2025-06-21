@@ -1,9 +1,6 @@
 const compass = document.getElementById('compass');
 const headingText = document.getElementById('heading');
 
-window.addEventListener('deviceorientationabsolute', handleOrientation, true);
-window.addEventListener('deviceorientation', handleOrientation, true);
-
 function handleOrientation(event) {
   const heading = event.alpha;
 
@@ -16,11 +13,28 @@ function handleOrientation(event) {
   }
 }
 
-if (typeof DeviceOrientationEvent.requestPermission === 'function') {
-  DeviceOrientationEvent.requestPermission()
-    .then(permissionState => {
-      if (permissionState === 'granted') {
-        window.addEventListener('deviceorientation', handleOrientation);
-      }
-    });
+function enableCompass() {
+  if (
+    typeof DeviceOrientationEvent !== 'undefined' &&
+    typeof DeviceOrientationEvent.requestPermission === 'function'
+  ) {
+    // iOS 13+ permission flow
+    DeviceOrientationEvent.requestPermission()
+      .then(permissionState => {
+        if (permissionState === 'granted') {
+          window.addEventListener('deviceorientation', handleOrientation, true);
+        } else {
+          headingText.textContent = 'Permission denied';
+        }
+      })
+      .catch(() => {
+        headingText.textContent = 'Permission error';
+      });
+  } else {
+    // Non-iOS devices
+    window.addEventListener('deviceorientation', handleOrientation, true);
+  }
 }
+
+// Ask permission when user taps the screen
+document.body.addEventListener('click', enableCompass, { once: true });
