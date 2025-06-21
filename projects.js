@@ -30,6 +30,12 @@ const customProjects = [
     description: "An immersive 3D space exploration demo built with Three.js.",
     link: "/projects/solar-explorer/index.html",
   
+  },
+  {
+    title: "Digital Compass",
+    description: "Analog-style web compass using device orientation",
+    image: "assets/thumb-compass.jpg",
+    link: "projects/digital-compass/index.html"
   }
 ];
 
