@@ -6,7 +6,7 @@ const cardinal = document.getElementById('cardinal');
 function updateCompass(alpha) {
   const rotation = 360 - alpha;
   dial.style.transform = `rotate(${rotation}deg)`;
-  needle.style.transform = `rotate(0deg)`; // Needle stays fixed (upwards)
+  needle.style.transform = `rotate(0deg)`; // Fixed needle pointing up
 
   const deg = Math.round(alpha);
   numeric.textContent = `${deg}°`;
@@ -18,9 +18,11 @@ function updateCompass(alpha) {
 }
 
 function animateElement(el) {
-  el.classList.remove('animate');        // Remove animation trigger
-  void el.offsetWidth;                   // Force reflow
-  el.classList.add('animate');           // Re-add to retrigger
+  el.style.transition = 'transform 0.3s ease';
+  el.style.transform = 'scale(1.2)';
+  setTimeout(() => {
+    el.style.transform = 'scale(1)';
+  }, 300);
 }
 
 function handleOrientation(event) {
