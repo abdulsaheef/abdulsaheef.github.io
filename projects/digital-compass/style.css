@@ -89,7 +89,7 @@ body {
 
 .cardinal-display {
   position: absolute;
-  bottom: 10px;
+  bottom: -20px;  /* ✅ Moved 2x further down */
   left: 50%;
   transform: translateX(-50%);
   font-size: 20px;
