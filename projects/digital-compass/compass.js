@@ -1,24 +1,15 @@
-const dial = document.getElementById('dial');
-const needle = document.getElementById('needle');
-const numeric = document.getElementById('numeric');
-const cardinal = document.getElementById('cardinal');
-
-function updateCompass(alpha) {
-  const rotation = 360 - alpha;
-
-  dial.style.transform = `rotate(${rotation}deg)`;
-  needle.style.transform = `rotate(${rotation}deg)`;
-
-  const deg = Math.round(alpha);
-  numeric.textContent = `${deg}°`;
-
-  const directions = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW', 'N'];
-  cardinal.textContent = directions[Math.round(deg / 45)];
-}
+const compass = document.getElementById('compass');
+const headingText = document.getElementById('heading');
 
 function handleOrientation(event) {
-  if (event.alpha !== null) {
-    updateCompass(event.alpha);
+  const heading = event.alpha;
+
+  if (typeof heading === 'number') {
+    const rotation = 360 - heading;
+    compass.style.transform = `rotate(${rotation}deg)`;
+    headingText.textContent = `${Math.round(heading)}°`;
+  } else {
+    headingText.textContent = 'Compass not supported';
   }
 }
 
@@ -27,20 +18,23 @@ function enableCompass() {
     typeof DeviceOrientationEvent !== 'undefined' &&
     typeof DeviceOrientationEvent.requestPermission === 'function'
   ) {
+    // iOS 13+ permission flow
     DeviceOrientationEvent.requestPermission()
-      .then(permission => {
-        if (permission === 'granted') {
+      .then(permissionState => {
+        if (permissionState === 'granted') {
           window.addEventListener('deviceorientation', handleOrientation, true);
         } else {
-          numeric.textContent = 'Denied';
+          headingText.textContent = 'Permission denied';
         }
       })
       .catch(() => {
-        numeric.textContent = 'Error';
+        headingText.textContent = 'Permission error';
       });
   } else {
+    // Non-iOS devices
     window.addEventListener('deviceorientation', handleOrientation, true);
   }
 }
 
+// Ask permission when user taps the screen
 document.body.addEventListener('click', enableCompass, { once: true });
