@@ -7,87 +7,52 @@
   <style>
     body {
       margin: 0;
-      background: black;
-      color: white;
       font-family: sans-serif;
+      background: #000;
+      color: white;
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 30px;
+      justify-content: center;
+      height: 100vh;
     }
     h1 {
-      margin-bottom: 30px;
+      margin-bottom: 20px;
     }
     .planet-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-      gap: 20px;
-      max-width: 600px;
-      width: 100%;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px;
     }
     .planet-grid a {
-      text-align: center;
-      text-decoration: none;
+      display: inline-block;
+      padding: 12px 18px;
+      border-radius: 8px;
+      background: #1e1e1e;
       color: white;
-      transition: transform 0.2s ease;
+      text-decoration: none;
+      border: 1px solid #555;
+      transition: all 0.3s ease;
     }
     .planet-grid a:hover {
-      transform: scale(1.1);
-    }
-    .planet-grid img {
-      width: 80px;
-      height: 80px;
-      object-fit: cover;
-      border-radius: 50%;
-      border: 2px solid #444;
-      background: #111;
-    }
-    .planet-grid span {
-      display: block;
-      margin-top: 8px;
-      font-size: 14px;
+      background: #333;
+      transform: scale(1.05);
     }
   </style>
 </head>
 <body>
-  <h1>🌍 Solar Explorer</h1>
+  <h1>🌌 Solar Explorer</h1>
   <div class="planet-grid">
-    <a href="planet.html?planet=mercury">
-      <img src="assets/textures/mercury.jpg" alt="Mercury">
-      <span>Mercury</span>
-    </a>
-    <a href="planet.html?planet=venus">
-      <img src="assets/textures/venus.jpg" alt="Venus">
-      <span>Venus</span>
-    </a>
-    <a href="planet.html?planet=earth">
-      <img src="assets/textures/earth.jpg" alt="Earth">
-      <span>Earth</span>
-    </a>
-    <a href="planet.html?planet=moon">
-      <img src="assets/textures/moon.jpg" alt="Moon">
-      <span>Moon</span>
-    </a>
-    <a href="planet.html?planet=mars">
-      <img src="assets/textures/mars.jpg" alt="Mars">
-      <span>Mars</span>
-    </a>
-    <a href="planet.html?planet=jupiter">
-      <img src="assets/textures/jupiter.jpg" alt="Jupiter">
-      <span>Jupiter</span>
-    </a>
-    <a href="planet.html?planet=saturn">
-      <img src="assets/textures/saturn.jpg" alt="Saturn">
-      <span>Saturn</span>
-    </a>
-    <a href="planet.html?planet=uranus">
-      <img src="assets/textures/uranus.jpg" alt="Uranus">
-      <span>Uranus</span>
-    </a>
-    <a href="planet.html?planet=neptune">
-      <img src="assets/textures/neptune.jpg" alt="Neptune">
-      <span>Neptune</span>
-    </a>
+    <a href="planet.html?planet=mercury">Mercury</a>
+    <a href="planet.html?planet=venus">Venus</a>
+    <a href="planet.html?planet=earth">Earth</a>
+    <a href="planet.html?planet=moon">Moon</a>
+    <a href="planet.html?planet=mars">Mars</a>
+    <a href="planet.html?planet=jupiter">Jupiter</a>
+    <a href="planet.html?planet=saturn">Saturn</a>
+    <a href="planet.html?planet=uranus">Uranus</a>
+    <a href="planet.html?planet=neptune">Neptune</a>
   </div>
 </body>
 </html>
