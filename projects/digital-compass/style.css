@@ -70,3 +70,27 @@ body {
   font-size: 14px;
   text-align: center;
 }
+
+.numeric-display {
+  position: absolute;
+  top: -60px; /* above the compass */
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 32px;
+  font-weight: bold;
+  color: #f2e6c8; /* soft vintage white */
+  font-family: 'Lucida Console', monospace;
+  text-shadow: 0 0 2px #000;
+}
+
+.cardinal-display {
+  position: absolute;
+  bottom: -40px; /* below the compass */
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 18px;
+  color: #e0d7b5;
+  letter-spacing: 4px;
+  font-family: 'Lucida Console', monospace;
+  text-shadow: 0 0 2px #000;
+}
