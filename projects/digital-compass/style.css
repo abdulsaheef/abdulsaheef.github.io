@@ -1,75 +1,28 @@
 body {
   margin: 0;
-  background-color: #000;
+  background: black;
   color: white;
-  font-family: 'Segoe UI', sans-serif;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
   height: 100vh;
-  overflow: hidden;
+  flex-direction: column;
+  font-family: sans-serif;
 }
 
 .compass-container {
   position: relative;
-  width: 300px;
-  height: 300px;
-  border-radius: 50%;
-  background: radial-gradient(circle at center, #111 0%, #000 100%);
-  box-shadow: 0 0 30px rgba(0, 255, 255, 0.4);
+  width: 200px;
+  height: 200px;
 }
 
-.glow-ring {
-  position: absolute;
+#compass {
   width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  box-shadow: 0 0 40px cyan;
-  animation: pulse 2s infinite alternate;
+  transition: transform 0.5s ease;
 }
 
-@keyframes pulse {
-  0% { box-shadow: 0 0 30px cyan; }
-  100% { box-shadow: 0 0 60px cyan; }
-}
-
-#dial, #needle {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  transform-origin: 50% 50%;
-}
-
-#needle {
-  pointer-events: none;
-}
-
-.center-text {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  text-align: center;
-  color: cyan;
-  font-family: 'Lucida Console', monospace;
-}
-
-#numeric {
-  font-size: 32px;
-  font-weight: bold;
-}
-
-#cardinal {
-  font-size: 20px;
-  margin-top: 5px;
-  letter-spacing: 4px;
-  opacity: 0.9;
-}
-
-.tap-msg {
+#heading {
   margin-top: 20px;
-  color: #888;
-  font-size: 14px;
+  font-size: 24px;
   text-align: center;
 }
