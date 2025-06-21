@@ -42,7 +42,6 @@ customProjects.forEach(project => {
     <h3>${project.title}</h3>
     <p>${project.description}</p>
     <a href="${project.link}" target="_blank" class="btn">Launch</a>
-    <a href="${project.github}" target="_blank" class="btn secondary">GitHub</a>
   `;
   container.appendChild(card);
 });
