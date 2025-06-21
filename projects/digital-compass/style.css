@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+
 body {
   margin: 0;
   background: linear-gradient(145deg, #1c1c1c, #2b2b2b);
@@ -43,36 +45,6 @@ body {
   pointer-events: none;
 }
 
-.center-text {
-  position: absolute;
-  top: -50px; /* moves text above compass */
-  left: 50%;
-  transform: translateX(-50%);
-  text-align: center;
-  color: #f2e6c8; /* vintage white */
-  font-family: 'Lucida Console', monospace;
-}
-
-#numeric {
-  font-size: 32px;
-  font-weight: bold;
-}
-
-#cardinal {
-  font-size: 20px;
-  margin-top: 5px;
-  letter-spacing: 4px;
-}
-
-.tap-msg {
-  margin-top: 20px;
-  color: #ccc;
-  font-size: 14px;
-  text-align: center;
-}
-
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
-
 .numeric-display {
   position: absolute;
   top: -60px;
@@ -82,14 +54,13 @@ body {
   color: #f2e6c8;
   font-family: 'Orbitron', sans-serif;
   text-shadow: 0 0 6px rgba(255, 255, 255, 0.3);
-  transition: all 0.3s ease-in-out;
-  opacity: 0;
-  animation: fadeInMoveDown 0.5s ease-out forwards;
+  opacity: 1;
+  transition: transform 0.3s ease;
 }
 
 .cardinal-display {
   position: absolute;
-  bottom: -20px;  /* ✅ Moved 2x further down */
+  bottom: -20px;  /* moved 2x lower as requested */
   left: 50%;
   transform: translateX(-50%);
   font-size: 20px;
@@ -97,14 +68,13 @@ body {
   color: #e0d7b5;
   font-family: 'Orbitron', sans-serif;
   text-shadow: 0 0 6px rgba(255, 255, 255, 0.2);
-  transition: all 0.3s ease-in-out;
-  opacity: 0;
-  animation: fadeInMoveUp 0.5s ease-out forwards;
+  opacity: 1;
+  transition: transform 0.3s ease;
 }
 
 .tap-msg {
   position: absolute;
-  bottom: 10px; /* moved slightly lower */
+  bottom: 10px;
   left: 50%;
   transform: translateX(-50%);
   color: #bbb;
@@ -113,18 +83,3 @@ body {
   text-align: center;
   opacity: 0.7;
 }
-
-@keyframes fadeInMoveDown {
-  0% { transform: translate(-50%, -10px); opacity: 0; }
-  100% { transform: translate(-50%, 0); opacity: 1; }
-}
-
-@keyframes fadeInMoveUp {
-  0% { transform: translate(-50%, 10px); opacity: 0; }
-  100% { transform: translate(-50%, 0); opacity: 1; }
-}
-
-.animate {
-  animation: none;
-}
-
