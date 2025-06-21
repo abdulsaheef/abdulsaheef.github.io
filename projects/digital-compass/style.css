@@ -12,17 +12,45 @@ body {
 
 .compass-container {
   position: relative;
-  width: 200px;
-  height: 200px;
+  width: 250px; height: 250px;
+  background: radial-gradient(circle, #111 0%, #000 90%);
+  border-radius: 50%;
+  overflow: hidden;
 }
 
-#compass {
+.glow-ring {
+  position: absolute; top: 0; left: 0;
+  width: 100%; height: 100%;
+  box-shadow: 0 0 30px rgba(0, 255, 255, 0.7);
+  border-radius: 50%;
+  animation: pulse 2s infinite alternate;
+}
+
+@keyframes pulse {
+  from { box-shadow: 0 0 20px cyan; }
+  to   { box-shadow: 0 0 40px cyan; }
+}
+
+#dial, #needle {
+  position: absolute; top: 0; left: 0;
   width: 100%;
-  transition: transform 0.5s ease;
+  transform-origin: center;
 }
 
-#heading {
-  margin-top: 20px;
-  font-size: 24px;
-  text-align: center;
+#needle { pointer-events: none; }
+
+.center-text {
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center; color: cyan;
+  font-family: 'Lucida Console', monospace;
+}
+
+#numeric {
+  font-size: 28px;
+}
+#cardinal {
+  font-size: 20px;
+  margin-top: 4px;
+  letter-spacing: 4px;
 }
