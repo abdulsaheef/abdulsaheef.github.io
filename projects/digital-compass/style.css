@@ -45,11 +45,11 @@ body {
 
 .center-text {
   position: absolute;
-  top: 50%;
+  top: -50px; /* moves text above compass */
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translateX(-50%);
   text-align: center;
-  color: cyan;
+  color: #f2e6c8; /* vintage white */
   font-family: 'Lucida Console', monospace;
 }
 
