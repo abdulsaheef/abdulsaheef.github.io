@@ -33,6 +33,16 @@ const customProjects = [
   }
 ];
 
+// 3. Add Custom Featured Projects
+const customProjects = [
+  {
+    title: "Digital Compass APP",
+    description: "Analog-style web compass using device orientation",
+    link: "/projects/digital-compass/index.html",
+  
+  }
+];
+
 customProjects.forEach(project => {
   const card = document.createElement("div");
   card.className = "project-card";
