@@ -3,15 +3,20 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Digital Compass</title>
+  <title>Analog-Style Compass</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <div class="background"></div>
   <div class="compass-container">
-    <img src="assets/compass-dial.PNG" alt="Compass" id="compass" />
-    <div id="heading">0°</div>
+    <img src="assets/dial.png" id="dial" alt="Dial">
+    <img src="assets/needle.png" id="needle" alt="Needle">
+    <div class="center-text">
+      <div id="numeric">0°</div>
+      <div id="cardinal">N</div>
+    </div>
   </div>
-
+  <p class="tap-msg">Tap anywhere to activate compass</p>
   <script src="compass.js"></script>
 </body>
 </html>
