@@ -29,8 +29,75 @@ const elements = {
   suggestionsContainer: document.getElementById('suggestions-container')
 };
 
+// Common city to timezone mappings
+const cityMappings = {
+  'tokyo': 'Asia/Tokyo',
+  'new york': 'America/New_York',
+  'london': 'Europe/London',
+  'dubai': 'Asia/Dubai',
+  'paris': 'Europe/Paris',
+  'berlin': 'Europe/Berlin',
+  'mumbai': 'Asia/Kolkata',
+  'delhi': 'Asia/Kolkata',
+  'singapore': 'Asia/Singapore',
+  'sydney': 'Australia/Sydney',
+  'san francisco': 'America/Los_Angeles',
+  'los angeles': 'America/Los_Angeles',
+  'chicago': 'America/Chicago',
+  'toronto': 'America/Toronto',
+  'moscow': 'Europe/Moscow',
+  'beijing': 'Asia/Shanghai',
+  'shanghai': 'Asia/Shanghai',
+  'hong kong': 'Asia/Hong_Kong',
+  'seoul': 'Asia/Seoul',
+  'istanbul': 'Europe/Istanbul',
+  'rome': 'Europe/Rome',
+  'madrid': 'Europe/Madrid',
+  'amsterdam': 'Europe/Amsterdam',
+  'brussels': 'Europe/Brussels',
+  'vienna': 'Europe/Vienna',
+  'zurich': 'Europe/Zurich',
+  'stockholm': 'Europe/Stockholm',
+  'oslo': 'Europe/Oslo',
+  'helsinki': 'Europe/Helsinki',
+  'cairo': 'Africa/Cairo',
+  'johannesburg': 'Africa/Johannesburg',
+  'nairobi': 'Africa/Nairobi',
+  'riyadh': 'Asia/Riyadh',
+  'tehran': 'Asia/Tehran',
+  'baghdad': 'Asia/Baghdad',
+  'bangalore': 'Asia/Kolkata',
+  'jakarta': 'Asia/Jakarta',
+  'bangkok': 'Asia/Bangkok',
+  'hanoi': 'Asia/Bangkok', // Same as Bangkok
+  'ho chi minh': 'Asia/Bangkok', // Same as Bangkok
+  'manila': 'Asia/Manila',
+  'kuala lumpur': 'Asia/Kuala_Lumpur',
+  'perth': 'Australia/Perth',
+  'melbourne': 'Australia/Melbourne',
+  'auckland': 'Pacific/Auckland',
+  'wellington': 'Pacific/Auckland', // Same as Auckland
+  'honolulu': 'Pacific/Honolulu',
+  'anchorage': 'America/Anchorage',
+  'vancouver': 'America/Vancouver',
+  'montreal': 'America/Toronto', // Same as Toronto
+  'mexico city': 'America/Mexico_City',
+  'sao paulo': 'America/Sao_Paulo',
+  'buenos aires': 'America/Argentina/Buenos_Aires',
+  'santiago': 'America/Santiago',
+  'lima': 'America/Lima',
+  'bogota': 'America/Bogota'
+};
+
 // Initialize the app
 function init() {
+  // Check if Luxon Timezones is loaded
+  if (!luxon.Settings.defaultZone.availableZones) {
+    showNotification('Error: Timezone data not loaded. Please refresh the page.', 'error');
+    console.error('Luxon Timezones not loaded properly');
+    return;
+  }
+
   setTheme(state.theme);
   setupEventListeners();
   loadFromURL();
@@ -58,6 +125,9 @@ function setupEventListeners() {
     }, 200);
   });
   elements.addCityBtn.addEventListener('click', addCity);
+  elements.cityInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') addCity();
+  });
   
   // Working hours
   elements.startTime.addEventListener('change', updateWorkingHours);
@@ -96,6 +166,7 @@ function setTheme(theme) {
 function toggleTheme() {
   const newTheme = state.theme === 'light' ? 'dark' : 'light';
   setTheme(newTheme);
+  updateURL();
 }
 
 // Modal functions
@@ -105,11 +176,16 @@ function toggleModal(show) {
 
 // Timezone functions
 function updateLocalTimezone() {
-  const zoneName = Intl.DateTimeFormat().resolvedOptions().timeZone;
-  const zone = luxon.DateTime.local().setZone(zoneName);
-  const offset = zone.offset / 60;
-  const offsetStr = offset >= 0 ? `UTC+${offset}` : `UTC${offset}`;
-  elements.localZone.textContent = `${zoneName} (${offsetStr})`;
+  try {
+    const zoneName = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const zone = luxon.DateTime.local().setZone(zoneName);
+    const offset = zone.offset / 60;
+    const offsetStr = offset >= 0 ? `UTC+${offset}` : `UTC${offset}`;
+    elements.localZone.textContent = `${zoneName} (${offsetStr})`;
+  } catch (e) {
+    console.error('Error detecting local timezone:', e);
+    elements.localZone.textContent = 'Timezone: Unknown';
+  }
 }
 
 // City functions
@@ -126,38 +202,13 @@ async function handleCityInput() {
 
 async function searchCities(query) {
   try {
-    // Use the timezone database from Luxon Timezones
-    const zones = luxon.Settings.defaultZone.availableZones;
+    const normalizedQuery = query.toLowerCase().trim();
     const matches = [];
     
-    // Common city mappings to help with search
-    const cityMappings = {
-      'tokyo': 'Asia/Tokyo',
-      'new york': 'America/New_York',
-      'london': 'Europe/London',
-      'dubai': 'Asia/Dubai',
-      'paris': 'Europe/Paris',
-      'berlin': 'Europe/Berlin',
-      'mumbai': 'Asia/Kolkata',
-      'delhi': 'Asia/Kolkata',
-      'singapore': 'Asia/Singapore',
-      'sydney': 'Australia/Sydney',
-      'san francisco': 'America/Los_Angeles',
-      'los angeles': 'America/Los_Angeles',
-      'chicago': 'America/Chicago',
-      'toronto': 'America/Toronto',
-      'moscow': 'Europe/Moscow',
-      'beijing': 'Asia/Shanghai',
-      'shanghai': 'Asia/Shanghai',
-      'hong kong': 'Asia/Hong_Kong',
-      'seoul': 'Asia/Seoul'
-    };
-
     // First check our common city mappings
-    const normalizedQuery = query.toLowerCase().trim();
     if (cityMappings[normalizedQuery]) {
       matches.push({
-        name: query.trim(),
+        name: query.trim(), // Preserve original capitalization
         zone: cityMappings[normalizedQuery],
         region: cityMappings[normalizedQuery].split('/')[0].replace('_', ' ')
       });
@@ -165,6 +216,8 @@ async function searchCities(query) {
     }
 
     // Search in the timezone database
+    const zones = luxon.Settings.defaultZone.availableZones;
+    
     for (const zone of zones) {
       const lastSlash = zone.lastIndexOf('/');
       if (lastSlash === -1) continue;
@@ -184,30 +237,7 @@ async function searchCities(query) {
     return matches.slice(0, 10);
   } catch (error) {
     console.error('Error searching cities:', error);
-    return [];
-  }
-}
-    
-    // Search in our known cities first
-    for (const zone of zones) {
-      const lastSlash = zone.lastIndexOf('/');
-      if (lastSlash === -1) continue;
-      
-      const cityName = zone.substring(lastSlash + 1).replace(/_/g, ' ');
-      const region = zone.substring(0, lastSlash).replace(/\//g, ' › ');
-      
-      if (cityName.toLowerCase().includes(query.toLowerCase())) {
-        matches.push({
-          name: cityName,
-          region,
-          zone
-        });
-      }
-    }
-    
-    return matches.slice(0, 10);
-  } catch (error) {
-    console.error('Error searching cities:', error);
+    showNotification('Error searching for cities. Please try again.', 'error');
     return [];
   }
 }
@@ -239,24 +269,31 @@ function showSuggestions(suggestions) {
 
 function addCity() {
   const cityName = elements.cityInput.value.trim();
-  if (!cityName) return;
+  if (!cityName) {
+    showNotification('Please enter a city name', 'warning');
+    return;
+  }
   
   // Find the timezone for this city
   const zone = findTimezoneForCity(cityName);
   if (!zone) {
-    showNotification('City not found or timezone unavailable', 'error');
+    showNotification('Timezone not found for "' + cityName + '". Try the format "Continent/City"', 'error');
     return;
   }
   
   // Check if city already added
-  if (state.cities.some(c => c.name.toLowerCase() === cityName.toLowerCase())) {
-    showNotification('City already added', 'warning');
+  if (state.cities.some(c => c.zone === zone)) {
+    showNotification('This timezone is already added', 'warning');
     return;
   }
   
   // Add the city
+  const displayName = cityMappings[cityName.toLowerCase()] 
+    ? cityName 
+    : zone.split('/').pop().replace(/_/g, ' ');
+  
   state.cities.push({
-    name: cityName,
+    name: displayName,
     zone
   });
   
@@ -267,27 +304,27 @@ function addCity() {
   // Update UI
   renderTimeline();
   updateURL();
-  showNotification(`${cityName} added successfully`, 'success');
+  showNotification(`${displayName} added successfully`, 'success');
 }
 
 function findTimezoneForCity(cityName) {
-  // Try to find an exact match first
-  const zones = luxon.Settings.defaultZone.availableZones;
-  const normalizedCity = cityName.toLowerCase().replace(/ /g, '_');
-  
-  for (const zone of zones) {
-    const lastSlash = zone.lastIndexOf('/');
-    if (lastSlash === -1) continue;
-    
-    const zoneCity = zone.substring(lastSlash + 1).toLowerCase();
-    if (zoneCity === normalizedCity) {
-      return zone;
-    }
+  // Check if it's already a valid timezone
+  if (luxon.Settings.defaultZone.availableZones.includes(cityName)) {
+    return cityName;
   }
   
-  // If no exact match, try partial match
+  // Check our common city mappings
+  const normalizedCity = cityName.toLowerCase().trim();
+  if (cityMappings[normalizedCity]) {
+    return cityMappings[normalizedCity];
+  }
+  
+  // Try to find in timezone database
+  const zones = luxon.Settings.defaultZone.availableZones;
+  const cityPart = cityName.replace(/ /g, '_').toLowerCase();
+  
   for (const zone of zones) {
-    if (zone.toLowerCase().includes(normalizedCity)) {
+    if (zone.toLowerCase().endsWith(cityPart)) {
       return zone;
     }
   }
@@ -299,12 +336,15 @@ function removeCity(cityName) {
   state.cities = state.cities.filter(c => c.name !== cityName);
   renderTimeline();
   updateURL();
+  showNotification('City removed', 'success');
 }
 
 // Working hours functions
-function updateWorkingHours() {
-  let start = parseInt(elements.startTime.value);
-  let end = parseInt(elements.endTime.value);
+function updateWorkingHours(start, end) {
+  if (arguments.length === 0) {
+    start = parseInt(elements.startTime.value);
+    end = parseInt(elements.endTime.value);
+  }
   
   // Validate inputs
   if (isNaN(start)) start = 9;
@@ -336,7 +376,7 @@ function renderTimeline() {
         <p>Add cities to compare timezones</p>
       </div>
     `;
-    elements.overlapResults.innerHTML = '';
+    elements.overlapResults.innerHTML = '<p>Add at least two cities to see overlapping hours</p>';
     elements.selectionInfo.innerHTML = '';
     return;
   }
@@ -442,7 +482,7 @@ function highlightOverlappingHours() {
 }
 
 function findOverlappingHours() {
-  if (state.cities.length === 0) return [];
+  if (state.cities.length < 2) return [];
   
   // Get working hours for each city in UTC
   const allWorkingHours = state.cities.map(city => {
@@ -469,7 +509,7 @@ function displayBestMeetingTimes(overlaps) {
   elements.overlapResults.innerHTML = '';
   
   if (overlaps.length === 0) {
-    elements.overlapResults.innerHTML = '<p>No overlapping working hours found</p>';
+    elements.overlapResults.innerHTML = '<p>No overlapping working hours found. Adjust working hours or try different cities.</p>';
     return;
   }
   
@@ -507,6 +547,7 @@ function displayBestMeetingTimes(overlaps) {
     div.addEventListener('click', () => {
       state.selectedRange = { start: startHour, end: endHour };
       updateSelectionDisplay(state.selectedRange);
+      updateURL();
     });
     
     elements.overlapResults.appendChild(div);
@@ -673,6 +714,9 @@ function shareApp() {
 
 // Helper functions
 function showNotification(message, type) {
+  // Remove any existing notifications
+  document.querySelectorAll('.notification').forEach(el => el.remove());
+  
   const notification = document.createElement('div');
   notification.className = `notification notification-${type}`;
   notification.textContent = message;
@@ -695,3 +739,38 @@ document.addEventListener('DOMContentLoaded', init);
 
 // Update current time indicator every minute
 setInterval(updateCurrentTimeIndicator, 60000);
+
+// Add CSS for notifications
+const notificationStyles = document.createElement('style');
+notificationStyles.textContent = `
+  .notification {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100%);
+    padding: 12px 24px;
+    border-radius: 4px;
+    color: white;
+    font-weight: 500;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    transition: transform 0.3s ease;
+  }
+  
+  .notification.show {
+    transform: translateX(-50%) translateY(0);
+  }
+  
+  .notification-success {
+    background-color: #2ecc71;
+  }
+  
+  .notification-error {
+    background-color: #e74c3c;
+  }
+  
+  .notification-warning {
+    background-color: #f39c12;
+  }
+`;
+document.head.appendChild(notificationStyles);
