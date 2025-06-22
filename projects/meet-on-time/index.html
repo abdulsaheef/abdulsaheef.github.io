@@ -1,46 +1,145 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Meet on Time</title>
+  <title>Meet on Time | Timezone Meeting Planner</title>
+  <meta name="description" content="Coordinate meeting times across timezones with ease">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-  <header>
-    <h1>Meet on Time</h1>
-    <div>
-      <span id="local-zone"></span>
-      <button id="mode-toggle" title="Toggle Light/Dark Mode">🌓</button>
-      <button id="exit-btn">Exit</button>
-    </div>
-  </header>
-
-  <main>
-    <section class="city-input">
-      <input type="text" id="city-input" placeholder="Enter city name (e.g., Tokyo)" />
-      <button id="add-city-btn">Add City</button>
-    </section>
-
-    <section class="timeline-grid">
-      <div class="timeline-row header">
-        <div class="city-name">UTC</div>
-        <div class="timeline-cells">
-          <div class="cell selectable" data-hour="0">0</div><div class="cell selectable" data-hour="1">1</div><div class="cell selectable" data-hour="2">2</div><div class="cell selectable" data-hour="3">3</div><div class="cell selectable" data-hour="4">4</div><div class="cell selectable" data-hour="5">5</div><div class="cell selectable" data-hour="6">6</div><div class="cell selectable" data-hour="7">7</div><div class="cell selectable" data-hour="8">8</div><div class="cell selectable" data-hour="9">9</div><div class="cell selectable" data-hour="10">10</div><div class="cell selectable" data-hour="11">11</div><div class="cell selectable" data-hour="12">12</div><div class="cell selectable" data-hour="13">13</div><div class="cell selectable" data-hour="14">14</div><div class="cell selectable" data-hour="15">15</div><div class="cell selectable" data-hour="16">16</div><div class="cell selectable" data-hour="17">17</div><div class="cell selectable" data-hour="18">18</div><div class="cell selectable" data-hour="19">19</div><div class="cell selectable" data-hour="20">20</div><div class="cell selectable" data-hour="21">21</div><div class="cell selectable" data-hour="22">22</div><div class="cell selectable" data-hour="23">23</div>
+  <div class="app-container">
+    <header class="app-header">
+      <div class="header-content">
+        <div class="logo">
+          <i class="fas fa-clock"></i>
+          <h1>Meet on Time</h1>
+        </div>
+        <div class="header-actions">
+          <div class="timezone-display">
+            <i class="fas fa-globe"></i>
+            <span id="local-zone"></span>
+          </div>
+          <button id="mode-toggle" class="icon-btn" title="Toggle theme">
+            <i class="fas fa-moon"></i>
+          </button>
+          <button id="help-btn" class="icon-btn" title="Help">
+            <i class="fas fa-question-circle"></i>
+          </button>
         </div>
       </div>
-      <div id="rows-container"></div>
-    </section>
-    <div id="selection-info"></div>
-    <div id="share-summary"></div>
-  </main>
+    </header>
 
-  <footer>
-    <p>© 2025 Abdul Saheef | <a href="https://github.com/abdulsaheef" target="_blank">GitHub</a></p>
-  </footer>
+    <main class="app-main">
+      <section class="controls-section">
+        <div class="city-search-container">
+          <div class="search-input-wrapper">
+            <i class="fas fa-search"></i>
+            <input type="text" id="city-input" placeholder="Search city (e.g., Tokyo, Berlin)" autocomplete="off" />
+            <div id="suggestions-container" class="suggestions-dropdown"></div>
+          </div>
+          <button id="add-city-btn" class="primary-btn">
+            <i class="fas fa-plus"></i> Add City
+          </button>
+        </div>
+        
+        <div class="time-range-selector">
+          <div class="working-hours-presets">
+            <span>Working hours:</span>
+            <button class="preset-btn" data-start="9" data-end="17">9 AM - 5 PM</button>
+            <button class="preset-btn" data-start="8" data-end="16">8 AM - 4 PM</button>
+            <button class="preset-btn" data-start="10" data-end="18">10 AM - 6 PM</button>
+          </div>
+          <div class="custom-range">
+            <label for="start-time">From</label>
+            <input type="number" id="start-time" min="0" max="23" value="9">
+            <label for="end-time">to</label>
+            <input type="number" id="end-time" min="0" max="23" value="17">
+          </div>
+        </div>
+      </section>
+
+      <section class="timeline-section">
+        <div class="timeline-header">
+          <div class="city-column">City / Time</div>
+          <div class="hours-column">
+            <div class="hours-container">
+              <div class="hour-marker" style="left: 0%;">12 AM</div>
+              <div class="hour-marker" style="left: 16.66%;">4 AM</div>
+              <div class="hour-marker" style="left: 33.33%;">8 AM</div>
+              <div class="hour-marker" style="left: 50%;">12 PM</div>
+              <div class="hour-marker" style="left: 66.66%;">4 PM</div>
+              <div class="hour-marker" style="left: 83.33%;">8 PM</div>
+              <div class="hour-marker" style="left: 100%;">12 AM</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="timeline-grid">
+          <div class="timeline-rows" id="rows-container"></div>
+          <div class="current-time-indicator"></div>
+          <div class="selection-overlay" id="selection-overlay"></div>
+        </div>
+      </section>
+
+      <section class="results-section">
+        <div class="results-card overlap-card">
+          <h3><i class="fas fa-users"></i> Best Meeting Times</h3>
+          <div id="overlap-results"></div>
+        </div>
+        <div class="results-card selection-card">
+          <h3><i class="fas fa-mouse-pointer"></i> Selected Time</h3>
+          <div id="selection-info"></div>
+          <div class="share-actions">
+            <button id="copy-link-btn" class="secondary-btn">
+              <i class="fas fa-link"></i> Copy Link
+            </button>
+            <button id="share-btn" class="secondary-btn">
+              <i class="fas fa-share-alt"></i> Share
+            </button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div class="help-modal" id="help-modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>How to use Meet on Time</h2>
+          <button class="close-modal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="tip">
+            <i class="fas fa-search"></i>
+            <h3>Add Cities</h3>
+            <p>Search for cities worldwide to compare their timezones. Start typing a city name and select from the suggestions.</p>
+          </div>
+          <div class="tip">
+            <i class="fas fa-clock"></i>
+            <h3>Set Working Hours</h3>
+            <p>Use the presets or customize working hours to see when your team is available.</p>
+          </div>
+          <div class="tip">
+            <i class="fas fa-mouse"></i>
+            <h3>Drag to Select</h3>
+            <p>Click and drag across the timeline to see what time it would be in each city.</p>
+          </div>
+          <div class="tip">
+            <i class="fas fa-users"></i>
+            <h3>Find Overlaps</h3>
+            <p>The system automatically highlights times when all team members are available.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <script src="https://cdn.jsdelivr.net/npm/luxon@3/build/global/luxon.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/luxon-timezones@1/build/global/luxon-timezones.min.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
