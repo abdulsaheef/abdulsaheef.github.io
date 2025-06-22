@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Meet on Time</title>
   <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 </head>
 <body>
   <header>
@@ -18,12 +19,12 @@
   </header>
 
   <main>
-    
-  <section class="date-picker">
-    <label for="meeting-date">Select Date:</label>
-    <input type="text" id="meeting-date" placeholder="Pick a date" />
-  </section>
-  <section class="city-input">
+    <section class="date-picker">
+      <label for="meeting-date">Select Date:</label>
+      <input type="text" id="meeting-date" placeholder="Pick a date" />
+    </section>
+
+    <section class="city-input">
       <input type="text" id="city-input" placeholder="Enter city name (e.g., Tokyo)" />
       <button id="add-city-btn">Add City</button>
     </section>
@@ -48,10 +49,7 @@
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/luxon@3/build/global/luxon.min.js"></script>
-  
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
   <script src="script.js"></script>
-  
 </body>
 </html>
