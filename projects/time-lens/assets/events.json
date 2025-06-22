@@ -1,11 +1,20 @@
 [
-  { "year": -3000, "title": "Invention of Writing" },
-  { "year": -776, "title": "First Olympic Games" },
-  { "year": 0, "title": "Start of Common Era" },
-  { "year": 1066, "title": "Battle of Hastings" },
-  { "year": 1776, "title": "US Declaration of Independence" },
-  { "year": 1969, "title": "Apollo 11 Moon Landing" },
-  { "year": 2000, "title": "Y2K" },
-  { "year": 2024, "title": "Launch of Time Lens" },
-  { "year": 2050, "title": "Predicted AI Singularity" }
+  {
+    "year": -3000,
+    "title": "Invention of Writing",
+    "description": "Writing systems emerged in Mesopotamia around 3000 BCE.",
+    "image": "assets/ui/writing.jpg"
+  },
+  {
+    "year": 1969,
+    "title": "Moon Landing",
+    "description": "Apollo 11 was the first mission to land humans on the Moon.",
+    "image": "assets/ui/moon.jpg"
+  },
+  {
+    "year": 2024,
+    "title": "Time Lens Launch",
+    "description": "Saheef’s third project — a unique visual timeline experience.",
+    "image": "assets/ui/timelens.jpg"
+  }
 ]
