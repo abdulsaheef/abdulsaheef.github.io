@@ -137,3 +137,55 @@ footer {
 .cell.selected {
   animation: selectPulse 0.8s ease-in-out;
 }
+
+:root {
+  --bg: #0c0c0c;
+  --text: #f0f0f0;
+  --highlight: #27ae60;
+  --working: #3498db;
+  --selected: #f39c12;
+  --footer: #111;
+}
+
+body.light-mode {
+  --bg: #f8f8f8;
+  --text: #111;
+  --highlight: #2ecc71;
+  --working: #3498db;
+  --selected: #e67e22;
+  --footer: #ddd;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--text);
+}
+
+.cell.working-hour {
+  background-color: var(--working);
+}
+
+.cell.overlap-hour {
+  background-color: var(--highlight);
+}
+
+.cell.selected {
+  background-color: var(--selected);
+}
+
+footer {
+  background-color: var(--footer);
+}
+
+@media (max-width: 768px) {
+  .timeline-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .city-name {
+    padding-bottom: 0.3rem;
+  }
+  .timeline-cells {
+    flex-wrap: wrap;
+  }
+}
