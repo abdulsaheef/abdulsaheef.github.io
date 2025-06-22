@@ -42,52 +42,19 @@
 
     <!-- PAGE 3: Interactive Viewer -->
     <section class="page viewer">
-  <!-- Wormhole Background Effect -->
-  <div class="wormhole"></div>
-  
-  <!-- Temporal GPS Display -->
-  <div class="temporal-gps">
-    <span class="era-display">ANCIENT ERA</span>
-    <div class="timeline-progress"></div>
-    <span class="year-display">3000 BCE</span>
+      <canvas id="timelineCanvas"></canvas>
+      <button id="exit-btn" onclick="navigateTo(0)">⇦ RETURN TO ORIGIN</button>
+      <div id="event-card" class="hidden">
+        <img id="card-image" src="" alt="Event image">
+        <div class="card-content">
+          <h2 id="card-title">Title</h2>
+          <p id="card-year">Year</p>
+          <p id="card-description">Description</p>
+        </div>
+      </div>
+    </section>
   </div>
 
-  <!-- AI Navigator -->
-  <div class="ai-navigator">
-    <div class="voice-command" onclick="startVoiceSearch()">
-      <div class="pulse-ring"></div>
-      <div class="mic-icon">🎙</div>
-    </div>
-    <input type="text" class="time-search" placeholder="Jump to year/event...">
-  </div>
-
-  <!-- 3D Canvas -->
-  <canvas id="timelineCanvas"></canvas>
-  
-  <!-- Holographic Event Card -->
-  <div id="event-card">
-    <div class="holographic-grid"></div>
-    <div class="card-content">
-      <div class="media-container">
-        <img id="card-image" src="" alt="Event">
-        <div class="youtube-embed" id="yt-embed"></div>
-      </div>
-      <h2 id="card-title"></h2>
-      <div class="time-marker">
-        <span id="card-year"></span>
-        <span id="card-era"></span>
-      </div>
-      <p id="card-description"></p>
-      <div class="related-events">
-        <h4>Connected Events</h4>
-        <div class="related-list"></div>
-      </div>
-    </div>
-  </div>
-</section>
-  </div>
-
-  <!-- Navigation Dots -->
   <div class="nav-dots">
     <div class="dot active" onclick="navigateTo(0)"></div>
     <div class="dot" onclick="navigateTo(1)"></div>
