@@ -95,40 +95,7 @@ function showCard(event,x,y){
     card.classList.add('visible');
 }
 
-let touchStartX = 0;
-let touchEndX = 0;
-let currentPage = 0;
-
-const container = document.getElementById("app-container");
-const totalPages = 3;
-
-function scrollToPage(page) {
-  currentPage = Math.max(0, Math.min(page, totalPages - 1));
-  container.scrollTo({
-    left: window.innerWidth * currentPage,
-    behavior: "smooth"
-  });
-}
-
-// Swipe detection
-container.addEventListener("touchstart", e => {
-  touchStartX = e.changedTouches[0].screenX;
+document.getElementById("app-container").addEventListener("scroll", () => {
+  const scrollX = document.getElementById("app-container").scrollLeft;
+  currentPage = Math.round(scrollX / window.innerWidth);
 });
-
-container.addEventListener("touchend", e => {
-  touchEndX = e.changedTouches[0].screenX;
-  handleSwipe();
-});
-
-function handleSwipe() {
-  const threshold = 50; // Minimum swipe distance
-  const delta = touchEndX - touchStartX;
-
-  if (Math.abs(delta) > threshold) {
-    if (delta < 0) {
-      scrollToPage(currentPage + 1); // swipe left
-    } else {
-      scrollToPage(currentPage - 1); // swipe right
-    }
-  }
-}
