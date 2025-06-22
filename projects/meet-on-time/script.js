@@ -93,3 +93,84 @@ document.querySelector("main").appendChild(suggestion);
 document.getElementById('exit-btn').addEventListener('click', () => {
   alert('Exit clicked. You may manually close the tab.');
 });
+
+let isDragging = false;
+let dragStart = null;
+let selectedCells = [];
+
+const headerRow = document.querySelector(".timeline-row.header .timeline-cells");
+headerRow.querySelectorAll(".cell").forEach((cell, idx) => {
+  cell.classList.add("selectable");
+
+  cell.addEventListener("mousedown", () => {
+    isDragging = true;
+    dragStart = idx;
+    clearSelection();
+  });
+
+  cell.addEventListener("mouseenter", () => {
+    if (isDragging) {
+      updateSelection(dragStart, idx);
+    }
+  });
+
+  cell.addEventListener("mouseup", () => {
+    isDragging = false;
+    updateSelection(dragStart, idx);
+    playSelectSound();
+    showSelectionInfo();
+  });
+});
+
+document.addEventListener("mouseup", () => {
+  isDragging = false;
+});
+
+function clearSelection() {
+  selectedCells.forEach(cell => cell.classList.remove("selected"));
+  selectedCells = [];
+}
+
+function updateSelection(start, end) {
+  clearSelection();
+  const min = Math.min(start, end);
+  const max = Math.max(start, end);
+  const allHeaderCells = headerRow.querySelectorAll(".cell");
+
+  for (let i = min; i <= max; i++) {
+    allHeaderCells[i].classList.add("selected");
+    selectedCells.push(allHeaderCells[i]);
+  }
+}
+
+function showSelectionInfo() {
+  const container = document.getElementById("selection-info") || document.createElement("div");
+  container.id = "selection-info";
+
+  if (selectedCells.length === 0) {
+    container.textContent = "No time selected.";
+    return;
+  }
+
+  const hours = selectedCells.map(cell => parseInt(cell.getAttribute("data-hour")));
+  const fromUTC = DateTime.utc().set({ hour: Math.min(...hours), minute: 0 });
+  const toUTC = DateTime.utc().set({ hour: Math.max(...hours) + 1, minute: 0 });
+
+  let infoText = `🟠 You selected: ${fromUTC.toFormat("HH:mm")} to ${toUTC.toFormat("HH:mm")} UTC\n`;
+
+  cities.forEach(city => {
+    const fromLocal = fromUTC.setZone(city.zone).toFormat("hh:mm a");
+    const toLocal = toUTC.setZone(city.zone).toFormat("hh:mm a");
+    infoText += `- ${city.name}: ${fromLocal} – ${toLocal}\n`;
+  });
+
+  container.textContent = infoText;
+  document.querySelector("main").appendChild(container);
+}
+
+// Sound feedback
+function playSelectSound() {
+  const beep = new Audio("https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg");
+  beep.volume = 0.4;
+  beep.play();
+}
