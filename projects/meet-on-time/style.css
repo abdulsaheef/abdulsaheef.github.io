@@ -95,3 +95,45 @@ footer {
   white-space: pre-wrap;
   font-weight: bold;
 }
+
+.cell.selectable:hover {
+  background-color: #555 !important;
+  cursor: pointer;
+}
+
+.cell.selected {
+  background-color: #f39c12 !important;
+  color: #fff;
+}
+
+#selection-info {
+  background-color: #111;
+  color: #ffeaa7;
+  font-weight: bold;
+  padding: 1rem;
+  margin: 1rem 2rem;
+  border-radius: 8px;
+}
+
+.vertical-line {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background-color: rgba(255, 255, 255, 0.2);
+  z-index: 1;
+}
+
+.timeline-row .cell {
+  position: relative;
+}
+
+@keyframes selectPulse {
+  0% { box-shadow: 0 0 0px #f39c12; }
+  50% { box-shadow: 0 0 10px #f39c12; }
+  100% { box-shadow: 0 0 0px #f39c12; }
+}
+
+.cell.selected {
+  animation: selectPulse 0.8s ease-in-out;
+}
