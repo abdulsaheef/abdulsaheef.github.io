@@ -213,30 +213,3 @@ footer {
   cursor: pointer;
   font-weight: bold;
 }
-
-#custom-hours-panel {
-  padding: 1rem 2rem;
-}
-
-.working-hour-config {
-  margin-bottom: 1rem;
-  font-size: 0.95rem;
-}
-
-.working-hour-config select {
-  margin-left: 0.5rem;
-  padding: 0.2rem 0.4rem;
-}
-
-.date-picker {
-  padding: 1rem 2rem;
-  font-size: 1rem;
-}
-
-#meeting-date {
-  padding: 0.5rem;
-  font-size: 1rem;
-  width: 200px;
-  border-radius: 4px;
-  border: 1px solid #ccc;
-}
