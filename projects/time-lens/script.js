@@ -13,7 +13,7 @@ let lastAngle = 0;
 
 let events = [];
 
-fetch("events.json")
+fetch("assets/events.json")
   .then(res => res.json())
   .then(data => {
     events = data;
