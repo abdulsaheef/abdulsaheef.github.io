@@ -174,3 +174,62 @@ function playSelectSound() {
   beep.volume = 0.4;
   beep.play();
 }
+
+// Dark mode toggle
+const toggle = document.getElementById("mode-toggle");
+toggle.addEventListener("click", () => {
+  document.body.classList.toggle("light-mode");
+  localStorage.setItem("theme", document.body.classList.contains("light-mode") ? "light" : "dark");
+});
+
+// Persist theme
+const savedTheme = localStorage.getItem("theme");
+if (savedTheme === "light") {
+  document.body.classList.add("light-mode");
+}
+
+// Local timezone display
+const localZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+document.getElementById("local-zone").textContent = `Your Timezone: ${localZone}`;
+
+// Share summary
+function updateShareSummary(utcStart, utcEnd) {
+  const container = document.getElementById("share-summary");
+  let text = `📤 Shareable Meeting Time:\nUTC: ${utcStart.toFormat("HH:mm")} – ${utcEnd.toFormat("HH:mm")}\n`;
+
+  cities.forEach(city => {
+    const from = utcStart.setZone(city.zone).toFormat("hh:mm a");
+    const to = utcEnd.setZone(city.zone).toFormat("hh:mm a");
+    text += `- ${city.name}: ${from} – ${to}\n`;
+  });
+
+  container.innerHTML = \`<pre>\${text}</pre><button id="copy-btn">Copy</button>\`;
+
+  document.getElementById("copy-btn").onclick = () => {
+    navigator.clipboard.writeText(text);
+    alert("Copied to clipboard!");
+  };
+}
+
+// Integrate with existing selection logic
+function showSelectionInfo() {
+  const container = document.getElementById("selection-info");
+  if (selectedCells.length === 0) {
+    container.textContent = "No time selected.";
+    return;
+  }
+
+  const hours = selectedCells.map(cell => parseInt(cell.getAttribute("data-hour")));
+  const fromUTC = DateTime.utc().set({ hour: Math.min(...hours), minute: 0 });
+  const toUTC = DateTime.utc().set({ hour: Math.max(...hours) + 1, minute: 0 });
+
+  let infoText = `🟠 You selected: ${fromUTC.toFormat("HH:mm")} – ${toUTC.toFormat("HH:mm")} UTC\n`;
+  cities.forEach(city => {
+    const fromLocal = fromUTC.setZone(city.zone).toFormat("hh:mm a");
+    const toLocal = toUTC.setZone(city.zone).toFormat("hh:mm a");
+    infoText += `- ${city.name}: ${fromLocal} – ${toLocal}\n`;
+  });
+
+  container.textContent = infoText;
+  updateShareSummary(fromUTC, toUTC);
+}
