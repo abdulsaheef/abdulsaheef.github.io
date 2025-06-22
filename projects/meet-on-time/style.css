@@ -3,15 +3,15 @@ body {
   font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;
-  background-color: #111;
-  color: #eee;
+  background-color: #0c0c0c;
+  color: #f0f0f0;
 }
 
 header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #222;
+  background-color: #111;
   padding: 1rem 2rem;
 }
 
@@ -25,54 +25,58 @@ header h1 {
   color: white;
   border: none;
   padding: 0.5rem 1rem;
-  font-weight: bold;
   border-radius: 5px;
+  font-weight: bold;
   cursor: pointer;
 }
 
-main {
+.timeline-grid {
   padding: 2rem;
+  overflow-x: auto;
 }
 
-.input-section {
-  margin-bottom: 1.5rem;
+.timeline-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
 }
 
-.input-section input {
-  padding: 0.5rem;
-  font-size: 1rem;
-  width: 200px;
-  margin-right: 0.5rem;
-}
-
-#timeline-container {
-  background-color: #1c1c1c;
-  border-radius: 8px;
-  padding: 1rem;
-  margin-bottom: 1rem;
-  min-height: 200px;
-}
-
-#selected-time-display {
-  margin: 1rem 0;
+.city-name {
+  width: 100px;
+  text-align: right;
+  padding-right: 1rem;
   font-weight: bold;
-  color: #6be3a7;
 }
 
-.controls button {
+.timeline-cells {
+  display: flex;
+  flex: 1;
+}
+
+.cell {
+  width: 40px;
+  height: 30px;
+  border: 1px solid #333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+}
+
+.cell.working-hour {
   background-color: #3498db;
   color: white;
-  border: none;
-  padding: 0.5rem 1rem;
-  margin-right: 0.5rem;
-  border-radius: 5px;
-  cursor: pointer;
+}
+
+.cell.current-hour {
+  background-color: #2ecc71;
+  font-weight: bold;
 }
 
 footer {
   text-align: center;
   padding: 1rem;
-  background-color: #222;
+  background-color: #111;
   color: #aaa;
   font-size: 0.9rem;
 }
