@@ -6,10 +6,8 @@
   <title>Meet on Time | Timezone Meeting Planner</title>
   <meta name="description" content="Coordinate meeting times across timezones with ease">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="style.css" />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="app-container">
@@ -138,8 +136,47 @@
     </div>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/luxon@3/build/global/luxon.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/luxon-timezones@1/build/global/luxon-timezones.min.js"></script>
-  <script src="script.js"></script>
+  <!-- Load Luxon with fallback handling -->
+  <script>
+    function loadScript(src, integrity, crossorigin) {
+      return new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = src;
+        if (integrity) script.integrity = integrity;
+        if (crossorigin) script.crossOrigin = crossorigin;
+        script.onload = resolve;
+        script.onerror = reject;
+        document.head.appendChild(script);
+      });
+    }
+
+    // Load scripts with fallbacks
+    Promise.all([
+      loadScript('https://cdn.jsdelivr.net/npm/luxon@3/build/global/luxon.min.js'),
+      loadScript('https://cdn.jsdelivr.net/npm/luxon-timezones@1/build/global/luxon-timezones.min.js')
+    ]).then(() => {
+      // Check if timezone data loaded
+      if (!luxon.Settings.defaultZone.availableZones || 
+          luxon.Settings.defaultZone.availableZones.length === 0) {
+        console.error('Timezone data not loaded - trying fallback');
+        return loadScript('https://cdn.jsdelivr.net/npm/luxon-timezones@1/build/global/luxon-timezones.min.js');
+      }
+    }).then(() => {
+      // Load main app script
+      const appScript = document.createElement('script');
+      appScript.src = 'script.js';
+      document.body.appendChild(appScript);
+    }).catch(error => {
+      console.error('Failed to load scripts:', error);
+      document.body.innerHTML = `
+        <div class="error-container">
+          <h2>Error Loading Application</h2>
+          <p>Failed to load required resources. Please check your internet connection and refresh the page.</p>
+          <button onclick="window.location.reload()">Refresh Page</button>
+          <p>If the problem persists, try again later or contact support.</p>
+        </div>
+      `;
+    });
+  </script>
 </body>
 </html>
