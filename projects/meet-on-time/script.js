@@ -114,3 +114,157 @@ if (localStorage.getItem("theme") === "light") {
 // Local timezone display
 document.getElementById("local-zone").textContent =
   "Your Timezone: " + Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+const hoursPanel = document.getElementById("custom-hours-panel");
+
+function createWorkingHourConfig(city) {
+  const wrapper = document.createElement("div");
+  wrapper.className = "working-hour-config";
+  wrapper.innerHTML = \`
+    <strong>\${city.name}</strong>:
+    Start <select class="start-hour">\${generateHourOptions()}</select>
+    End <select class="end-hour">\${generateHourOptions(9, 18)}</select>
+  \`;
+
+  wrapper.querySelector(".start-hour").addEventListener("change", () => updateTimelines());
+  wrapper.querySelector(".end-hour").addEventListener("change", () => updateTimelines());
+
+  city.configElement = wrapper;
+  hoursPanel.appendChild(wrapper);
+}
+
+function generateHourOptions(start=0, end=24) {
+  let options = "";
+  for (let i = start; i <= end; i++) {
+    options += \`<option value="\${i}">\${i.toString().padStart(2, "0")}</option>\`;
+  }
+  return options;
+}
+
+function getCustomHours(city) {
+  if (!city.configElement) return [9, 17];
+  const start = parseInt(city.configElement.querySelector(".start-hour").value);
+  const end = parseInt(city.configElement.querySelector(".end-hour").value);
+  return [start, end];
+}
+
+function renderCityTimelineWithCustomHours(city) {
+  const nowUTC = luxon.DateTime.utc();
+  const row = document.createElement('div');
+  row.className = 'timeline-row';
+
+  const cityName = document.createElement('div');
+  cityName.className = 'city-name';
+  cityName.textContent = city.name;
+  row.appendChild(cityName);
+
+  const timeline = document.createElement('div');
+  timeline.className = 'timeline-cells';
+  const utcWorkingHours = [];
+  const [startH, endH] = getCustomHours(city);
+
+  for (let h = 0; h < 24; h++) {
+    const utcTime = nowUTC.set({ hour: h, minute: 0 });
+    const localTime = utcTime.setZone(city.zone);
+    const hourBox = document.createElement('div');
+    hourBox.className = 'cell';
+    hourBox.textContent = localTime.toFormat("HH");
+
+    const hourNum = localTime.hour;
+    if (hourNum >= startH && hourNum < endH) {
+      hourBox.classList.add('working-hour');
+      utcWorkingHours.push(h);
+    }
+
+    if (hourNum === localTime.hour && h === nowUTC.hour) {
+      hourBox.classList.add('current-hour');
+    }
+
+    timeline.appendChild(hourBox);
+  }
+
+  row.appendChild(timeline);
+  document.getElementById("rows-container").appendChild(row);
+  workingRanges.push(utcWorkingHours);
+}
+
+function updateTimelines() {
+  document.getElementById("rows-container").innerHTML = "";
+  workingRanges = [];
+  cities.forEach(renderCityTimelineWithCustomHours);
+  highlightOverlap();
+}
+
+// Update addCity function to include working hour UI
+addCityBtn.addEventListener("click", () => {
+  const cityName = cityInput.value.trim().toLowerCase();
+  if (!timeZoneMap[cityName]) {
+    alert("City not recognized or supported.");
+    return;
+  }
+  const cityZone = timeZoneMap[cityName];
+  if (cities.find(c => c.zone === cityZone)) {
+    alert("City already added.");
+    return;
+  }
+  const city = { name: cityInput.value.trim(), zone: cityZone };
+  cities.push(city);
+  createWorkingHourConfig(city);
+  renderCityTimelineWithCustomHours(city);
+  highlightOverlap();
+  cityInput.value = "";
+});
+
+// Set config panel for existing cities
+cities.forEach(createWorkingHourConfig);
+updateTimelines();
+
+let selectedDate = luxon.DateTime.utc().startOf("day");
+
+flatpickr("#meeting-date", {
+  defaultDate: new Date(),
+  onChange: function(selectedDates) {
+    selectedDate = luxon.DateTime.fromJSDate(selectedDates[0]).startOf("day");
+    updateTimelines();
+  }
+});
+
+function renderCityTimelineWithCustomHours(city) {
+  const row = document.createElement('div');
+  row.className = 'timeline-row';
+  const cityName = document.createElement('div');
+  cityName.className = 'city-name';
+  cityName.textContent = city.name;
+  row.appendChild(cityName);
+
+  const timeline = document.createElement('div');
+  timeline.className = 'timeline-cells';
+  const utcWorkingHours = [];
+  const [startH, endH] = getCustomHours(city);
+
+  for (let h = 0; h < 24; h++) {
+    const utcTime = selectedDate.set({ hour: h });
+    const localTime = utcTime.setZone(city.zone);
+    const hourBox = document.createElement('div');
+    hourBox.className = 'cell';
+    hourBox.textContent = localTime.toFormat("HH");
+
+    const hourNum = localTime.hour;
+    if (hourNum >= startH && hourNum < endH) {
+      hourBox.classList.add('working-hour');
+      utcWorkingHours.push(h);
+    }
+
+    if (selectedDate.hasSame(luxon.DateTime.utc(), 'day') && h === luxon.DateTime.utc().hour) {
+      hourBox.classList.add('current-hour');
+    }
+
+    timeline.appendChild(hourBox);
+  }
+
+  row.appendChild(timeline);
+  document.getElementById("rows-container").appendChild(row);
+  workingRanges.push(utcWorkingHours);
+}
+
+updateTimelines();
