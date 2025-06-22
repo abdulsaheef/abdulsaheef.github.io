@@ -34,7 +34,6 @@ const customProjects = [
   {
     title: "Digital Compass APP",
     description: "Analog-style web compass using device orientation",
-    image: "projects/digital-compass/assets/thumb-compass.JPG",
     link: "projects/digital-compass/index.html"
   }
 ];
@@ -45,7 +44,6 @@ customProjects.forEach(project => {
   card.setAttribute("data-aos", "fade-up");
 
   card.innerHTML = `
-    <img src="${project.image}" alt="${project.title}" class="project-thumb">
     <h3>${project.title}</h3>
     <p>${project.description}</p>
     <a href="${project.link}" target="_blank" class="btn">Launch</a>
