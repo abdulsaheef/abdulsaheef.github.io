@@ -3,21 +3,51 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Time Lens – A Visual Timeline</title>
-  <link rel="stylesheet" href="style.css" />
+  <title>Time Lens</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="event-card" class="hidden">
-  <img id="card-image" src="" alt="">
-  <div class="card-content">
-    <h2 id="card-title"></h2>
-    <p id="card-year"></p>
-    <p id="card-description"></p>
+  <div id="app-container">
+
+    <!-- Page 1: Splash Cover -->
+    <section class="page cover">
+      <div class="cover-content">
+        <h1>Time Lens</h1>
+        <p class="tagline">Explore the story of time like never before</p>
+        <div class="scroll-indicator">⇨ Swipe</div>
+      </div>
+    </section>
+
+    <!-- Page 2: Guidance -->
+    <section class="page guide">
+      <div class="guide-content">
+        <h2>How It Works</h2>
+        <ul>
+          <li>🌀 Pinch to zoom in/out of the timeline spiral</li>
+          <li>🔄 Drag to rotate and explore events in time</li>
+          <li>🖱 Tap or click a glowing dot to reveal its story</li>
+          <li>📜 Double-tap anywhere to close event card</li>
+        </ul>
+        <p class="note">Every dot is a moment in history. Navigate freely.</p>
+      </div>
+    </section>
+
+    <!-- Page 3: Interactive Viewer -->
+    <section class="page viewer">
+      <canvas id="timelineCanvas"></canvas>
+
+      <div id="event-card" class="hidden">
+        <img id="card-image" src="" alt="Event image">
+        <div class="card-content">
+          <h2 id="card-title">Title</h2>
+          <p id="card-year">Year</p>
+          <p id="card-description">Description</p>
+        </div>
+      </div>
+    </section>
+
   </div>
-</div>
-  <div id="timeline-container">
-    <canvas id="timelineCanvas"></canvas>
-  </div>
+
   <script src="script.js"></script>
 </body>
 </html>
