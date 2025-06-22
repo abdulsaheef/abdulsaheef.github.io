@@ -10,7 +10,11 @@
 <body>
   <header>
     <h1>Meet on Time</h1>
-    <button id="exit-btn">Exit</button>
+    <div>
+      <span id="local-zone"></span>
+      <button id="mode-toggle">☀️/🌙</button>
+      <button id="exit-btn">Exit</button>
+    </div>
   </header>
 
   <main>
@@ -18,37 +22,14 @@
       <div class="timeline-row header">
         <div class="city-name">UTC</div>
         <div class="timeline-cells">
-          <!-- Hours 0–23 -->
-          <div class="cell" data-hour="0">0</div>
-          <div class="cell" data-hour="1">1</div>
-          <div class="cell" data-hour="2">2</div>
-          <div class="cell" data-hour="3">3</div>
-          <div class="cell" data-hour="4">4</div>
-          <div class="cell" data-hour="5">5</div>
-          <div class="cell" data-hour="6">6</div>
-          <div class="cell" data-hour="7">7</div>
-          <div class="cell" data-hour="8">8</div>
-          <div class="cell" data-hour="9">9</div>
-          <div class="cell" data-hour="10">10</div>
-          <div class="cell" data-hour="11">11</div>
-          <div class="cell" data-hour="12">12</div>
-          <div class="cell" data-hour="13">13</div>
-          <div class="cell" data-hour="14">14</div>
-          <div class="cell" data-hour="15">15</div>
-          <div class="cell" data-hour="16">16</div>
-          <div class="cell" data-hour="17">17</div>
-          <div class="cell" data-hour="18">18</div>
-          <div class="cell" data-hour="19">19</div>
-          <div class="cell" data-hour="20">20</div>
-          <div class="cell" data-hour="21">21</div>
-          <div class="cell" data-hour="22">22</div>
-          <div class="cell" data-hour="23">23</div>
+          <!-- Hour cells -->
+          <div class="cell selectable" data-hour="0">0</div><div class="cell selectable" data-hour="1">1</div><div class="cell selectable" data-hour="2">2</div><div class="cell selectable" data-hour="3">3</div><div class="cell selectable" data-hour="4">4</div><div class="cell selectable" data-hour="5">5</div><div class="cell selectable" data-hour="6">6</div><div class="cell selectable" data-hour="7">7</div><div class="cell selectable" data-hour="8">8</div><div class="cell selectable" data-hour="9">9</div><div class="cell selectable" data-hour="10">10</div><div class="cell selectable" data-hour="11">11</div><div class="cell selectable" data-hour="12">12</div><div class="cell selectable" data-hour="13">13</div><div class="cell selectable" data-hour="14">14</div><div class="cell selectable" data-hour="15">15</div><div class="cell selectable" data-hour="16">16</div><div class="cell selectable" data-hour="17">17</div><div class="cell selectable" data-hour="18">18</div><div class="cell selectable" data-hour="19">19</div><div class="cell selectable" data-hour="20">20</div><div class="cell selectable" data-hour="21">21</div><div class="cell selectable" data-hour="22">22</div><div class="cell selectable" data-hour="23">23</div>
         </div>
       </div>
-      <div id="rows-container">
-        <!-- Timeline rows will be inserted here -->
-      </div>
+      <div id="rows-container"></div>
     </section>
+    <div id="selection-info"></div>
+    <div id="share-summary"></div>
   </main>
 
   <footer>
