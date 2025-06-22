@@ -4,23 +4,34 @@ const ctx = canvas.getContext("2d");
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-function drawSpiral(events) {
-  const cx = canvas.width / 2;
-  const cy = canvas.height / 2;
+let centerX = canvas.width / 2;
+let centerY = canvas.height / 2;
+let zoom = 1;
+let angleOffset = 0;
+let isDragging = false;
+let lastAngle = 0;
 
+let events = [];
+
+fetch("events.json")
+  .then(res => res.json())
+  .then(data => {
+    events = data;
+    draw();
+  });
+
+function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
+  const baseRadius = Math.min(centerX, centerY) * 0.9;
 
-  const maxRadius = Math.min(cx, cy) - 50;
-  const totalTurns = 5;
-  const spacing = maxRadius / (events.length + 2);
+  events.forEach((event, i) => {
+    const angle = i * 0.3 + angleOffset;
+    const radius = (i + 1) * 30 * zoom;
 
-  for (let i = 0; i < events.length; i++) {
-    const angle = i * 0.3;
-    const radius = spacing * i;
-    const x = cx + radius * Math.cos(angle);
-    const y = cy + radius * Math.sin(angle);
+    const x = centerX + radius * Math.cos(angle);
+    const y = centerY + radius * Math.sin(angle);
 
-    // Event Dot
+    // Draw dot
     ctx.beginPath();
     ctx.arc(x, y, 6, 0, Math.PI * 2);
     ctx.fillStyle = "#00ffe7";
@@ -28,23 +39,36 @@ function drawSpiral(events) {
     ctx.shadowColor = "#00ffe7";
     ctx.fill();
 
-    // Optional: Label
+    // Label
+    ctx.shadowBlur = 0;
     ctx.font = "12px Segoe UI";
     ctx.fillStyle = "#ccc";
-    ctx.shadowBlur = 0;
-    ctx.fillText(events[i].title, x + 10, y);
-  }
+    ctx.fillText(event.title, x + 10, y);
+  });
+
+  requestAnimationFrame(draw); // Live update
 }
 
-// Test data (replace with JSON fetch later)
-const testEvents = [
-  { year: -3000, title: "Writing Invented" },
-  { year: 0, title: "Start of CE" },
-  { year: 1066, title: "Norman Conquest" },
-  { year: 1776, title: "US Independence" },
-  { year: 1969, title: "Moon Landing" },
-  { year: 2024, title: "You Built This 😎" },
-  { year: 2050, title: "AI Singularity?" }
-];
+// Zoom on scroll
+canvas.addEventListener("wheel", e => {
+  e.preventDefault();
+  const delta = e.deltaY > 0 ? 0.9 : 1.1;
+  zoom *= delta;
+  zoom = Math.max(0.3, Math.min(zoom, 3));
+});
 
-drawSpiral(testEvents);
+// Drag to rotate
+canvas.addEventListener("mousedown", e => {
+  isDragging = true;
+  lastAngle = Math.atan2(e.clientY - centerY, e.clientX - centerX);
+});
+
+canvas.addEventListener("mousemove", e => {
+  if (!isDragging) return;
+  const currentAngle = Math.atan2(e.clientY - centerY, e.clientX - centerX);
+  angleOffset += currentAngle - lastAngle;
+  lastAngle = currentAngle;
+});
+
+canvas.addEventListener("mouseup", () => isDragging = false);
+canvas.addEventListener("mouseleave", () => isDragging = false);
