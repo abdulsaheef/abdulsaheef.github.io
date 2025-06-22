@@ -9,8 +9,9 @@
 <body>
   <div id="app-container">
 
-    <!-- Page 1: Splash Cover -->
+    <!-- PAGE 1: Splash Cover -->
     <section class="page cover">
+      <div class="parallax-bg stars"></div>
       <div class="cover-content">
         <h1>Time Lens</h1>
         <p class="tagline">Explore the story of time like never before</p>
@@ -18,8 +19,9 @@
       </div>
     </section>
 
-    <!-- Page 2: Guidance -->
+    <!-- PAGE 2: Guidance -->
     <section class="page guide">
+      <div class="parallax-bg gradient"></div>
       <div class="guide-content">
         <h2>How It Works</h2>
         <ul>
@@ -32,10 +34,14 @@
       </div>
     </section>
 
-    <!-- Page 3: Interactive Viewer -->
+    <!-- PAGE 3: Interactive Viewer -->
     <section class="page viewer">
       <canvas id="timelineCanvas"></canvas>
 
+      <!-- Exit/Home Button -->
+      <button id="exit-btn" onclick="scrollToPage(0)">⇦ Home</button>
+
+      <!-- Event Card -->
       <div id="event-card" class="hidden">
         <img id="card-image" src="" alt="Event image">
         <div class="card-content">
@@ -45,7 +51,6 @@
         </div>
       </div>
     </section>
-
   </div>
 
   <script src="script.js"></script>
