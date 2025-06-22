@@ -130,6 +130,64 @@ async function searchCities(query) {
     const zones = luxon.Settings.defaultZone.availableZones;
     const matches = [];
     
+    // Common city mappings to help with search
+    const cityMappings = {
+      'tokyo': 'Asia/Tokyo',
+      'new york': 'America/New_York',
+      'london': 'Europe/London',
+      'dubai': 'Asia/Dubai',
+      'paris': 'Europe/Paris',
+      'berlin': 'Europe/Berlin',
+      'mumbai': 'Asia/Kolkata',
+      'delhi': 'Asia/Kolkata',
+      'singapore': 'Asia/Singapore',
+      'sydney': 'Australia/Sydney',
+      'san francisco': 'America/Los_Angeles',
+      'los angeles': 'America/Los_Angeles',
+      'chicago': 'America/Chicago',
+      'toronto': 'America/Toronto',
+      'moscow': 'Europe/Moscow',
+      'beijing': 'Asia/Shanghai',
+      'shanghai': 'Asia/Shanghai',
+      'hong kong': 'Asia/Hong_Kong',
+      'seoul': 'Asia/Seoul'
+    };
+
+    // First check our common city mappings
+    const normalizedQuery = query.toLowerCase().trim();
+    if (cityMappings[normalizedQuery]) {
+      matches.push({
+        name: query.trim(),
+        zone: cityMappings[normalizedQuery],
+        region: cityMappings[normalizedQuery].split('/')[0].replace('_', ' ')
+      });
+      return matches;
+    }
+
+    // Search in the timezone database
+    for (const zone of zones) {
+      const lastSlash = zone.lastIndexOf('/');
+      if (lastSlash === -1) continue;
+      
+      const cityName = zone.substring(lastSlash + 1).replace(/_/g, ' ');
+      const region = zone.substring(0, lastSlash).replace(/\//g, ' › ');
+      
+      if (cityName.toLowerCase().includes(normalizedQuery)) {
+        matches.push({
+          name: cityName,
+          region,
+          zone
+        });
+      }
+    }
+    
+    return matches.slice(0, 10);
+  } catch (error) {
+    console.error('Error searching cities:', error);
+    return [];
+  }
+}
+    
     // Search in our known cities first
     for (const zone of zones) {
       const lastSlash = zone.lastIndexOf('/');
