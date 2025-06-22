@@ -1,1 +1,0 @@
-function navigateTo(i){ document.querySelectorAll('.page').forEach((p,idx)=>{ p.classList.toggle('active', idx===i); }); document.querySelectorAll('.dot').forEach((d,idx)=>{ d.classList.toggle('active', idx===i); }); }

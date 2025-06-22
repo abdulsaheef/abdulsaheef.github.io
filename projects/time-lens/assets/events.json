@@ -1,5 +1,0 @@
-[
-  { "year": -3000, "title": "Invention of Writing", "description": "Writing systems emerged in Mesopotamia around 3000 BCE.", "image": "assets/ui/writing.jpg" },
-  { "year": 1969, "title": "Moon Landing", "description": "Apollo 11 was the first mission to land humans on the Moon.", "image": "assets/ui/moon.jpg" },
-  { "year": 2024, "title": "Time Lens Launch", "description": "Saheef’s third project — a unique visual timeline experience.", "image": "assets/ui/timelens.jpg" }
-]
