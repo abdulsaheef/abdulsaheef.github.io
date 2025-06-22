@@ -12,10 +12,18 @@ let isDragging = false;
 let lastAngle = 0;
 let eventPositions = [];
 let time = 0;
-
 let events = [];
 
-// Load event data from JSON
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  centerX = canvas.width / 2;
+  centerY = canvas.height / 2;
+}
+window.addEventListener("resize", resizeCanvas);
+resizeCanvas();
+
+// Load events
 fetch("assets/events.json")
   .then(res => res.json())
   .then(data => {
@@ -23,7 +31,7 @@ fetch("assets/events.json")
     draw();
   });
 
-// Main draw loop
+// Draw spiral
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   eventPositions = [];
@@ -32,13 +40,11 @@ function draw() {
   events.forEach((event, i) => {
     const angle = i * 0.3 + angleOffset;
     const radius = (i + 1) * 30 * zoom + Math.sin(i + time) * 5;
-
     const x = centerX + radius * Math.cos(angle);
     const y = centerY + radius * Math.sin(angle);
 
     eventPositions.push({ x, y, event });
 
-    // Glow Dot
     ctx.beginPath();
     ctx.arc(x, y, 6, 0, Math.PI * 2);
     ctx.fillStyle = "#00ffe7";
@@ -46,7 +52,6 @@ function draw() {
     ctx.shadowColor = "#00ffe7";
     ctx.fill();
 
-    // Label
     ctx.shadowBlur = 0;
     ctx.font = "12px Segoe UI";
     ctx.fillStyle = "#ccc";
@@ -56,7 +61,7 @@ function draw() {
   requestAnimationFrame(draw);
 }
 
-// Zoom scroll
+// Zoom
 canvas.addEventListener("wheel", e => {
   e.preventDefault();
   const delta = e.deltaY > 0 ? 0.9 : 1.1;
@@ -64,31 +69,14 @@ canvas.addEventListener("wheel", e => {
   zoom = Math.max(0.3, Math.min(zoom, 3));
 });
 
-// Drag to rotate
+// Rotate
 canvas.addEventListener("mousedown", e => {
   isDragging = true;
   lastAngle = Math.atan2(e.clientY - centerY, e.clientX - centerX);
 });
 
 canvas.addEventListener("mousemove", e => {
-  if (!isDragging) {
-    // Cursor hover detection
-    const rect = canvas.getBoundingClientRect();
-    const mx = e.clientX - rect.left;
-    const my = e.clientY - rect.top;
-
-    let hovering = false;
-    for (let point of eventPositions) {
-      const dx = mx - point.x;
-      const dy = my - point.y;
-      if (Math.sqrt(dx * dx + dy * dy) < 12) {
-        hovering = true;
-        break;
-      }
-    }
-    canvas.style.cursor = hovering ? "pointer" : "default";
-    return;
-  }
+  if (!isDragging) return;
 
   const currentAngle = Math.atan2(e.clientY - centerY, e.clientX - centerX);
   angleOffset += currentAngle - lastAngle;
@@ -98,7 +86,7 @@ canvas.addEventListener("mousemove", e => {
 canvas.addEventListener("mouseup", () => isDragging = false);
 canvas.addEventListener("mouseleave", () => isDragging = false);
 
-// Click to show card
+// Touch card
 canvas.addEventListener("click", e => {
   const rect = canvas.getBoundingClientRect();
   const mx = e.clientX - rect.left;
@@ -114,14 +102,13 @@ canvas.addEventListener("click", e => {
   }
 });
 
-// Double-click to hide card
+// Hide card
 canvas.addEventListener("dblclick", () => {
   const card = document.getElementById("event-card");
   card.classList.remove("visible");
   card.classList.add("hidden");
 });
 
-// Show event card
 function showCard(event, x, y) {
   const card = document.getElementById("event-card");
   document.getElementById("card-title").textContent = event.title;
@@ -135,4 +122,3 @@ function showCard(event, x, y) {
   card.classList.remove("hidden");
   card.classList.add("visible");
 }
-
