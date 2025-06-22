@@ -233,3 +233,101 @@ function showSelectionInfo() {
   container.textContent = infoText;
   updateShareSummary(fromUTC, toUTC);
 }
+
+const cityInput = document.getElementById("city-input");
+const addCityBtn = document.getElementById("add-city-btn");
+
+const timeZoneMap = {
+  "new york": "America/New_York",
+  "london": "Europe/London",
+  "dubai": "Asia/Dubai",
+  "tokyo": "Asia/Tokyo",
+  "delhi": "Asia/Kolkata",
+  "sydney": "Australia/Sydney",
+  "berlin": "Europe/Berlin",
+  "toronto": "America/Toronto",
+  "moscow": "Europe/Moscow",
+  "singapore": "Asia/Singapore",
+  "san francisco": "America/Los_Angeles",
+  "chicago": "America/Chicago"
+};
+
+function addCityByName(name) {
+  const cityKey = name.trim().toLowerCase();
+  if (!timeZoneMap[cityKey]) {
+    alert("City not recognized or supported yet.");
+    return;
+  }
+  const cityZone = timeZoneMap[cityKey];
+  if (cities.find(c => c.zone === cityZone)) {
+    alert("City already added.");
+    return;
+  }
+
+  const city = { name: name.trim(), zone: cityZone };
+  cities.push(city);
+  renderCityTimeline(city);
+  updateOverlap();
+}
+
+function renderCityTimeline(city) {
+  const nowUTC = luxon.DateTime.utc();
+  const row = document.createElement('div');
+  row.className = 'timeline-row';
+
+  const cityName = document.createElement('div');
+  cityName.className = 'city-name';
+  cityName.textContent = city.name;
+  row.appendChild(cityName);
+
+  const timeline = document.createElement('div');
+  timeline.className = 'timeline-cells';
+  const utcWorkingHours = [];
+
+  for (let h = 0; h < 24; h++) {
+    const utcTime = nowUTC.set({ hour: h, minute: 0 });
+    const localTime = utcTime.setZone(city.zone);
+    const hourBox = document.createElement('div');
+    hourBox.className = 'cell';
+    hourBox.textContent = localTime.toFormat("HH");
+
+    const hourNum = parseInt(localTime.toFormat("HH"));
+    if (hourNum >= 9 && hourNum < 17) {
+      hourBox.classList.add('working-hour');
+      utcWorkingHours.push(h);
+    }
+
+    if (hourNum === localTime.hour && h === nowUTC.hour) {
+      hourBox.classList.add('current-hour');
+    }
+
+    timeline.appendChild(hourBox);
+  }
+
+  row.appendChild(timeline);
+  document.getElementById("rows-container").appendChild(row);
+  workingRanges.push(utcWorkingHours);
+}
+
+function updateOverlap() {
+  const overlap = workingRanges.reduce((a, b) => a.filter(c => b.includes(c)), workingRanges[0] || []);
+  document.querySelectorAll(".timeline-row").forEach((row, idx) => {
+    const cells = row.querySelectorAll(".cell");
+    overlap.forEach(hour => {
+      if (cells[hour]) {
+        cells[hour].classList.add("overlap-hour");
+      }
+    });
+  });
+}
+
+addCityBtn.addEventListener("click", () => {
+  addCityByName(cityInput.value);
+  cityInput.value = "";
+});
+
+// Fix toggle button re-initialization
+document.getElementById("mode-toggle").addEventListener("click", () => {
+  document.body.classList.toggle("light-mode");
+  localStorage.setItem("theme", document.body.classList.contains("light-mode") ? "light" : "dark");
+});
