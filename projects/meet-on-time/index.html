@@ -14,25 +14,48 @@
   </header>
 
   <main>
-    <div class="input-section">
-      <label for="city-input">Add City:</label>
-      <input type="text" id="city-input" placeholder="Enter a city..." />
-      <button id="add-city-btn">Add</button>
-    </div>
-    <div id="timeline-container">
-      <!-- Timelines will be generated here -->
-    </div>
-    <div id="selected-time-display"></div>
-    <div class="controls">
-      <button id="share-btn">Share</button>
-      <button id="reset-btn">Reset</button>
-    </div>
+    <section class="timeline-grid">
+      <div class="timeline-row header">
+        <div class="city-name">UTC</div>
+        <div class="timeline-cells">
+          <!-- Hours 0–23 -->
+          <div class="cell" data-hour="0">0</div>
+          <div class="cell" data-hour="1">1</div>
+          <div class="cell" data-hour="2">2</div>
+          <div class="cell" data-hour="3">3</div>
+          <div class="cell" data-hour="4">4</div>
+          <div class="cell" data-hour="5">5</div>
+          <div class="cell" data-hour="6">6</div>
+          <div class="cell" data-hour="7">7</div>
+          <div class="cell" data-hour="8">8</div>
+          <div class="cell" data-hour="9">9</div>
+          <div class="cell" data-hour="10">10</div>
+          <div class="cell" data-hour="11">11</div>
+          <div class="cell" data-hour="12">12</div>
+          <div class="cell" data-hour="13">13</div>
+          <div class="cell" data-hour="14">14</div>
+          <div class="cell" data-hour="15">15</div>
+          <div class="cell" data-hour="16">16</div>
+          <div class="cell" data-hour="17">17</div>
+          <div class="cell" data-hour="18">18</div>
+          <div class="cell" data-hour="19">19</div>
+          <div class="cell" data-hour="20">20</div>
+          <div class="cell" data-hour="21">21</div>
+          <div class="cell" data-hour="22">22</div>
+          <div class="cell" data-hour="23">23</div>
+        </div>
+      </div>
+      <div id="rows-container">
+        <!-- Timeline rows will be inserted here -->
+      </div>
+    </section>
   </main>
 
   <footer>
     <p>© 2025 Abdul Saheef | <a href="https://github.com/abdulsaheef" target="_blank">GitHub</a></p>
   </footer>
 
+  <script src="https://cdn.jsdelivr.net/npm/luxon@3/build/global/luxon.min.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
