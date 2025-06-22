@@ -59,3 +59,6 @@ canvas {
   pointer-events: auto;
 }
 
+canvas {
+  cursor: pointer;
+}
