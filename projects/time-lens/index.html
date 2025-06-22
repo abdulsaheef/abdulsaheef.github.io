@@ -17,11 +17,6 @@
         <p class="tagline">Explore the story of time like never before</p>
         <div class="scroll-indicator">⇨ Swipe</div>
       </div>
-      <div class="nav-buttons">
-  <button onclick="scrollToPage(0)">◀</button>
-  <button onclick="scrollToPage(1)">●</button>
-  <button onclick="scrollToPage(2)">▶</button>
-</div>
     </section>
 
     <!-- PAGE 2: Guidance -->
@@ -59,5 +54,13 @@
   </div>
 
   <script src="script.js"></script>
+
+
+<!-- Arrow Navigation Buttons -->
+<div class="arrow-nav">
+  <button id="arrow-left" onclick="scrollToPage(currentPage - 1)">◀</button>
+  <button id="arrow-right" onclick="scrollToPage(currentPage + 1)">▶</button>
+</div>
+
 </body>
 </html>
