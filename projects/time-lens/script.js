@@ -10,9 +10,11 @@ let zoom = 1;
 let angleOffset = 0;
 let isDragging = false;
 let lastAngle = 0;
+let eventPositions = [];
 
 let events = [];
 
+// Load data from JSON
 fetch("assets/events.json")
   .then(res => res.json())
   .then(data => {
@@ -20,9 +22,10 @@ fetch("assets/events.json")
     draw();
   });
 
+// Draw spiral and event dots
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  const baseRadius = Math.min(centerX, centerY) * 0.9;
+  eventPositions = [];
 
   events.forEach((event, i) => {
     const angle = i * 0.3 + angleOffset;
@@ -30,6 +33,9 @@ function draw() {
 
     const x = centerX + radius * Math.cos(angle);
     const y = centerY + radius * Math.sin(angle);
+
+    // Store position for click detection
+    eventPositions.push({ x, y, event });
 
     // Draw dot
     ctx.beginPath();
@@ -39,17 +45,17 @@ function draw() {
     ctx.shadowColor = "#00ffe7";
     ctx.fill();
 
-    // Label
+    // Draw label
     ctx.shadowBlur = 0;
     ctx.font = "12px Segoe UI";
     ctx.fillStyle = "#ccc";
     ctx.fillText(event.title, x + 10, y);
   });
 
-  requestAnimationFrame(draw); // Live update
+  requestAnimationFrame(draw);
 }
 
-// Zoom on scroll
+// Zoom in/out with scroll
 canvas.addEventListener("wheel", e => {
   e.preventDefault();
   const delta = e.deltaY > 0 ? 0.9 : 1.1;
@@ -57,7 +63,7 @@ canvas.addEventListener("wheel", e => {
   zoom = Math.max(0.3, Math.min(zoom, 3));
 });
 
-// Drag to rotate
+// Drag to rotate spiral
 canvas.addEventListener("mousedown", e => {
   isDragging = true;
   lastAngle = Math.atan2(e.clientY - centerY, e.clientX - centerX);
@@ -72,3 +78,41 @@ canvas.addEventListener("mousemove", e => {
 
 canvas.addEventListener("mouseup", () => isDragging = false);
 canvas.addEventListener("mouseleave", () => isDragging = false);
+
+// Detect click on dot to show card
+canvas.addEventListener("click", e => {
+  const rect = canvas.getBoundingClientRect();
+  const mx = e.clientX - rect.left;
+  const my = e.clientY - rect.top;
+
+  for (let point of eventPositions) {
+    const dx = mx - point.x;
+    const dy = my - point.y;
+    if (Math.sqrt(dx * dx + dy * dy) < 12) {
+      showCard(point.event, mx, my);
+      return;
+    }
+  }
+});
+
+// Show floating info card
+function showCard(event, x, y) {
+  const card = document.getElementById("event-card");
+  document.getElementById("card-title").textContent = event.title;
+  document.getElementById("card-year").textContent = `${event.year}`;
+  document.getElementById("card-description").textContent = event.description;
+  document.getElementById("card-image").src = event.image;
+
+  card.style.left = `${x + 15}px`;
+  card.style.top = `${y - 50}px`;
+
+  card.classList.remove("hidden");
+  card.classList.add("visible");
+}
+
+// Hide card on double-click
+canvas.addEventListener("dblclick", () => {
+  const card = document.getElementById("event-card");
+  card.classList.remove("visible");
+  card.classList.add("hidden");
+});
