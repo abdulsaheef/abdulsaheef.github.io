@@ -168,3 +168,108 @@ document.addEventListener('keydown', (e) => {
         navigateTo(currentPage + 1);
     }
 });
+
+// After existing code...
+
+// 3D Timeline Rendering
+function draw() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  
+  // Draw wormhole effect
+  ctx.save();
+  ctx.translate(centerX, centerY);
+  ctx.rotate(time * 0.01);
+  drawWormhole();
+  ctx.restore();
+
+  // Draw 3D spiral
+  events.forEach((event, i) => {
+    const spiralProgress = i / events.length;
+    const angle = spiralProgress * Math.PI * 10 + angleOffset;
+    const radius = 50 + spiralProgress * 200 * zoom;
+    const zDepth = Math.sin(spiralProgress * Math.PI) * 100;
+    
+    // 3D perspective
+    const scale = 1 + zDepth / 200;
+    const x = centerX + radius * Math.cos(angle) * scale;
+    const y = centerY + radius * Math.sin(angle) * scale;
+    
+    // Draw glowing event dot
+    ctx.beginPath();
+    ctx.arc(x, y, 6 * scale, 0, Math.PI * 2);
+    ctx.fillStyle = getEraColor(event.year);
+    ctx.shadowBlur = 15 * scale;
+    ctx.shadowColor = getEraColor(event.year);
+    ctx.fill();
+    
+    // Label important events
+    if (event.major || scale > 1.2) {
+      ctx.font = `${12 * scale}px 'Space Grotesk'`;
+      ctx.fillStyle = "rgba(255,255,255,0.9)";
+      ctx.fillText(event.title, x + 15 * scale, y);
+    }
+  });
+  
+  requestAnimationFrame(draw);
+}
+
+function getEraColor(year) {
+  if (year < 0) return "#00f0ff"; // Ancient - Blue
+  if (year < 1500) return "#7b2dff"; // Medieval - Purple
+  if (year < 1900) return "#ff2d7b"; // Industrial - Pink
+  return "#2dff7b"; // Modern - Green
+}
+
+// AI Voice Command
+function startVoiceSearch() {
+  const recognition = new webkitSpeechRecognition();
+  recognition.onresult = (event) => {
+    const transcript = event.results[0][0].transcript;
+    document.querySelector('.time-search').value = transcript;
+    searchTimeline(transcript);
+  };
+  recognition.start();
+}
+
+function searchTimeline(query) {
+  // AI-powered search (simplified example)
+  const results = events.filter(event => 
+    event.title.toLowerCase().includes(query.toLowerCase()) || 
+    event.year.toString().includes(query)
+  );
+  
+  if (results.length) {
+    const event = results[0];
+    // Animate to event
+    const eventIndex = events.indexOf(event);
+    const targetAngle = (eventIndex / events.length) * Math.PI * 10;
+    angleOffset = targetAngle;
+    zoom = 1.5;
+    
+    // Show card
+    showCard(event, centerX, centerY);
+    updateTemporalGPS(event.year);
+  }
+}
+
+function updateTemporalGPS(year) {
+  const era = getEraName(year);
+  document.querySelector('.era-display').textContent = era;
+  document.querySelector('.year-display').textContent = year < 0 ? `${Math.abs(year)} BCE` : `${year} CE`;
+  
+  // Update progress
+  const minYear = -3000;
+  const maxYear = 2024;
+  const progress = (year - minYear) / (maxYear - minYear);
+  document.querySelector('.timeline-progress').style.width = `${progress * 100}%`;
+}
+
+function getEraName(year) {
+  if (year < -800) return "ANCIENT ERA";
+  if (year < 476) return "CLASSICAL ERA";
+  if (year < 1453) return "MEDIEVAL ERA";
+  if (year < 1789) return "EARLY MODERN";
+  if (year < 1914) return "INDUSTRIAL ERA";
+  return "MODERN ERA";
+}
+
