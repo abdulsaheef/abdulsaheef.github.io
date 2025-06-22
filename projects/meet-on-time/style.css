@@ -80,3 +80,18 @@ footer {
   color: #aaa;
   font-size: 0.9rem;
 }
+
+.cell.overlap-hour {
+  background-color: #27ae60 !important;
+  color: #fff;
+}
+
+.best-time {
+  background-color: #222;
+  color: #6be3a7;
+  padding: 1rem;
+  margin: 1rem 2rem;
+  border-radius: 8px;
+  white-space: pre-wrap;
+  font-weight: bold;
+}
