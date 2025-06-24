@@ -60,14 +60,14 @@ function createTimelineRow(city) {
   row.appendChild(cityName);
   // Remove button
   const removeBtn = document.createElement('button');
-  removeBtn.className = 'remove-city';
-  removeBtn.textContent = '×';
-  removeBtn.addEventListener('click', () => {
-    cities = cities.filter(c => c !== city);
-    saveCities();
-    renderAll();
-  });
-  row.appendChild(removeBtn);
+removeBtn.textContent = 'Remove';
+removeBtn.className = 'remove-city';
+removeBtn.onclick = () => {
+  cities = cities.filter(c => c !== city);
+  saveCities();
+  renderAll();
+};
+row.appendChild(removeBtn);
   // Timeline cells
   const timeline = document.createElement('div');
   timeline.className = 'timeline-cells';
