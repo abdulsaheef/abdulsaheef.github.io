@@ -5,7 +5,7 @@ body {
   background-color: #0c0c0c;
   color: #f0f0f0;
 }
-/* Header & Buttons */
+
 header {
   display: flex;
   justify-content: space-between;
@@ -13,43 +13,62 @@ header {
   background-color: #111;
   padding: 1rem 2rem;
 }
+
 header h1 {
   margin: 0;
   font-size: 1.5rem;
 }
-header button {
-  margin-left: 10px;
-  background-color: #3498db;
-  border: none;
+
+#exit-btn {
+  background-color: #e74c3c;
   color: white;
-  padding: 0.4rem 0.8rem;
-  border-radius: 4px;
-  cursor: pointer;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
   font-weight: bold;
+  cursor: pointer;
 }
-header button:hover {
-  background-color: #2980b9;
-}
-/* Timeline */
+
 .timeline-grid {
   padding: 2rem;
   overflow-x: auto;
 }
+
 .timeline-row {
   display: flex;
   align-items: center;
   margin-bottom: 10px;
 }
+
 .city-name {
   width: 100px;
   text-align: right;
   padding-right: 1rem;
   font-weight: bold;
 }
+
+.city-row {
+  position: relative;
+}
+
+.remove-city {
+  margin-left: 8px;
+  background: transparent;
+  border: none;
+  color: #e74c3c;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.city-name[contenteditable="true"] {
+  border-bottom: 1px dashed #888;
+}
+
 .timeline-cells {
   display: flex;
   flex: 1;
 }
+
 .cell {
   width: 40px;
   height: 30px;
@@ -59,62 +78,25 @@ header button:hover {
   justify-content: center;
   font-size: 0.85rem;
 }
+
 .cell.working-hour {
   background-color: #3498db;
   color: white;
 }
+
 .cell.current-hour {
   background-color: #2ecc71;
   font-weight: bold;
 }
+
 .cell.overlap-hour {
   background-color: #27ae60 !important;
   color: #fff;
 }
-.cell.selectable:hover {
+
+.selectable:hover {
   background-color: #555 !important;
   cursor: pointer;
-}
-.city-input {
-  padding: 1rem 2rem;
-  display: flex;
-  gap: 10px;
-}
-.city-input input {
-  flex: 1;
-  padding: 0.5rem;
-  border-radius: 4px;
-  border: none;
-  font-size: 1rem;
-}
-.city-input button {
-  background-color: #3498db;
-  border: none;
-  color: white;
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: bold;
-}
-.remove-city {
-  margin-left: 8px;
-  background-color: #e74c3c;
-  color: white;
-  border: none;
-  padding: 0.2rem 0.6rem;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: bold;
-}
-.remove-city:hover {
-  background-color: #c0392b;
-}
-footer {
-  text-align: center;
-  padding: 1rem;
-  background-color: #111;
-  color: #aaa;
-  font-size: 0.9rem;
 }
 
 #share-summary {
@@ -137,3 +119,39 @@ footer {
   cursor: pointer;
 }
 
+@media (max-width: 768px) {
+  .timeline-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .city-name {
+    padding-bottom: 0.3rem;
+  }
+  .timeline-cells {
+    flex-wrap: wrap;
+  }
+}
+
+.city-input {
+  padding: 1rem 2rem;
+  display: flex;
+  gap: 10px;
+}
+
+.city-input input {
+  flex: 1;
+  padding: 0.5rem;
+  border-radius: 4px;
+  border: none;
+  font-size: 1rem;
+}
+
+.city-input button {
+  background-color: #3498db;
+  border: none;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
