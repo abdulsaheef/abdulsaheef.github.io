@@ -11,8 +11,8 @@
     <h1>Meet on Time</h1>
     <div>
       <span id="local-zone"></span>
-      <button id="mode-toggle" title="Toggle Light/Dark Mode">🌓</button>
-      <button id="exit-btn">Exit</button>
+      <button id="reset-btn" title="Reset to default">Reset</button>
+      <button id="save-btn" title="Download Export">Save</button>
     </div>
   </header>
 
@@ -41,13 +41,11 @@
 
   <script src="https://cdn.jsdelivr.net/npm/luxon@3/build/global/luxon.min.js"></script>
   <script>
-    // Populate datalist with IANA time zones
     const zones = Intl.supportedValuesOf('timeZone');
     const datalist = document.getElementById('zones');
     zones.forEach(z => {
-      const friendly = z.split('/').pop().replace('_',' ');
       const opt = document.createElement('option');
-      opt.value = friendly;
+      opt.value = z.split('/').pop().replace('_',' ');
       datalist.appendChild(opt);
     });
   </script>
