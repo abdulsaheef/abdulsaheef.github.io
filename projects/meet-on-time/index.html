@@ -41,11 +41,13 @@
 
   <script src="https://cdn.jsdelivr.net/npm/luxon@3/build/global/luxon.min.js"></script>
   <script>
+    // Populate datalist with IANA time zones
     const zones = Intl.supportedValuesOf('timeZone');
     const datalist = document.getElementById('zones');
     zones.forEach(z => {
+      const friendly = z.split('/').pop().replace('_',' ');
       const opt = document.createElement('option');
-      opt.value = z.split('/').pop().replace('_',' ');
+      opt.value = friendly;
       datalist.appendChild(opt);
     });
   </script>
