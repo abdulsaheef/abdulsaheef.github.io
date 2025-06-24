@@ -19,14 +19,19 @@ header h1 {
   font-size: 1.5rem;
 }
 
-#exit-btn {
-  background-color: #e74c3c;
+#reset-btn, #save-btn {
+  background-color: #3498db;
   color: white;
   border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 5px;
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
   font-weight: bold;
+  margin-left: 10px;
   cursor: pointer;
+}
+
+#reset-btn:hover, #save-btn:hover {
+  background-color: #2980b9;
 }
 
 .timeline-grid {
