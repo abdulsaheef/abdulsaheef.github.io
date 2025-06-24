@@ -8,13 +8,6 @@ let cities = JSON.parse(localStorage.getItem('mot_cities')) || [
 ];
 let workingRanges = [];
 
-const timeZoneMap = {
-  "new york": "America/New_York", "london": "Europe/London", "dubai": "Asia/Dubai",
-  "tokyo": "Asia/Tokyo", "delhi": "Asia/Kolkata", "sydney": "Australia/Sydney",
-  "berlin": "Europe/Berlin", "toronto": "America/Toronto", "moscow": "Europe/Moscow",
-  "singapore": "Asia/Singapore", "san francisco": "America/Los_Angeles", "chicago": "America/Chicago"
-};
-
 const cityInput = document.getElementById("city-input");
 const addCityBtn = document.getElementById("add-city-btn");
 const rowsContainer = document.getElementById("rows-container");
@@ -33,6 +26,15 @@ if (localStorage.getItem("mot_theme") === "light") {
 // Local timezone display
 document.getElementById("local-zone").textContent =
   "Your Timezone: " + Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+// Resolve zone from friendly name
+function resolveZone(input) {
+  const val = input.trim().toLowerCase();
+  const zones = Intl.supportedValuesOf('timeZone');
+  if (zones.includes(input)) return input;
+  const found = zones.find(z => z.split('/').pop().replace('_',' ').toLowerCase() === val);
+  return found;
+}
 
 // Create a timeline row with removal and rename
 function createTimelineRow(city) {
@@ -117,11 +119,12 @@ function saveCities() {
 
 // Add city
 addCityBtn.addEventListener('click', ()=>{
-  const key = cityInput.value.trim().toLowerCase();
-  if (!timeZoneMap[key]) return alert('City not supported');
-  const zone = timeZoneMap[key];
+  const inputVal = cityInput.value.trim();
+  const zone = resolveZone(inputVal);
+  if (!zone) return alert('City not recognized. Please select from the list.');
   if (cities.some(c=>c.zone===zone)) return alert('Already added');
-  const city = {name: cityInput.value.trim(), zone};
+  const friendly = zone.split('/').pop().replace('_',' ');
+  const city = {name: friendly, zone};
   cities.push(city);
   saveCities();
   renderAll();
