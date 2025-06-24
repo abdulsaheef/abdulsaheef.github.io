@@ -13,15 +13,22 @@ const addCityBtn = document.getElementById("add-city-btn");
 const rowsContainer = document.getElementById("rows-container");
 const shareSummary = document.getElementById("share-summary");
 
-// Theme toggle
-const toggle = document.getElementById("mode-toggle");
-toggle.addEventListener("click", () => {
-  document.body.classList.toggle("light-mode");
-  localStorage.setItem("mot_theme", document.body.classList.contains("light-mode") ? "light" : "dark");
+document.getElementById("reset-btn").addEventListener("click", () => {
+  if (confirm("Reset all cities to default?")) {
+    localStorage.removeItem("mot_cities");
+    window.location.reload();
+  }
 });
-if (localStorage.getItem("mot_theme") === "light") {
-  document.body.classList.add("light-mode");
-}
+
+document.getElementById("save-btn").addEventListener("click", () => {
+  const blob = new Blob([document.getElementById("share-summary").innerText], { type: "text/plain;charset=utf-8" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = "MeetOnTime_Summary.txt";
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+});
 
 // Local timezone display
 document.getElementById("local-zone").textContent =
