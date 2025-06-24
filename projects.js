@@ -35,6 +35,12 @@ const customProjects = [
     title: "Digital Compass APP",
     description: "Analog-style web compass using device orientation",
     link: "projects/digital-compass/index.html"
+  },
+  {
+    title: "Meet on Time",
+    description: "A smart time zone meeting scheduler that helps you find overlapping working hours across cities worldwide. Visual, responsive, and export-ready — perfect for remote teams and global collaborators.
+",
+    link: "projects/meet-on-time/index.html"
   }
 ];
 
