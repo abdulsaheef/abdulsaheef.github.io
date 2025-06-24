@@ -155,3 +155,18 @@ header h1 {
   cursor: pointer;
   font-weight: bold;
 }
+
+.remove-city {
+  margin-left: 10px;
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+.remove-city:hover {
+  background-color: #c0392b;
+}
+
