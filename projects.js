@@ -38,7 +38,7 @@ const customProjects = [
   },
   {
     title: "Meet on Time",
-    description: "A smart time zone meeting scheduler that helps find overlapping working hours across cities worldwide. Visual, responsive, and export-ready — perfect for remote teams and global collaborators",
+    description: "A smart time zone meeting scheduler that helps find overlapping working hours across cities worldwide",
     link: "projects/meet-on-time/index.html"
   }
 ];
