@@ -116,3 +116,24 @@ footer {
   color: #aaa;
   font-size: 0.9rem;
 }
+
+#share-summary {
+  background-color: #222;
+  color: #6be3a7;
+  padding: 1rem;
+  margin: 1rem 2rem;
+  border-radius: 8px;
+  white-space: pre-wrap;
+  font-weight: bold;
+}
+
+#share-summary button {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  padding: 0.3rem 0.6rem;
+  margin-left: 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
