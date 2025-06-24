@@ -18,7 +18,8 @@
 
   <main>
     <section class="city-input">
-      <input type="text" id="city-input" placeholder="Enter city name (e.g., Tokyo)" />
+      <input list="zones" id="city-input" placeholder="Enter city (e.g., Paris)" />
+      <datalist id="zones"></datalist>
       <button id="add-city-btn">Add City</button>
     </section>
 
@@ -26,7 +27,7 @@
       <div class="timeline-row header">
         <div class="city-name">UTC</div>
         <div class="timeline-cells">
-          <div class="cell selectable" data-hour="0">0</div><div class="cell selectable" data-hour="1">1</div><div class="cell selectable" data-hour="2">2</div><div class="cell selectable" data-hour="3">3</div><div class="cell selectable" data-hour="4">4</div><div class="cell selectable" data-hour="5">5</div><div class="cell selectable" data-hour="6">6</div><div class="cell selectable" data-hour="7">7</div><div class="cell selectable" data-hour="8">8</div><div class="cell selectable" data-hour="9">9</div><div class="cell selectable" data-hour="10">10</div><div class="cell selectable" data-hour="11">11</div><div class="cell selectable" data-hour="12">12</div><div class="cell selectable" data-hour="13">13</div><div class="cell selectable" data-hour="14">14</div><div class="cell selectable" data-hour="15">15</div><div class="cell selectable" data-hour="16">16</div><div class="cell selectable" data-hour="17">17</div><div class="cell selectable" data-hour="18">18</div><div class="cell selectable" data-hour="19">19</div><div class="cell selectable" data-hour="20">20</div><div class="cell selectable" data-hour="21">21</div><div class="cell selectable" data-hour="22">22</div><div class="cell selectable" data-hour="23">23</div>
+<div class="cell selectable" data-hour="0">0</div><div class="cell selectable" data-hour="1">1</div><div class="cell selectable" data-hour="2">2</div><div class="cell selectable" data-hour="3">3</div><div class="cell selectable" data-hour="4">4</div><div class="cell selectable" data-hour="5">5</div><div class="cell selectable" data-hour="6">6</div><div class="cell selectable" data-hour="7">7</div><div class="cell selectable" data-hour="8">8</div><div class="cell selectable" data-hour="9">9</div><div class="cell selectable" data-hour="10">10</div><div class="cell selectable" data-hour="11">11</div><div class="cell selectable" data-hour="12">12</div><div class="cell selectable" data-hour="13">13</div><div class="cell selectable" data-hour="14">14</div><div class="cell selectable" data-hour="15">15</div><div class="cell selectable" data-hour="16">16</div><div class="cell selectable" data-hour="17">17</div><div class="cell selectable" data-hour="18">18</div><div class="cell selectable" data-hour="19">19</div><div class="cell selectable" data-hour="20">20</div><div class="cell selectable" data-hour="21">21</div><div class="cell selectable" data-hour="22">22</div><div class="cell selectable" data-hour="23">23</div>
         </div>
       </div>
       <div id="rows-container"></div>
@@ -39,6 +40,17 @@
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/luxon@3/build/global/luxon.min.js"></script>
+  <script>
+    // Populate datalist with IANA time zones
+    const zones = Intl.supportedValuesOf('timeZone');
+    const datalist = document.getElementById('zones');
+    zones.forEach(z => {
+      const friendly = z.split('/').pop().replace('_',' ');
+      const opt = document.createElement('option');
+      opt.value = friendly;
+      datalist.appendChild(opt);
+    });
+  </script>
   <script src="script.js"></script>
 </body>
 </html>
