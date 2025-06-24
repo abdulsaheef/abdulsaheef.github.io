@@ -162,16 +162,19 @@ header h1 {
 }
 
 .remove-city {
-  margin-left: 10px;
   background-color: #e74c3c;
   color: white;
+  padding: 2px 6px;
+  font-size: 0.7rem;
   border: none;
-  padding: 0.2rem 0.6rem;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: bold;
+  border-radius: 3px;
+  font-weight: normal;
+  margin-left: 6px;
+  opacity: 0.85;
+  transition: background-color 0.3s ease, opacity 0.3s ease;
 }
 .remove-city:hover {
   background-color: #c0392b;
+  opacity: 1;
 }
 
