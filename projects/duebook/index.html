@@ -1,0 +1,55 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>DueBook | Premium UI</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="container">
+    <h1>DueBook</h1>
+    <form id="paymentForm">
+      <div class="field">
+        <input type="text" id="nickname" placeholder=" " required />
+        <label for="nickname">Vendor Nickname</label>
+      </div>
+      <div class="field">
+        <input type="text" id="legalname" placeholder=" " required />
+        <label for="legalname">Legal Name</label>
+      </div>
+      <div class="field">
+        <input type="number" id="amount" placeholder=" " required />
+        <label for="amount">Amount</label>
+      </div>
+      <div class="field">
+        <select id="terms">
+          <option value="">Choose Terms</option>
+          <option value="net15">Net 15</option>
+          <option value="net30">Net 30</option>
+          <option value="custom">Custom</option>
+        </select>
+        <label for="terms">Payment Terms</label>
+      </div>
+      <div class="field">
+        <input type="number" id="customDays" placeholder=" " />
+        <label for="customDays">Custom Days</label>
+      </div>
+      <div class="field">
+        <select id="priority">
+          <option value="">Priority</option>
+          <option value="low">Low</option>
+          <option value="medium">Medium</option>
+          <option value="high">High</option>
+        </select>
+        <label for="priority">Priority</label>
+      </div>
+      <button type="submit">Add Vendor</button>
+    </form>
+    <div class="success" id="successMsg">✔ Payment added successfully!</div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
