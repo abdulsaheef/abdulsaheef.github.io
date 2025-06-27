@@ -1,0 +1,169 @@
+
+:root {
+  --bg-gradient: linear-gradient(135deg, #4b0082, #1e90ff);
+  --card-bg: rgba(255, 255, 255, 0.1);
+  --card-border: rgba(255, 255, 255, 0.2);
+  --text-color: #ffffff;
+  --accent: #8e44ad;
+  --accent-light: #a29bfe;
+  --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  --shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  min-height: 100dvh;
+  background: var(--bg-gradient);
+  color: var(--text-color);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow-x: hidden;
+  position: relative;
+  padding: 2rem;
+}
+
+body::before {
+  content: '';
+  position: absolute;
+  width: 200%;
+  height: 200%;
+  background: url('https://www.transparenttextures.com/patterns/cubes.png') repeat;
+  opacity: 0.03;
+  animation: scrollBackground 60s linear infinite;
+}
+
+@keyframes scrollBackground {
+  from { transform: translate(0, 0); }
+  to { transform: translate(-500px, -500px); }
+}
+
+.container {
+  width: 100%;
+  max-width: 500px;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 16px;
+  padding: 2rem;
+  backdrop-filter: blur(20px);
+  box-shadow: var(--shadow);
+  position: relative;
+  z-index: 1;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 2rem;
+  font-size: 2rem;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.field {
+  position: relative;
+}
+
+input, select {
+  width: 100%;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--card-border);
+  border-radius: 8px;
+  color: white;
+  outline: none;
+  transition: var(--transition);
+  font-size: 1rem;
+}
+
+input:focus, select:focus {
+  border-color: var(--accent-light);
+  box-shadow: 0 0 10px var(--accent-light);
+}
+
+label {
+  position: absolute;
+  top: 0.8rem;
+  left: 1rem;
+  font-size: 0.9rem;
+  color: #aaa;
+  transition: var(--transition);
+  pointer-events: none;
+}
+
+input:focus + label,
+input:not(:placeholder-shown) + label,
+select:focus + label,
+select:not([value=""]) + label {
+  top: -0.8rem;
+  left: 0.8rem;
+  background: var(--card-bg);
+  padding: 0 0.3rem;
+  font-size: 0.75rem;
+  color: var(--accent-light);
+}
+
+button {
+  background: var(--accent);
+  border: none;
+  padding: 1rem;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+
+button::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -75%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(120deg, transparent, rgba(255,255,255,0.4), transparent);
+  transform: skewX(-20deg);
+  transition: none;
+}
+
+button:hover::after {
+  left: 125%;
+  transition: left 1s ease-in-out;
+}
+
+button:hover {
+  background: #9b59b6;
+  transform: scale(1.03);
+}
+
+.success {
+  margin-top: 1rem;
+  text-align: center;
+  color: #2ecc71;
+  font-weight: 600;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: var(--transition);
+}
+
+.success.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (max-width: 480px) {
+  h1 {
+    font-size: 1.5rem;
+  }
+}
