@@ -4,52 +4,49 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>DueBook | Premium UI</title>
-  <link rel="stylesheet" href="style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <title>DueBook - Vendor Planner</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="container">
-    <h1>DueBook</h1>
-    <form id="paymentForm">
-      <div class="field">
-        <input type="text" id="nickname" placeholder=" " required />
-        <label for="nickname">Vendor Nickname</label>
-      </div>
-      <div class="field">
-        <input type="text" id="legalname" placeholder=" " required />
-        <label for="legalname">Legal Name</label>
-      </div>
-      <div class="field">
-        <input type="number" id="amount" placeholder=" " required />
-        <label for="amount">Amount</label>
-      </div>
-      <div class="field">
-        <select id="terms">
-          <option value="">Choose Terms</option>
-          <option value="net15">Net 15</option>
-          <option value="net30">Net 30</option>
-          <option value="custom">Custom</option>
-        </select>
-        <label for="terms">Payment Terms</label>
-      </div>
-      <div class="field">
-        <input type="number" id="customDays" placeholder=" " />
-        <label for="customDays">Custom Days</label>
-      </div>
-      <div class="field">
+  <nav class="app-nav">
+    <button data-tab="dashboard" class="active">Dashboard</button>
+    <button data-tab="vendors">Vendors</button>
+    <button data-tab="calendar">Calendar</button>
+    <button data-tab="settings">Settings</button>
+  </nav>
+
+  <main>
+    <section id="dashboard" class="tab-content active">
+      <h2>Welcome to DueBook</h2>
+      <p>Your smart vendor payment planner.</p>
+    </section>
+
+    <section id="vendors" class="tab-content">
+      <h2>Add Vendor</h2>
+      <form id="vendor-form">
+        <input type="text" placeholder="Nickname" id="nickname" required />
+        <input type="text" placeholder="Legal Name" id="legalName" required />
+        <input type="number" placeholder="Amount" id="amount" required />
+        <input type="number" placeholder="Terms (days)" id="terms" required />
         <select id="priority">
-          <option value="">Priority</option>
-          <option value="low">Low</option>
-          <option value="medium">Medium</option>
-          <option value="high">High</option>
+          <option value="Low">Low</option>
+          <option value="Medium">Medium</option>
+          <option value="High">High</option>
         </select>
-        <label for="priority">Priority</label>
-      </div>
-      <button type="submit">Add Vendor</button>
-    </form>
-    <div class="success" id="successMsg">✔ Payment added successfully!</div>
-  </div>
+        <button type="submit">Add</button>
+      </form>
+      <div id="vendor-list"></div>
+    </section>
+
+    <section id="calendar" class="tab-content">
+      <h2>Payout Calendar (Coming Soon)</h2>
+    </section>
+
+    <section id="settings" class="tab-content">
+      <h2>Settings (Coming Soon)</h2>
+    </section>
+  </main>
+
   <script src="script.js"></script>
 </body>
 </html>
