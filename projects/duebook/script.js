@@ -303,10 +303,6 @@ function removeVendor(index) {
 
 // Calendar
 function renderCalendar(monthOffset = 0) {
-  if (!calendarGrid) return;
-  
-  calendarGrid.innerHTML = '';
-  
   const today = new Date();
   today.setMonth(today.getMonth() + monthOffset);
   const currentMonth = today.getMonth();
