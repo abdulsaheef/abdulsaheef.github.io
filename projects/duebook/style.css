@@ -92,3 +92,17 @@ form input, form select, form button {
   cursor: grab;
   font-size: 0.85rem;
 }
+
+.vendor-draggable button {
+  float: right;
+  background: none;
+  color: white;
+  font-size: 1.1rem;
+  border: none;
+  margin-left: 10px;
+  cursor: pointer;
+}
+
+.vendor-draggable:hover {
+  background-color: rgba(0,0,0,0.2);
+}
