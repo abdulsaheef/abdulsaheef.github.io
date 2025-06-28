@@ -302,22 +302,58 @@ function removeVendor(index) {
 }
 
 // Calendar
+// Calendar with month navigation
 function renderCalendar(monthOffset = 0) {
+  // Clear existing calendar
+  if (!calendarGrid) return;
+  calendarGrid.innerHTML = '';
+
+  // Handle month navigation safely
   const today = new Date();
-  today.setMonth(today.getMonth() + monthOffset);
-  const currentMonth = today.getMonth();
-  const currentYear = today.getFullYear();
+  const viewDate = new Date(today);
+  viewDate.setMonth(viewDate.getMonth() + monthOffset);
+  
+  // Protect against invalid date (e.g., when going beyond year boundaries)
+  if (isNaN(viewDate.getTime())) {
+    console.error('Invalid date calculation');
+    return;
+  }
+
+  const currentMonth = viewDate.getMonth();
+  const currentYear = viewDate.getFullYear();
+  
+  // Get days in month (0 gives last day of previous month)
   const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+  
+  // Get first day of month (0-6 where 0 is Sunday)
   const firstDay = new Date(currentYear, currentMonth, 1).getDay();
 
-  // Create month header
+  // Create month/year header with navigation
   const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 
                      'July', 'August', 'September', 'October', 'November', 'December'];
-  const monthHeader = document.createElement('div');
-  monthHeader.className = 'calendar-month-header';
-  monthHeader.textContent = `${monthNames[currentMonth]} ${currentYear}`;
-  monthHeader.colSpan = 7;
-  calendarGrid.appendChild(monthHeader);
+  
+  const header = document.createElement('div');
+  header.className = 'calendar-header';
+  header.innerHTML = `
+    <button class="btn-nav" id="prev-month">←</button>
+    <h3>${monthNames[currentMonth]} ${currentYear}</h3>
+    <button class="btn-nav" id="next-month">→</button>
+  `;
+  calendarGrid.appendChild(header);
+
+  // Add navigation event listeners
+  document.getElementById('prev-month')?.addEventListener('click', () => {
+    renderCalendar(monthOffset - 1);
+  });
+  
+  document.getElementById('next-month')?.addEventListener('click', () => {
+    renderCalendar(monthOffset + 1);
+  });
+
+  // Rest of your calendar rendering code...
+  // [Keep your existing day headers and calendar grid rendering logic here]
+  // Make sure to use viewDate instead of today for comparisons
+}
 
   // Create day headers
   const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
