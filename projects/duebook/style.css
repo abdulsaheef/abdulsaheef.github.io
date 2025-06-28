@@ -279,7 +279,21 @@ main {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  grid-column: 1 / -1;
+  margin-bottom: 1rem;
+}
+
+.btn-nav {
+  background: transparent;
+  border: none;
+  color: var(--text-light);
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0 1rem;
+}
+
+.btn-nav:hover {
+  color: var(--accent);
 }
 
 #calendar-grid {
