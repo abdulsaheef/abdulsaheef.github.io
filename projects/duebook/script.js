@@ -14,15 +14,46 @@ tabs.forEach(btn => {
 const vendorForm = document.getElementById('vendor-form');
 const vendorList = document.getElementById('vendor-list');
 let vendors = JSON.parse(localStorage.getItem('vendors') || '[]');
+let scheduled = JSON.parse(localStorage.getItem('scheduled') || '{}');
+
+function saveScheduled() {
+  localStorage.setItem('scheduled', JSON.stringify(scheduled));
+}
+
+function updateDashboardSummary() {
+  const section = document.querySelector('#dashboard');
+  let total = vendors.reduce((sum, v) => sum + parseFloat(v.amount || 0), 0);
+  section.innerHTML = `<h2>Welcome to DueBook</h2>
+  <p>Your smart vendor payment planner.</p>
+  <div style="margin-top:1rem; background: rgba(255,255,255,0.1); padding:1rem; border-radius: 10px;">
+    <strong>Total Vendor Payments:</strong> AED ${total.toFixed(2)}
+  </div>`;
+}
 
 function renderVendors() {
   vendorList.innerHTML = '';
   vendors.forEach((v, i) => {
     const div = document.createElement('div');
     div.className = 'vendor-draggable';
-    div.textContent = `${v.nickname} - ${v.amount}`;
+    div.textContent = `${v.nickname} - AED ${v.amount}`;
     div.draggable = true;
     div.ondragstart = e => e.dataTransfer.setData('text/plain', i);
+
+    const removeBtn = document.createElement('button');
+    removeBtn.textContent = "×";
+    removeBtn.onclick = () => {
+      if (confirm("Remove this vendor?")) {
+        vendors.splice(i, 1);
+        localStorage.setItem("vendors", JSON.stringify(vendors));
+        delete scheduled[i];
+        saveScheduled();
+        renderVendors();
+        renderCalendar();
+        updateDashboardSummary();
+      }
+    };
+
+    div.appendChild(removeBtn);
     vendorList.appendChild(div);
   });
 }
@@ -41,24 +72,17 @@ vendorForm.addEventListener('submit', e => {
   vendorForm.reset();
   renderVendors();
   renderCalendar();
+  updateDashboardSummary();
 });
 
-renderVendors();
-
-const calendarGrid = document.getElementById('calendar-grid');
-const getMonthDays = (year, month) => new Date(year, month + 1, 0).getDate();
-const today = new Date();
-const year = today.getFullYear();
-const month = today.getMonth();
-const daysInMonth = getMonthDays(year, month);
-let scheduled = JSON.parse(localStorage.getItem('scheduled') || '{}');
-
-function saveScheduled() {
-  localStorage.setItem('scheduled', JSON.stringify(scheduled));
-}
-
 function renderCalendar() {
+  const calendarGrid = document.getElementById('calendar-grid');
   calendarGrid.innerHTML = '';
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = today.getMonth();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+
   for (let day = 1; day <= daysInMonth; day++) {
     const cell = document.createElement('div');
     cell.className = 'calendar-day';
@@ -94,4 +118,6 @@ function renderCalendar() {
   });
 }
 
+renderVendors();
 renderCalendar();
+updateDashboardSummary();
