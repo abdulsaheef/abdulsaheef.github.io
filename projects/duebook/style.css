@@ -137,3 +137,30 @@ form button:hover {
 .vendor-draggable:hover {
   opacity: 0.85;
 }
+
+@media (max-width: 768px) {
+  #calendar-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .calendar-day {
+    min-height: 100px;
+    padding: 0.6rem;
+    font-size: 0.85rem;
+  }
+
+  .vendor-draggable {
+    font-size: 0.75rem;
+    padding: 0.25rem;
+  }
+
+  nav.app-nav {
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+
+  nav button {
+    flex: 1 1 45%;
+    margin: 0.3rem 0;
+  }
+}
