@@ -1,85 +1,94 @@
 
 body {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Poppins', sans-serif;
   margin: 0;
-  background: linear-gradient(to right, #2e2e4e, #3f51b5);
+  padding: 0;
+  background: linear-gradient(to right, #1d2671, #c33764);
   color: #fff;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
 nav.app-nav {
   display: flex;
-  justify-content: space-around;
-  background-color: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(12px);
+  justify-content: center;
+  gap: 10px;
   padding: 1rem;
-  position: sticky;
-  top: 0;
 }
 
-nav.app-nav button {
-  background: transparent;
+nav button {
+  padding: 0.6rem 1.2rem;
   border: none;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.2);
   color: #fff;
-  font-size: 1rem;
-  padding: 0.5rem 1rem;
+  font-weight: bold;
   cursor: pointer;
   transition: 0.3s ease;
 }
 
-nav.app-nav button.active,
-nav.app-nav button:hover {
-  background-color: rgba(255, 255, 255, 0.2);
-  border-radius: 5px;
+nav button.active, nav button:hover {
+  background: #fff;
+  color: #1d2671;
+  transform: scale(1.05);
+}
+
+main {
+  flex: 1;
+  padding: 2rem;
 }
 
 .tab-content {
   display: none;
-  padding: 2rem;
-  animation: fadeIn 0.3s ease-in-out;
 }
 
 .tab-content.active {
   display: block;
 }
 
-form#vendor-form {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-bottom: 1rem;
-}
-
-form#vendor-form input,
-form#vendor-form select {
-  padding: 0.5rem;
-  border-radius: 5px;
+form input, form select, form button {
+  display: block;
+  width: 100%;
+  padding: 0.7rem;
+  margin: 0.5rem 0;
   border: none;
-  flex: 1 1 150px;
+  border-radius: 6px;
 }
 
-form#vendor-form button {
+#calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 10px;
+}
+
+.calendar-day {
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 1rem;
+  min-height: 120px;
+  position: relative;
+  backdrop-filter: blur(6px);
+  transition: background 0.3s ease;
+}
+
+.calendar-day.overlap {
+  background-color: rgba(255, 0, 0, 0.2);
+}
+
+.calendar-day h4 {
+  margin: 0 0 0.5rem;
+  font-size: 0.9rem;
+}
+
+.vendor-draggable {
   background-color: #00c9a7;
   color: #000;
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 5px;
-  cursor: pointer;
-  font-weight: bold;
-}
-
-#vendor-list {
-  margin-top: 1rem;
-}
-
-.vendor-card {
-  background-color: rgba(255, 255, 255, 0.1);
-  padding: 1rem;
-  margin-bottom: 0.5rem;
-  border-radius: 10px;
-  backdrop-filter: blur(8px);
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  margin: 0.3rem 0;
+  padding: 0.3rem;
+  border-radius: 4px;
+  cursor: grab;
+  font-size: 0.85rem;
 }
