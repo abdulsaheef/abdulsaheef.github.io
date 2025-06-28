@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>DueBook - Vendor Planner</title>
-  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="style.css" />
   <link rel="manifest" href="manifest.json" />
 </head>
 <body>
@@ -19,6 +19,9 @@
     <section id="dashboard" class="tab-content active">
       <h2>Welcome to DueBook</h2>
       <p>Your smart vendor payment planner.</p>
+      <div id="dashboard-summary" style="margin-top:1rem; background: rgba(255,255,255,0.1); padding:1rem; border-radius: 10px;">
+        <!-- Summary injected by JS -->
+      </div>
     </section>
 
     <section id="vendors" class="tab-content">
@@ -26,11 +29,11 @@
       <form id="vendor-form">
         <input type="text" placeholder="Nickname" id="nickname" required />
         <input type="text" placeholder="Legal Name" id="legalName" required />
-        <input type="number" placeholder="Amount" id="amount" required />
-        <input type="number" placeholder="Terms (days)" id="terms" required />
+        <input type="number" placeholder="Amount" id="amount" min="0" required />
+        <input type="number" placeholder="Terms (days)" id="terms" min="1" required />
         <select id="priority">
           <option value="Low">Low</option>
-          <option value="Medium">Medium</option>
+          <option value="Medium" selected>Medium</option>
           <option value="High">High</option>
         </select>
         <button type="submit">Add</button>
@@ -50,7 +53,7 @@
     </section>
   </main>
 
-  <script src="js/script.js"></script>
+  <script src="script.js"></script>
   <script>
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('service-worker.js');
