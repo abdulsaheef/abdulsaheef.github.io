@@ -1,4 +1,3 @@
-
 body {
   font-family: 'Poppins', sans-serif;
   margin: 0;
@@ -58,10 +57,23 @@ form input, form select, form button {
   border-radius: 6px;
 }
 
+form button {
+  background: #00c9a7;
+  color: #000;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+form button:hover {
+  background: #02b394;
+}
+
 #calendar-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   gap: 10px;
+  margin-top: 1rem;
 }
 
 .calendar-day {
@@ -72,6 +84,7 @@ form input, form select, form button {
   position: relative;
   backdrop-filter: blur(6px);
   transition: background 0.3s ease;
+  overflow-y: auto;
 }
 
 .calendar-day.overlap {
@@ -87,22 +100,40 @@ form input, form select, form button {
   background-color: #00c9a7;
   color: #000;
   margin: 0.3rem 0;
-  padding: 0.3rem;
+  padding: 0.3rem 0.5rem;
   border-radius: 4px;
   cursor: grab;
   font-size: 0.85rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.vendor-draggable.high {
+  background-color: #e03e3e;
+  color: #fff;
+}
+
+.vendor-draggable.medium {
+  background-color: #f59e0b;
+  color: #000;
+}
+
+.vendor-draggable.low {
+  background-color: #10b981;
+  color: #fff;
 }
 
 .vendor-draggable button {
-  float: right;
   background: none;
-  color: white;
+  color: inherit;
   font-size: 1.1rem;
   border: none;
   margin-left: 10px;
   cursor: pointer;
+  font-weight: bold;
 }
 
 .vendor-draggable:hover {
-  background-color: rgba(0,0,0,0.2);
+  opacity: 0.85;
 }
