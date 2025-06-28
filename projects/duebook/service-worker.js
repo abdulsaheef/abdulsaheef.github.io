@@ -1,20 +1,22 @@
-self.addEventListener("install", e => {
-  e.waitUntil(
-    caches.open("duebook-cache").then(cache => {
-      return cache.addAll([
-        "/",
-        "/index.html",
-        "/style.css",
-        "/script.js"
-      ]);
-    })
+const cacheName = 'duebook-cache-v1';
+const assetsToCache = [
+  './',
+  './index.html',
+  './style.css',
+  './script.js',
+  './manifest.json',
+  './icons/icon-192.png',
+  './icons/icon-512.png'
+];
+
+self.addEventListener('install', event => {
+  event.waitUntil(
+    caches.open(cacheName).then(cache => cache.addAll(assetsToCache))
   );
 });
 
-self.addEventListener("fetch", e => {
-  e.respondWith(
-    caches.match(e.request).then(response => {
-      return response || fetch(e.request);
-    })
+self.addEventListener('fetch', event => {
+  event.respondWith(
+    caches.match(event.request).then(response => response || fetch(event.request))
   );
 });
