@@ -1,108 +1,73 @@
 
 body {
-  font-family: 'Poppins', sans-serif;
   margin: 0;
-  padding: 0;
-  background: linear-gradient(to right, #1d2671, #c33764);
-  color: #fff;
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(135deg, #1d2671, #c33764);
+  color: white;
 }
-
-nav.app-nav {
+header {
+  background: rgba(0,0,0,0.2);
+  backdrop-filter: blur(10px);
   display: flex;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(12px);
-  justify-content: center;
-  gap: 10px;
-  padding: 1rem;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
 }
-
 nav button {
-  padding: 0.6rem 1.2rem;
-  border: none;
-  border-radius: 8px;
-  background: rgba(255,255,255,0.2);
-  color: #fff;
-  font-weight: bold;
-  cursor: pointer;
-  transition: 0.3s ease;
-}
-
-nav button.active, nav button:hover {
-  background: #fff;
+  margin: 0 0.5rem;
+  padding: 0.5rem 1rem;
+  background: white;
   color: #1d2671;
-  transform: scale(1.05);
-}
-
-main {
-  flex: 1;
-  padding: 2rem;
-}
-
-.tab-content {
-  display: none;
-}
-
-.tab-content.active {
-  display: block;
-}
-
-form input, form select, form button {
-  display: block;
-  width: 100%;
-  padding: 0.7rem;
-  margin: 0.5rem 0;
+  font-weight: bold;
   border: none;
   border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
-
-#calendar-grid {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 10px;
+nav button:hover {
+  transform: scale(1.05);
+  background: #f0f0f0;
 }
-
-.calendar-day {
-  background-color: rgba(255, 255, 255, 0.05);
-  border-radius: 8px;
-  padding: 1rem;
-  min-height: 120px;
-  position: relative;
-  backdrop-filter: blur(6px);
-  transition: background 0.3s ease;
+main {
+  padding: 2rem;
 }
-
-.calendar-day.overlap {
-  background-color: rgba(255, 0, 0, 0.2);
+.page { display: none; }
+.page.active { display: block; }
+form input, form select {
+  display: block;
+  margin: 0.5rem 0;
+  padding: 0.5rem;
+  width: 100%;
+  max-width: 400px;
 }
-
-.calendar-day h4 {
-  margin: 0 0 0.5rem;
-  font-size: 0.9rem;
-}
-
-.vendor-draggable {
-  background-color: #00c9a7;
-  color: #000;
-  margin: 0.3rem 0;
-  padding: 0.3rem;
-  border-radius: 4px;
-  cursor: grab;
-  font-size: 0.85rem;
-}
-
-.vendor-draggable button {
-  float: right;
-  background: none;
+form button {
+  margin-top: 1rem;
+  background: #27ae60;
   color: white;
-  font-size: 1.1rem;
   border: none;
-  margin-left: 10px;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
   cursor: pointer;
 }
-
-.vendor-draggable:hover {
+#calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+.card {
+  background: rgba(255,255,255,0.1);
+  border-radius: 10px;
+  padding: 1rem;
+  backdrop-filter: blur(5px);
+}
+button.remove-btn {
+  background: crimson;
+  margin-top: 0.5rem;
+  color: white;
+}
+footer {
+  text-align: center;
+  padding: 1rem;
   background-color: rgba(0,0,0,0.2);
+  margin-top: 2rem;
 }
