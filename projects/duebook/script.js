@@ -186,6 +186,7 @@ function renderCalendar() {
   const monthHeader = document.createElement('div');
   monthHeader.className = 'calendar-month-header';
   monthHeader.textContent = `${monthNames[currentMonth]} ${currentYear}`;
+  monthHeader.colSpan = 7;
   calendarGrid.appendChild(monthHeader);
 
   // Create day headers
@@ -597,11 +598,9 @@ function updateDashboard() {
   const upcoming = getUpcomingPayments().length;
   const highRisk = calculateRiskScores().filter(r => r.riskScore >= 7).length;
 
-  if (dashboardSummary) {
-    document.getElementById('total-payments').textContent = formatCurrency(total);
-    document.getElementById('upcoming-count').textContent = upcoming;
-    document.getElementById('high-risk-count').textContent = highRisk;
-  }
+  document.getElementById('total-payments').textContent = formatCurrency(total);
+  document.getElementById('upcoming-count').textContent = upcoming;
+  document.getElementById('high-risk-count').textContent = highRisk;
 }
 
 function getUpcomingPayments() {
@@ -699,17 +698,3 @@ function exportCSV() {
   
   showNotification('CSV exported successfully');
 }
-
-// Service Worker
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('service-worker.js')
-      .then(registration => {
-        console.log('ServiceWorker registration successful');
-      })
-      .catch(err => {
-        console.log('ServiceWorker registration failed: ', err);
-      });
-  });
-}
-
