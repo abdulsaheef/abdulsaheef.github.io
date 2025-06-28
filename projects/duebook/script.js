@@ -1,153 +1,174 @@
+// DOM Elements
 const tabs = document.querySelectorAll('nav button');
 const contents = document.querySelectorAll('.tab-content');
 const vendorForm = document.getElementById('vendor-form');
 const vendorList = document.getElementById('vendor-list');
-const dashboardSummary = document.getElementById('dashboard-summary');
 const calendarGrid = document.getElementById('calendar-grid');
 const exportBtn = document.getElementById('export-btn');
+const aiScheduleBtn = document.getElementById('ai-schedule-btn');
 const currencySelect = document.getElementById('currency-select');
+const riskThresholdInput = document.getElementById('risk-threshold');
+const saveSettingsBtn = document.getElementById('save-settings');
+const alertContainer = document.getElementById('alert-container');
+const aiInsightsContainer = document.getElementById('ai-insights');
+const notification = document.getElementById('notification');
 
-// Initialize data from localStorage or defaults
+// State
 let vendors = JSON.parse(localStorage.getItem('vendors') || '[]');
 let scheduled = JSON.parse(localStorage.getItem('scheduled') || '{}');
 let currency = localStorage.getItem('currency') || 'AED';
+let riskThreshold = parseInt(localStorage.getItem('riskThreshold')) || 7;
 
-// --- Navigation ---
-tabs.forEach(btn => {
-  btn.addEventListener('click', () => {
-    // Update active tab
-    tabs.forEach(b => b.classList.remove('active'));
-    contents.forEach(c => {
-      c.classList.remove('active');
-      c.hidden = true;
-    });
-    
-    btn.classList.add('active');
-    const content = document.getElementById(btn.dataset.tab);
-    content.classList.add('active');
-    content.hidden = false;
-  });
+// Initialize
+document.addEventListener('DOMContentLoaded', () => {
+  initNavigation();
+  initCurrencySelector();
+  renderVendors();
+  renderCalendar();
+  updateDashboard();
+  generateAlerts();
+  renderAIInsights();
+  
+  riskThresholdInput.value = riskThreshold;
 });
 
-// --- Currency Formatting ---
-function formatCurrency(value) {
-  return new Intl.NumberFormat('en', {
-    style: 'currency',
-    currency: currency
-  }).format(value);
+// Navigation
+function initNavigation() {
+  tabs.forEach(btn => {
+    btn.addEventListener('click', () => {
+      tabs.forEach(b => b.classList.remove('active'));
+      contents.forEach(c => c.classList.remove('active'));
+      
+      btn.classList.add('active');
+      document.getElementById(btn.dataset.tab).classList.add('active');
+    });
+  });
 }
 
-// --- Data Persistence ---
-function saveVendors() {
-  localStorage.setItem('vendors', JSON.stringify(vendors));
+// Currency
+function initCurrencySelector() {
+  const currencies = [
+    { code: "USD", name: "US Dollar" },
+    { code: "EUR", name: "Euro" },
+    { code: "GBP", name: "British Pound" },
+    { code: "AED", name: "UAE Dirham" },
+    { code: "INR", name: "Indian Rupee" },
+    { code: "JPY", name: "Japanese Yen" },
+    { code: "CAD", name: "Canadian Dollar" },
+    { code: "AUD", name: "Australian Dollar" }
+  ];
+
+  currencies.forEach(c => {
+    const option = document.createElement('option');
+    option.value = c.code;
+    option.textContent = `${c.code} - ${c.name}`;
+    currencySelect.appendChild(option);
+  });
+
+  currencySelect.value = currency;
 }
 
-function saveScheduled() {
-  localStorage.setItem('scheduled', JSON.stringify(scheduled));
-}
+// Vendor Management
+vendorForm?.addEventListener('submit', e => {
+  e.preventDefault();
+  
+  const vendor = {
+    nickname: document.getElementById('nickname').value.trim(),
+    legalName: document.getElementById('legalName').value.trim(),
+    amount: parseFloat(document.getElementById('amount').value),
+    terms: parseInt(document.getElementById('terms').value),
+    priority: document.getElementById('priority').value
+  };
 
-// --- Dashboard Functions ---
-function updateDashboardSummary() {
-  const total = vendors.reduce((sum, v) => sum + parseFloat(v.amount || 0), 0);
-  if (dashboardSummary) {
-    dashboardSummary.innerHTML = `<strong>Total Vendor Payments:</strong> ${formatCurrency(total)}`;
+  if (!vendor.nickname || !vendor.legalName || isNaN(vendor.amount) || isNaN(vendor.terms)) {
+    showNotification('Please fill all fields with valid data', 'error');
+    return;
   }
-}
 
-// --- Vendor Management ---
+  vendors.push(vendor);
+  saveVendors();
+
+  // Schedule initial payment
+  const today = new Date();
+  const dueDate = new Date(today.getTime() + vendor.terms * 86400000).toISOString().split('T')[0];
+  const vendorIndex = vendors.length - 1;
+  
+  if (!scheduled[vendorIndex]) scheduled[vendorIndex] = [];
+  if (!scheduled[vendorIndex].includes(dueDate)) {
+    scheduled[vendorIndex].push(dueDate);
+    saveScheduled();
+  }
+
+  vendorForm.reset();
+  renderVendors();
+  renderCalendar();
+  updateDashboard();
+  generateAlerts();
+  renderAIInsights();
+  showNotification('Vendor added successfully!');
+});
+
 function renderVendors() {
   if (!vendorList) return;
   
   vendorList.innerHTML = '';
   
-  vendors.forEach((v, i) => {
+  vendors.forEach((vendor, index) => {
     const vendorElement = document.createElement('div');
-    vendorElement.className = `vendor-item vendor-${v.priority.toLowerCase()}`;
+    vendorElement.className = 'vendor-item';
     vendorElement.innerHTML = `
       <div class="vendor-info">
-        <span class="vendor-name">${v.nickname}</span>
-        <span class="vendor-amount">${formatCurrency(v.amount)}</span>
+        <div>${vendor.nickname}</div>
+        <div>${formatCurrency(vendor.amount)}</div>
       </div>
-      <div class="vendor-actions">
-        <button class="btn-remove" aria-label="Remove vendor">×</button>
-      </div>
+      <div class="vendor-priority ${vendor.priority.toLowerCase()}">${vendor.priority}</div>
+      <button class="btn-remove" data-index="${index}">×</button>
     `;
     
     vendorElement.draggable = true;
-    vendorElement.dataset.vendorId = i;
+    vendorElement.dataset.vendorId = index;
     vendorElement.ondragstart = e => {
-      e.dataTransfer.setData('text/plain', i);
-      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', index);
     };
 
-    const removeBtn = vendorElement.querySelector('.btn-remove');
-    removeBtn.onclick = () => {
-      if (confirm(`Remove ${v.nickname} from vendors?`)) {
-        vendors.splice(i, 1);
-        
-        // Update scheduled payments to maintain correct indices
-        const newScheduled = {};
-        Object.entries(scheduled).forEach(([key, dates]) => {
-          const idx = parseInt(key);
-          if (idx === i) return;
-          const newIndex = idx > i ? idx - 1 : idx;
-          newScheduled[newIndex] = dates;
-        });
-        
-        scheduled = newScheduled;
-        saveVendors();
-        saveScheduled();
-        renderVendors();
-        renderCalendar();
-        updateDashboardSummary();
-      }
-    };
-    
     vendorList.appendChild(vendorElement);
+  });
+
+  // Add remove event listeners
+  document.querySelectorAll('.btn-remove').forEach(btn => {
+    btn.addEventListener('click', e => {
+      const index = parseInt(e.target.dataset.index);
+      removeVendor(index);
+    });
   });
 }
 
-// --- Vendor Form Submission ---
-vendorForm?.addEventListener('submit', e => {
-  e.preventDefault();
-  
-  const formData = new FormData(vendorForm);
-  const vendor = {
-    nickname: formData.get('nickname').trim(),
-    legalName: formData.get('legalName').trim(),
-    amount: parseFloat(formData.get('amount')),
-    terms: parseInt(formData.get('terms')),
-    priority: formData.get('priority')
-  };
-  
-  // Validate input
-  if (!vendor.nickname || !vendor.legalName || isNaN(vendor.amount) {
-    alert('Please fill all required fields with valid data');
-    return;
+function removeVendor(index) {
+  if (confirm(`Remove ${vendors[index].nickname}?`)) {
+    vendors.splice(index, 1);
+    
+    // Update scheduled payments
+    const newScheduled = {};
+    Object.entries(scheduled).forEach(([key, dates]) => {
+      const idx = parseInt(key);
+      if (idx === index) return;
+      const newIndex = idx > index ? idx - 1 : idx;
+      newScheduled[newIndex] = dates;
+    });
+    
+    scheduled = newScheduled;
+    saveVendors();
+    saveScheduled();
+    renderVendors();
+    renderCalendar();
+    updateDashboard();
+    generateAlerts();
+    renderAIInsights();
+    showNotification('Vendor removed successfully');
   }
-  
-  vendors.push(vendor);
-  saveVendors();
-  
-  // Calculate initial due date
-  const today = new Date();
-  const dueDate = new Date(today.getTime() + vendor.terms * 86400000)
-    .toISOString().split('T')[0];
-  
-  const vendorIndex = vendors.length - 1;
-  if (!scheduled[vendorIndex]) scheduled[vendorIndex] = [];
-  if (!scheduled[vendorIndex].includes(dueDate)) {
-    scheduled[vendorIndex].push(dueDate);
-  }
-  
-  saveScheduled();
-  vendorForm.reset();
-  renderVendors();
-  renderCalendar();
-  updateDashboardSummary();
-});
+}
 
-// --- Calendar Functions ---
+// Calendar
 function renderCalendar() {
   if (!calendarGrid) return;
   
@@ -157,110 +178,512 @@ function renderCalendar() {
   const currentMonth = today.getMonth();
   const currentYear = today.getFullYear();
   const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-  
-  // Create calendar header
+  const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+
+  // Create month header
   const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 
                      'July', 'August', 'September', 'October', 'November', 'December'];
-  const header = document.createElement('div');
-  header.className = 'calendar-header';
-  header.textContent = `${monthNames[currentMonth]} ${currentYear}`;
-  calendarGrid.appendChild(header);
-  
-  // Create calendar days grid
-  const daysGrid = document.createElement('div');
-  daysGrid.className = 'calendar-days-grid';
-  
+  const monthHeader = document.createElement('div');
+  monthHeader.className = 'calendar-month-header';
+  monthHeader.textContent = `${monthNames[currentMonth]} ${currentYear}`;
+  calendarGrid.appendChild(monthHeader);
+
+  // Create day headers
+  const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  dayNames.forEach(day => {
+    const dayHeader = document.createElement('div');
+    dayHeader.className = 'calendar-day-header';
+    dayHeader.textContent = day;
+    calendarGrid.appendChild(dayHeader);
+  });
+
+  // Add empty cells for days before the 1st
+  for (let i = 0; i < firstDay; i++) {
+    const emptyCell = document.createElement('div');
+    emptyCell.className = 'calendar-day empty';
+    calendarGrid.appendChild(emptyCell);
+  }
+
   // Add day cells
   for (let day = 1; day <= daysInMonth; day++) {
     const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
     const dayOfWeek = new Date(currentYear, currentMonth, day).getDay();
     const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
-    
+    const isToday = day === today.getDate() && currentMonth === today.getMonth() && currentYear === today.getFullYear();
+
     const cell = document.createElement('div');
-    cell.className = `calendar-day ${isWeekend ? 'weekend' : ''}`;
+    cell.className = `calendar-day ${isWeekend ? 'weekend' : ''} ${isToday ? 'today' : ''}`;
     cell.dataset.date = dateStr;
     cell.innerHTML = `<div class="day-number">${day}</div>`;
-    
+
     // Make cells droppable
-    cell.ondragover = e => {
-      e.preventDefault();
-      e.dataTransfer.dropEffect = 'move';
-      cell.classList.add('drop-target');
-    };
-    
-    cell.ondragleave = () => {
-      cell.classList.remove('drop-target');
-    };
-    
+    cell.ondragover = e => e.preventDefault();
     cell.ondrop = e => {
       e.preventDefault();
-      cell.classList.remove('drop-target');
-      
       const vendorIndex = e.dataTransfer.getData('text/plain');
-      if (!vendors[vendorIndex]) return;
-      
-      if (!scheduled[vendorIndex]) scheduled[vendorIndex] = [];
-      if (!scheduled[vendorIndex].includes(dateStr)) {
-        scheduled[vendorIndex].push(dateStr);
-        saveScheduled();
-        renderCalendar();
-      }
+      schedulePayment(vendorIndex, dateStr);
     };
-    
-    daysGrid.appendChild(cell);
+
+    calendarGrid.appendChild(cell);
   }
-  
-  calendarGrid.appendChild(daysGrid);
-  
+
   // Add scheduled payments to calendar
   Object.entries(scheduled).forEach(([vendorIdx, dates]) => {
     const vendor = vendors[vendorIdx];
     if (!vendor) return;
-    
+
     dates.forEach(date => {
       const cell = calendarGrid.querySelector(`.calendar-day[data-date="${date}"]`);
       if (cell) {
         const paymentElement = document.createElement('div');
         paymentElement.className = `calendar-payment payment-${vendor.priority.toLowerCase()}`;
         paymentElement.innerHTML = `
-          <span class="payment-name">${vendor.nickname}</span>
-          <span class="payment-amount">${formatCurrency(vendor.amount)}</span>
-          <button class="btn-remove-payment" aria-label="Remove payment">×</button>
+          <span>${vendor.nickname}</span>
+          <span>${formatCurrency(vendor.amount)}</span>
+          <button class="btn-remove-payment" data-vendor="${vendorIdx}" data-date="${date}">×</button>
         `;
         
         paymentElement.draggable = true;
         paymentElement.dataset.vendorId = vendorIdx;
         paymentElement.ondragstart = e => {
           e.dataTransfer.setData('text/plain', vendorIdx);
-          e.dataTransfer.effectAllowed = 'move';
         };
-        
-        const removeBtn = paymentElement.querySelector('.btn-remove-payment');
-        removeBtn.onclick = e => {
-          e.stopPropagation();
-          scheduled[vendorIdx] = scheduled[vendorIdx].filter(d => d !== date);
-          saveScheduled();
-          renderCalendar();
-        };
-        
+
         cell.appendChild(paymentElement);
-        
-        // Mark cells with multiple payments
-        if (cell.querySelectorAll('.calendar-payment').length > 2) {
-          cell.classList.add('overlap');
-        }
+      }
+    });
+  });
+
+  // Add remove payment event listeners
+  document.querySelectorAll('.btn-remove-payment').forEach(btn => {
+    btn.addEventListener('click', e => {
+      const vendorIdx = e.target.dataset.vendor;
+      const date = e.target.dataset.date;
+      removeScheduledPayment(vendorIdx, date);
+    });
+  });
+}
+
+function schedulePayment(vendorIndex, date) {
+  if (!scheduled[vendorIndex]) scheduled[vendorIndex] = [];
+  if (!scheduled[vendorIndex].includes(date)) {
+    scheduled[vendorIndex].push(date);
+    saveScheduled();
+    renderCalendar();
+    generateAlerts();
+    renderAIInsights();
+    showNotification('Payment scheduled');
+  }
+}
+
+function removeScheduledPayment(vendorIndex, date) {
+  scheduled[vendorIndex] = scheduled[vendorIndex].filter(d => d !== date);
+  saveScheduled();
+  renderCalendar();
+  generateAlerts();
+  renderAIInsights();
+  showNotification('Payment removed');
+}
+
+// AI Features
+function generateAlerts() {
+  if (!alertContainer) return;
+  
+  alertContainer.innerHTML = '';
+  
+  // 1. Check for payment concentration
+  const paymentConcentration = checkPaymentConcentration();
+  if (paymentConcentration.length > 0) {
+    paymentConcentration.forEach(alert => {
+      const alertElement = document.createElement('div');
+      alertElement.className = 'alert-item alert-danger';
+      alertElement.innerHTML = `
+        <div class="alert-icon">⚠️</div>
+        <div class="alert-content">
+          <strong>High Payment Concentration on ${alert.date}</strong>
+          <p>${alert.count} payments totaling ${formatCurrency(alert.total)} due on this day</p>
+          <button class="btn-secondary btn-fix" data-date="${alert.date}">Suggest Reschedule</button>
+        </div>
+      `;
+      alertContainer.appendChild(alertElement);
+    });
+  }
+
+  // 2. Check for high priority vendors with approaching due dates
+  const priorityAlerts = checkPriorityVendors();
+  if (priorityAlerts.length > 0) {
+    priorityAlerts.forEach(alert => {
+      const alertElement = document.createElement('div');
+      alertElement.className = 'alert-item alert-warning';
+      alertElement.innerHTML = `
+        <div class="alert-icon">⚠️</div>
+        <div class="alert-content">
+          <strong>High Priority Payment Due Soon</strong>
+          <p>${alert.vendor.nickname} (${formatCurrency(alert.vendor.amount)}) due in ${alert.daysLeft} days</p>
+          <button class="btn-secondary btn-fix" data-vendor="${alert.vendorIndex}" data-date="${alert.date}">Reschedule</button>
+        </div>
+      `;
+      alertContainer.appendChild(alertElement);
+    });
+  }
+
+  // 3. Check for risk scores
+  const riskAlerts = calculateRiskScores();
+  if (riskAlerts.length > 0) {
+    riskAlerts.forEach(alert => {
+      const alertElement = document.createElement('div');
+      alertElement.className = 'alert-item alert-info';
+      alertElement.innerHTML = `
+        <div class="alert-icon">ℹ️</div>
+        <div class="alert-content">
+          <strong>Risk Assessment</strong>
+          <p>${alert.vendor.nickname} has a risk score of ${alert.riskScore}/10 due to ${alert.reason}</p>
+        </div>
+      `;
+      alertContainer.appendChild(alertElement);
+    });
+  }
+
+  // Add event listeners to fix buttons
+  document.querySelectorAll('.btn-fix').forEach(btn => {
+    btn.addEventListener('click', e => {
+      if (btn.dataset.date) {
+        suggestReschedule(btn.dataset.date);
+      } else if (btn.dataset.vendor) {
+        const vendorIndex = btn.dataset.vendor;
+        const date = btn.dataset.date;
+        optimizeVendorSchedule(vendorIndex);
       }
     });
   });
 }
 
-// --- Export Functionality ---
+function renderAIInsights() {
+  if (!aiInsightsContainer) return;
+  
+  aiInsightsContainer.innerHTML = '';
+  
+  // 1. Payment concentration insight
+  const concentration = checkPaymentConcentration();
+  if (concentration.length > 0) {
+    const worstDay = concentration.reduce((max, day) => 
+      day.count > max.count ? day : max, concentration[0]);
+    
+    const insightElement = document.createElement('div');
+    insightElement.innerHTML = `
+      <p><strong>AI Insight:</strong> Your highest payment concentration is on ${worstDay.date} 
+      with ${worstDay.count} payments totaling ${formatCurrency(worstDay.total)}.</p>
+      <p>Consider spreading these payments to improve cash flow.</p>
+    `;
+    aiInsightsContainer.appendChild(insightElement);
+  }
+
+  // 2. Upcoming payments insight
+  const upcoming = getUpcomingPayments();
+  if (upcoming.length > 0) {
+    const insightElement = document.createElement('div');
+    insightElement.innerHTML = `
+      <p><strong>AI Insight:</strong> You have ${upcoming.length} payments coming up in the next 7 days.</p>
+    `;
+    aiInsightsContainer.appendChild(insightElement);
+  }
+
+  // 3. Risk insight
+  const risks = calculateRiskScores();
+  if (risks.length > 0) {
+    const highRisk = risks.filter(r => r.riskScore >= 7);
+    if (highRisk.length > 0) {
+      const insightElement = document.createElement('div');
+      insightElement.innerHTML = `
+        <p><strong>AI Insight:</strong> You have ${highRisk.length} high-risk vendors with risk scores ≥7.</p>
+        <p>Consider prioritizing these payments or negotiating better terms.</p>
+      `;
+      aiInsightsContainer.appendChild(insightElement);
+    }
+  }
+}
+
+function checkPaymentConcentration() {
+  const paymentDays = {};
+  
+  // Count payments per day
+  Object.entries(scheduled).forEach(([vendorIdx, dates]) => {
+    const vendor = vendors[vendorIdx];
+    if (!vendor) return;
+    
+    dates.forEach(date => {
+      if (!paymentDays[date]) {
+        paymentDays[date] = {
+          count: 0,
+          total: 0
+        };
+      }
+      paymentDays[date].count++;
+      paymentDays[date].total += vendor.amount;
+    });
+  });
+
+  // Filter days with more than 2 payments
+  return Object.entries(paymentDays)
+    .filter(([_, day]) => day.count > 2)
+    .map(([date, day]) => ({
+      date,
+      count: day.count,
+      total: day.total
+    }));
+}
+
+function checkPriorityVendors() {
+  const today = new Date();
+  const alerts = [];
+  
+  Object.entries(scheduled).forEach(([vendorIdx, dates]) => {
+    const vendor = vendors[vendorIdx];
+    if (!vendor || vendor.priority !== 'High') return;
+    
+    dates.forEach(date => {
+      const dueDate = new Date(date);
+      const daysLeft = Math.ceil((dueDate - today) / (1000 * 60 * 60 * 24));
+      
+      if (daysLeft <= riskThreshold) {
+        alerts.push({
+          vendor,
+          vendorIndex: vendorIdx,
+          date,
+          daysLeft
+        });
+      }
+    });
+  });
+  
+  return alerts;
+}
+
+function calculateRiskScores() {
+  const today = new Date();
+  const risks = [];
+  
+  vendors.forEach((vendor, index) => {
+    if (!scheduled[index] || scheduled[index].length === 0) return;
+    
+    const nextPaymentDate = new Date(scheduled[index][0]);
+    const daysUntilPayment = Math.ceil((nextPaymentDate - today) / (1000 * 60 * 60 * 24));
+    
+    let riskScore = 0;
+    let reason = '';
+    
+    // High priority increases risk
+    if (vendor.priority === 'High') {
+      riskScore += 3;
+      reason += 'high priority, ';
+    }
+    
+    // Short payment terms increase risk
+    if (vendor.terms < 15) {
+      riskScore += 2;
+      reason += 'short terms, ';
+    }
+    
+    // Large amount increases risk
+    if (vendor.amount > 10000) {
+      riskScore += 2;
+      reason += 'large amount, ';
+    }
+    
+    // Approaching due date increases risk
+    if (daysUntilPayment <= riskThreshold) {
+      riskScore += 3;
+      reason += 'approaching due date';
+    }
+    
+    if (riskScore > 0) {
+      risks.push({
+        vendor,
+        vendorIndex: index,
+        riskScore: Math.min(riskScore, 10), // Cap at 10
+        reason: reason.replace(/,\s*$/, '') // Remove trailing comma
+      });
+    }
+  });
+  
+  return risks.sort((a, b) => b.riskScore - a.riskScore);
+}
+
+function suggestReschedule(date) {
+  const vendorsOnDate = [];
+  
+  // Find all vendors scheduled on this date
+  Object.entries(scheduled).forEach(([vendorIdx, dates]) => {
+    if (dates.includes(date)) {
+      vendorsOnDate.push({
+        vendor: vendors[vendorIdx],
+        vendorIndex: vendorIdx
+      });
+    }
+  });
+
+  if (vendorsOnDate.length === 0) return;
+
+  // Sort by amount (descending)
+  vendorsOnDate.sort((a, b) => b.vendor.amount - a.vendor.amount);
+
+  // Keep the largest payment on original date
+  const keepVendor = vendorsOnDate.shift();
+
+  // Reschedule others to subsequent days
+  vendorsOnDate.forEach((vendor, i) => {
+    const newDate = new Date(date);
+    newDate.setDate(newDate.getDate() + i + 1);
+    const newDateStr = newDate.toISOString().split('T')[0];
+
+    // Remove from original date
+    scheduled[vendor.vendorIndex] = scheduled[vendor.vendorIndex].filter(d => d !== date);
+    
+    // Add to new date
+    if (!scheduled[vendor.vendorIndex].includes(newDateStr)) {
+      scheduled[vendor.vendorIndex].push(newDateStr);
+    }
+  });
+
+  saveScheduled();
+  renderCalendar();
+  generateAlerts();
+  renderAIInsights();
+  showNotification(`Rescheduled ${vendorsOnDate.length} payments from ${date}`);
+}
+
+function optimizeVendorSchedule(vendorIndex) {
+  const vendor = vendors[vendorIndex];
+  if (!vendor || !scheduled[vendorIndex] || scheduled[vendorIndex].length === 0) return;
+
+  const currentDate = new Date(scheduled[vendorIndex][0]);
+  const today = new Date();
+  
+  // If payment is within risk threshold, move it out
+  if ((currentDate - today) / (1000 * 60 * 60 * 24) <= riskThreshold) {
+    const newDate = new Date(currentDate);
+    newDate.setDate(newDate.getDate() + riskThreshold);
+    const newDateStr = newDate.toISOString().split('T')[0];
+
+    scheduled[vendorIndex] = [newDateStr];
+    saveScheduled();
+    renderCalendar();
+    generateAlerts();
+    renderAIInsights();
+    showNotification(`Rescheduled ${vendor.nickname} to ${newDateStr}`);
+  }
+}
+
+aiScheduleBtn?.addEventListener('click', () => {
+  // Find all high concentration days
+  const concentration = checkPaymentConcentration();
+  
+  if (concentration.length === 0) {
+    showNotification('No payment concentration issues found', 'info');
+    return;
+  }
+
+  // Reschedule each concentrated day
+  concentration.forEach(day => {
+    suggestReschedule(day.date);
+  });
+
+  showNotification('Optimized payment schedule based on AI recommendations');
+});
+
+// Dashboard
+function updateDashboard() {
+  const total = vendors.reduce((sum, v) => sum + (v.amount || 0), 0);
+  const upcoming = getUpcomingPayments().length;
+  const highRisk = calculateRiskScores().filter(r => r.riskScore >= 7).length;
+
+  if (dashboardSummary) {
+    document.getElementById('total-payments').textContent = formatCurrency(total);
+    document.getElementById('upcoming-count').textContent = upcoming;
+    document.getElementById('high-risk-count').textContent = highRisk;
+  }
+}
+
+function getUpcomingPayments() {
+  const today = new Date();
+  const nextWeek = new Date(today);
+  nextWeek.setDate(nextWeek.getDate() + 7);
+  
+  const upcoming = [];
+  
+  Object.entries(scheduled).forEach(([vendorIdx, dates]) => {
+    const vendor = vendors[vendorIdx];
+    if (!vendor) return;
+    
+    dates.forEach(date => {
+      const dueDate = new Date(date);
+      if (dueDate >= today && dueDate <= nextWeek) {
+        upcoming.push({
+          vendor,
+          date
+        });
+      }
+    });
+  });
+  
+  return upcoming;
+}
+
+// Settings
+saveSettingsBtn?.addEventListener('click', () => {
+  currency = currencySelect.value;
+  riskThreshold = parseInt(riskThresholdInput.value) || 7;
+  
+  localStorage.setItem('currency', currency);
+  localStorage.setItem('riskThreshold', riskThreshold.toString());
+  
+  renderCalendar();
+  updateDashboard();
+  generateAlerts();
+  renderAIInsights();
+  showNotification('Settings saved successfully');
+});
+
+// Helper Functions
+function formatCurrency(value) {
+  return new Intl.NumberFormat('en', {
+    style: 'currency',
+    currency: currency
+  }).format(value);
+}
+
+function saveVendors() {
+  localStorage.setItem('vendors', JSON.stringify(vendors));
+}
+
+function saveScheduled() {
+  localStorage.setItem('scheduled', JSON.stringify(scheduled));
+}
+
+function showNotification(message, type = 'success') {
+  if (!notification) return;
+  
+  notification.textContent = message;
+  notification.className = `notification ${type}`;
+  notification.classList.remove('hidden');
+  
+  setTimeout(() => {
+    notification.classList.add('hidden');
+  }, 3000);
+}
+
+// Export
+exportBtn?.addEventListener('click', exportCSV);
+
 function exportCSV() {
-  const csvHeader = `Nickname,Legal Name,Amount (${currency}),Terms (days),Priority,Due Dates\n`;
+  const csvHeader = `Vendor,Legal Name,Amount,Priority,Due Dates,Risk Score\n`;
   
   const csvBody = vendors.map((v, i) => {
     const dates = scheduled[i] ? scheduled[i].join('; ') : '';
-    return `"${v.nickname}","${v.legalName}",${v.amount},${v.terms},"${v.priority}","${dates}"`;
+    const risk = calculateRiskScores().find(r => r.vendorIndex === i);
+    const riskScore = risk ? risk.riskScore : 0;
+    
+    return `"${v.nickname}","${v.legalName}",${v.amount} ${currency},"${v.priority}","${dates}",${riskScore}`;
   }).join('\n');
   
   const csv = csvHeader + csvBody;
@@ -270,91 +693,23 @@ function exportCSV() {
   const link = document.createElement('a');
   link.href = url;
   link.download = `duebook_export_${new Date().toISOString().slice(0, 10)}.csv`;
-  link.style.display = 'none';
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
-  setTimeout(() => URL.revokeObjectURL(url), 100);
+  
+  showNotification('CSV exported successfully');
 }
 
-exportBtn?.addEventListener('click', exportCSV);
-
-// --- Currency Management ---
-const currencies = [
-  // Major currencies
-  { code: "USD", name: "US Dollar" },
-  { code: "EUR", name: "Euro" },
-  { code: "GBP", name: "British Pound" },
-  { code: "JPY", name: "Japanese Yen" },
-  { code: "AUD", name: "Australian Dollar" },
-  { code: "CAD", name: "Canadian Dollar" },
-  { code: "CHF", name: "Swiss Franc" },
-  { code: "CNY", name: "Chinese Yuan" },
-  { code: "HKD", name: "Hong Kong Dollar" },
-  { code: "SGD", name: "Singapore Dollar" },
-  
-  // Middle East
-  { code: "AED", name: "UAE Dirham" },
-  { code: "SAR", name: "Saudi Riyal" },
-  { code: "QAR", name: "Qatari Riyal" },
-  { code: "KWD", name: "Kuwaiti Dinar" },
-  { code: "OMR", name: "Omani Rial" },
-  
-  // Other popular currencies
-  { code: "INR", name: "Indian Rupee" },
-  { code: "KRW", name: "South Korean Won" },
-  { code: "MXN", name: "Mexican Peso" },
-  { code: "BRL", name: "Brazilian Real" },
-  { code: "ZAR", name: "South African Rand" },
-  { code: "RUB", name: "Russian Ruble" },
-  { code: "TRY", name: "Turkish Lira" },
-  { code: "SEK", name: "Swedish Krona" },
-  { code: "NZD", name: "New Zealand Dollar" }
-];
-
-// Initialize currency selector
-if (currencySelect) {
-  currencies.forEach(c => {
-    const option = document.createElement('option');
-    option.value = c.code;
-    option.textContent = `${c.code} - ${c.name}`;
-    currencySelect.appendChild(option);
-  });
-  
-  currencySelect.value = currency;
-  
-  currencySelect.addEventListener('change', () => {
-    currency = currencySelect.value;
-    localStorage.setItem('currency', currency);
-    updateDashboardSummary();
-    renderVendors();
-    renderCalendar();
+// Service Worker
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('service-worker.js')
+      .then(registration => {
+        console.log('ServiceWorker registration successful');
+      })
+      .catch(err => {
+        console.log('ServiceWorker registration failed: ', err);
+      });
   });
 }
 
-// --- Initialization ---
-document.addEventListener('DOMContentLoaded', () => {
-  // Show only the active tab content
-  contents.forEach(c => {
-    if (!c.classList.contains('active')) {
-      c.hidden = true;
-    }
-  });
-  
-  renderVendors();
-  renderCalendar();
-  updateDashboardSummary();
-  
-  // Service Worker registration
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('service-worker.js')
-        .then(registration => {
-          console.log('ServiceWorker registration successful with scope: ', registration.scope);
-        })
-        .catch(err => {
-          console.log('ServiceWorker registration failed: ', err);
-        });
-    });
-  }
-});
