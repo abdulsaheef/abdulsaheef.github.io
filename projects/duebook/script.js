@@ -1,99 +1,123 @@
 
-let data = JSON.parse(localStorage.getItem("vendors") || "[]");
+const tabs = document.querySelectorAll('nav button');
+const contents = document.querySelectorAll('.tab-content');
 
-document.getElementById("vendorForm").onsubmit = e => {
+tabs.forEach(btn => {
+  btn.addEventListener('click', () => {
+    tabs.forEach(b => b.classList.remove('active'));
+    contents.forEach(c => c.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.tab).classList.add('active');
+  });
+});
+
+const vendorForm = document.getElementById('vendor-form');
+const vendorList = document.getElementById('vendor-list');
+let vendors = JSON.parse(localStorage.getItem('vendors') || '[]');
+let scheduled = JSON.parse(localStorage.getItem('scheduled') || '{}');
+
+function saveScheduled() {
+  localStorage.setItem('scheduled', JSON.stringify(scheduled));
+}
+
+function updateDashboardSummary() {
+  const section = document.querySelector('#dashboard');
+  let total = vendors.reduce((sum, v) => sum + parseFloat(v.amount || 0), 0);
+  section.innerHTML = `<h2>Welcome to DueBook</h2>
+  <p>Your smart vendor payment planner.</p>
+  <div style="margin-top:1rem; background: rgba(255,255,255,0.1); padding:1rem; border-radius: 10px;">
+    <strong>Total Vendor Payments:</strong> AED ${total.toFixed(2)}
+  </div>`;
+}
+
+function renderVendors() {
+  vendorList.innerHTML = '';
+  vendors.forEach((v, i) => {
+    const div = document.createElement('div');
+    div.className = 'vendor-draggable';
+    div.textContent = `${v.nickname} - AED ${v.amount}`;
+    div.draggable = true;
+    div.ondragstart = e => e.dataTransfer.setData('text/plain', i);
+
+    const removeBtn = document.createElement('button');
+    removeBtn.textContent = "×";
+    removeBtn.onclick = () => {
+      if (confirm("Remove this vendor?")) {
+        vendors.splice(i, 1);
+        localStorage.setItem("vendors", JSON.stringify(vendors));
+        delete scheduled[i];
+        saveScheduled();
+        renderVendors();
+        renderCalendar();
+        updateDashboardSummary();
+      }
+    };
+
+    div.appendChild(removeBtn);
+    vendorList.appendChild(div);
+  });
+}
+
+vendorForm.addEventListener('submit', e => {
   e.preventDefault();
-  const nickname = document.getElementById("nickname").value;
-  const legalName = document.getElementById("legalName").value;
-  const start = new Date(document.getElementById("startDate").value);
-  const duration = parseInt(document.getElementById("duration").value);
-  const amount = parseFloat(document.getElementById("amount").value);
-  const priority = document.getElementById("priority").value;
-
-  const dueDate = new Date(start.getTime());
-  dueDate.setDate(start.getDate() + duration);
-
-  data.push({ nickname, legalName, due: dueDate.toISOString().split("T")[0], amount, priority });
-  localStorage.setItem("vendors", JSON.stringify(data));
-  alert("Saved!");
+  const v = {
+    nickname: nickname.value,
+    legalName: legalName.value,
+    amount: amount.value,
+    terms: terms.value,
+    priority: priority.value
+  };
+  vendors.push(v);
+  localStorage.setItem('vendors', JSON.stringify(vendors));
+  vendorForm.reset();
+  renderVendors();
   renderCalendar();
-  renderInsights();
-};
+  updateDashboardSummary();
+});
 
 function renderCalendar() {
-  const cal = document.getElementById("calendar-grid");
-  cal.innerHTML = "";
-  const dateMap = {};
-  data.forEach(v => {
-    if (!dateMap[v.due]) dateMap[v.due] = [];
-    dateMap[v.due].push(v);
-  });
-  Object.entries(dateMap).forEach(([date, entries]) => {
-    const div = document.createElement("div");
-    div.className = "card";
-    div.innerHTML = `<strong>${date}</strong><br/>` + entries.map((v, i) => `
-      ${v.nickname}: ${v.amount} (${v.priority})
-      <button class="remove-btn" onclick="removeVendor('${v.nickname}', '${v.due}')">Remove</button>
-    `).join("<br/>");
-    cal.appendChild(div);
-  });
-  checkStacking(dateMap);
-}
+  const calendarGrid = document.getElementById('calendar-grid');
+  calendarGrid.innerHTML = '';
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = today.getMonth();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
 
-function renderInsights() {
-  const panel = document.getElementById("insights-content");
-  let high = 0, med = 0, low = 0;
-  let upcoming = [];
-  const now = new Date();
-  data.forEach(v => {
-    if (v.priority === "High") high++;
-    else if (v.priority === "Medium") med++;
-    else low++;
-    const d = new Date(v.due);
-    if ((d - now) / (1000 * 3600 * 24) <= 7) upcoming.push(v);
-  });
-  panel.innerHTML = `
-    <p>High Priority: ${high}</p>
-    <p>Medium Priority: ${med}</p>
-    <p>Low Priority: ${low}</p>
-    <h3>Upcoming Payments (7 days):</h3>
-    <ul>${upcoming.map(v => `<li>${v.nickname} on ${v.due}</li>`).join("")}</ul>
-  `;
-}
+  for (let day = 1; day <= daysInMonth; day++) {
+    const cell = document.createElement('div');
+    cell.className = 'calendar-day';
+    const date = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+    cell.dataset.date = date;
+    cell.innerHTML = `<h4>${day}</h4>`;
+    cell.ondragover = e => e.preventDefault();
+    cell.ondrop = e => {
+      const index = e.dataTransfer.getData('text/plain');
+      if (!scheduled[index]) scheduled[index] = [];
+      scheduled[index].push(cell.dataset.date);
+      saveScheduled();
+      renderCalendar();
+    };
+    calendarGrid.appendChild(cell);
+  }
 
-function exportCSV() {
-  let csv = "Nickname,Legal Name,Due Date,Amount,Priority\n";
-  data.forEach(v => {
-    csv += `${v.nickname},${v.legalName},${v.due},${v.amount},${v.priority}\n`;
-  });
-  const blob = new Blob([csv], { type: "text/csv" });
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = "duebook_payouts.csv";
-  a.click();
-}
-
-function removeVendor(name, due) {
-  data = data.filter(v => !(v.nickname === name && v.due === due));
-  localStorage.setItem("vendors", JSON.stringify(data));
-  renderCalendar();
-  renderInsights();
-}
-
-function showPage(id) {
-  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
-  document.getElementById(id).classList.add("active");
-}
-
-function checkStacking(map) {
-  const alertBox = document.getElementById("alert-box");
-  alertBox.innerHTML = "";
-  Object.entries(map).forEach(([date, list]) => {
-    if (list.length >= 3) {
-      alertBox.innerHTML += `<p style="color:yellow">⚠ Multiple payments on ${date} (${list.length})</p>`;
+  vendors.forEach((v, i) => {
+    if (scheduled[i]) {
+      scheduled[i].forEach(date => {
+        const cell = document.querySelector(`.calendar-day[data-date="${date}"]`);
+        if (cell) {
+          const el = document.createElement('div');
+          el.className = 'vendor-draggable';
+          el.textContent = `${v.nickname} - ${v.amount}`;
+          el.draggable = true;
+          el.ondragstart = e => e.dataTransfer.setData('text/plain', i);
+          cell.appendChild(el);
+          if (cell.children.length > 2) cell.classList.add('overlap');
+        }
+      });
     }
   });
 }
 
+renderVendors();
 renderCalendar();
-renderInsights();
+updateDashboardSummary();
