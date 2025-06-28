@@ -48,148 +48,15 @@ function initNavigation() {
 // Currency
 function initCurrencySelector() {
   const currencies = [
-  // Americas
-  { code: "USD", name: "US Dollar" },
-  { code: "CAD", name: "Canadian Dollar" },
-  { code: "MXN", name: "Mexican Peso" },
-  { code: "BRL", name: "Brazilian Real" },
-  { code: "ARS", name: "Argentine Peso" },
-  { code: "CLP", name: "Chilean Peso" },
-  { code: "COP", name: "Colombian Peso" },
-  { code: "PEN", name: "Peruvian Sol" },
-  { code: "VES", name: "Venezuelan Bolívar" },
-  { code: "GTQ", name: "Guatemalan Quetzal" },
-  { code: "CRC", name: "Costa Rican Colón" },
-  { code: "DOP", name: "Dominican Peso" },
-  { code: "HNL", name: "Honduran Lempira" },
-  { code: "PYG", name: "Paraguayan Guaraní" },
-  { code: "UYU", name: "Uruguayan Peso" },
-  { code: "BOB", name: "Bolivian Boliviano" },
-  { code: "NIO", name: "Nicaraguan Córdoba" },
-  { code: "JMD", name: "Jamaican Dollar" },
-  { code: "TTD", name: "Trinidad and Tobago Dollar" },
-  { code: "BZD", name: "Belize Dollar" },
-
-  // Europe
-  { code: "EUR", name: "Euro" },
-  { code: "GBP", name: "British Pound" },
-  { code: "CHF", name: "Swiss Franc" },
-  { code: "SEK", name: "Swedish Krona" },
-  { code: "NOK", name: "Norwegian Krone" },
-  { code: "DKK", name: "Danish Krone" },
-  { code: "PLN", name: "Polish Złoty" },
-  { code: "CZK", name: "Czech Koruna" },
-  { code: "HUF", name: "Hungarian Forint" },
-  { code: "RON", name: "Romanian Leu" },
-  { code: "BGN", name: "Bulgarian Lev" },
-  { code: "HRK", name: "Croatian Kuna" },
-  { code: "RSD", name: "Serbian Dinar" },
-  { code: "ALL", name: "Albanian Lek" },
-  { code: "ISK", name: "Icelandic Króna" },
-  { code: "UAH", name: "Ukrainian Hryvnia" },
-  { code: "BYN", name: "Belarusian Ruble" },
-  { code: "MDL", name: "Moldovan Leu" },
-  { code: "GEL", name: "Georgian Lari" },
-  { code: "AMD", name: "Armenian Dram" },
-  { code: "AZN", name: "Azerbaijani Manat" },
-  { code: "KZT", name: "Kazakhstani Tenge" },
-
-  // Asia
-  { code: "JPY", name: "Japanese Yen" },
-  { code: "CNY", name: "Chinese Yuan" },
-  { code: "INR", name: "Indian Rupee" },
-  { code: "KRW", name: "South Korean Won" },
-  { code: "SGD", name: "Singapore Dollar" },
-  { code: "THB", name: "Thai Baht" },
-  { code: "MYR", name: "Malaysian Ringgit" },
-  { code: "IDR", name: "Indonesian Rupiah" },
-  { code: "VND", name: "Vietnamese Đồng" },
-  { code: "PHP", name: "Philippine Peso" },
-  { code: "BDT", name: "Bangladeshi Taka" },
-  { code: "PKR", name: "Pakistani Rupee" },
-  { code: "LKR", name: "Sri Lankan Rupee" },
-  { code: "NPR", name: "Nepalese Rupee" },
-  { code: "KHR", name: "Cambodian Riel" },
-  { code: "MMK", name: "Myanmar Kyat" },
-  { code: "LAK", name: "Lao Kip" },
-  { code: "MNT", name: "Mongolian Tögrög" },
-  { code: "TWD", name: "New Taiwan Dollar" },
-  { code: "HKD", name: "Hong Kong Dollar" },
-  { code: "MOP", name: "Macanese Pataca" },
-  { code: "BND", name: "Brunei Dollar" },
-  { code: "AFN", name: "Afghan Afghani" },
-  { code: "IRR", name: "Iranian Rial" },
-  { code: "IQD", name: "Iraqi Dinar" },
-  { code: "SYP", name: "Syrian Pound" },
-  { code: "YER", name: "Yemeni Rial" },
-  { code: "OMR", name: "Omani Rial" },
-  { code: "QAR", name: "Qatari Riyal" },
-  { code: "SAR", name: "Saudi Riyal" },
-  { code: "AED", name: "UAE Dirham" },
-  { code: "ILS", name: "Israeli New Shekel" },
-  { code: "JOD", name: "Jordanian Dinar" },
-  { code: "KWD", name: "Kuwaiti Dinar" },
-  { code: "LBP", name: "Lebanese Pound" },
-
-  // Africa
-  { code: "ZAR", name: "South African Rand" },
-  { code: "EGP", name: "Egyptian Pound" },
-  { code: "NGN", name: "Nigerian Naira" },
-  { code: "KES", name: "Kenyan Shilling" },
-  { code: "ETB", name: "Ethiopian Birr" },
-  { code: "GHS", name: "Ghanaian Cedi" },
-  { code: "MAD", name: "Moroccan Dirham" },
-  { code: "DZD", name: "Algerian Dinar" },
-  { code: "TND", name: "Tunisian Dinar" },
-  { code: "XOF", name: "West African CFA Franc" },
-  { code: "XAF", name: "Central African CFA Franc" },
-  { code: "CDF", name: "Congolese Franc" },
-  { code: "RWF", name: "Rwandan Franc" },
-  { code: "UGX", name: "Ugandan Shilling" },
-  { code: "TZS", name: "Tanzanian Shilling" },
-  { code: "MWK", name: "Malawian Kwacha" },
-  { code: "ZMW", name: "Zambian Kwacha" },
-  { code: "AOA", name: "Angolan Kwanza" },
-  { code: "MZN", name: "Mozambican Metical" },
-  { code: "BIF", name: "Burundian Franc" },
-  { code: "DJF", name: "Djiboutian Franc" },
-  { code: "SOS", name: "Somali Shilling" },
-  { code: "SDG", name: "Sudanese Pound" },
-  { code: "SSP", name: "South Sudanese Pound" },
-  { code: "GMD", name: "Gambian Dalasi" },
-  { code: "LRD", name: "Liberian Dollar" },
-  { code: "SLL", name: "Sierra Leonean Leone" },
-  { code: "GNF", name: "Guinean Franc" },
-  { code: "MGA", name: "Malagasy Ariary" },
-  { code: "MUR", name: "Mauritian Rupee" },
-  { code: "SCR", name: "Seychellois Rupee" },
-  { code: "STN", name: "São Tomé and Príncipe Dobra" },
-  { code: "NAD", name: "Namibian Dollar" },
-  { code: "BWP", name: "Botswana Pula" },
-  { code: "LSL", name: "Lesotho Loti" },
-  { code: "SZL", name: "Swazi Lilangeni" },
-
-  // Oceania
-  { code: "AUD", name: "Australian Dollar" },
-  { code: "NZD", name: "New Zealand Dollar" },
-  { code: "FJD", name: "Fijian Dollar" },
-  { code: "PGK", name: "Papua New Guinean Kina" },
-  { code: "WST", name: "Samoan Tālā" },
-  { code: "TOP", name: "Tongan Paʻanga" },
-  { code: "SBD", name: "Solomon Islands Dollar" },
-  { code: "VUV", name: "Vanuatu Vatu" },
-  { code: "XPF", name: "CFP Franc" },
-  { code: "KID", name: "Kiribati Dollar" },
-
-  // Others (Digital/Crypto)
-  { code: "XBT", name: "Bitcoin" },
-  { code: "ETH", name: "Ethereum" },
-  { code: "XRP", name: "Ripple" },
-  { code: "LTC", name: "Litecoin" },
-  { code: "XAU", name: "Gold (Troy Ounce)" },
-  { code: "XAG", name: "Silver (Troy Ounce)" },
-  { code: "XDR", name: "Special Drawing Rights (IMF)" }
-];
+    { code: "USD", name: "US Dollar" },
+    { code: "EUR", name: "Euro" },
+    { code: "GBP", name: "British Pound" },
+    { code: "AED", name: "UAE Dirham" },
+    { code: "INR", name: "Indian Rupee" },
+    { code: "JPY", name: "Japanese Yen" },
+    { code: "CAD", name: "Canadian Dollar" },
+    { code: "AUD", name: "Australian Dollar" }
+  ];
 
   currencies.forEach(c => {
     const option = document.createElement('option');
@@ -302,58 +169,25 @@ function removeVendor(index) {
 }
 
 // Calendar
-// Calendar with month navigation
-function renderCalendar(monthOffset = 0) {
-  // Clear existing calendar
+function renderCalendar() {
   if (!calendarGrid) return;
+  
   calendarGrid.innerHTML = '';
-
-  // Handle month navigation safely
+  
   const today = new Date();
-  const viewDate = new Date(today);
-  viewDate.setMonth(viewDate.getMonth() + monthOffset);
-  
-  // Protect against invalid date (e.g., when going beyond year boundaries)
-  if (isNaN(viewDate.getTime())) {
-    console.error('Invalid date calculation');
-    return;
-  }
-
-  const currentMonth = viewDate.getMonth();
-  const currentYear = viewDate.getFullYear();
-  
-  // Get days in month (0 gives last day of previous month)
+  const currentMonth = today.getMonth();
+  const currentYear = today.getFullYear();
   const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-  
-  // Get first day of month (0-6 where 0 is Sunday)
   const firstDay = new Date(currentYear, currentMonth, 1).getDay();
 
-  // Create month/year header with navigation
+  // Create month header
   const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 
                      'July', 'August', 'September', 'October', 'November', 'December'];
-  
-  const header = document.createElement('div');
-  header.className = 'calendar-header';
-  header.innerHTML = `
-    <button class="btn-nav" id="prev-month">←</button>
-    <h3>${monthNames[currentMonth]} ${currentYear}</h3>
-    <button class="btn-nav" id="next-month">→</button>
-  `;
-  calendarGrid.appendChild(header);
-
-  // Add navigation event listeners
-  document.getElementById('prev-month')?.addEventListener('click', () => {
-    renderCalendar(monthOffset - 1);
-  });
-  
-  document.getElementById('next-month')?.addEventListener('click', () => {
-    renderCalendar(monthOffset + 1);
-  });
-
-  // Rest of your calendar rendering code...
-  // [Keep your existing day headers and calendar grid rendering logic here]
-  // Make sure to use viewDate instead of today for comparisons
-}
+  const monthHeader = document.createElement('div');
+  monthHeader.className = 'calendar-month-header';
+  monthHeader.textContent = `${monthNames[currentMonth]} ${currentYear}`;
+  monthHeader.colSpan = 7;
+  calendarGrid.appendChild(monthHeader);
 
   // Create day headers
   const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -864,3 +698,4 @@ function exportCSV() {
   
   showNotification('CSV exported successfully');
 }
+
