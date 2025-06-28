@@ -7,6 +7,7 @@ const calendarGrid = document.getElementById('calendar-grid');
 const exportBtn = document.getElementById('export-btn');
 const currencySelect = document.getElementById('currency-select');
 
+// Initialize data from localStorage or defaults
 let vendors = JSON.parse(localStorage.getItem('vendors') || '[]');
 let scheduled = JSON.parse(localStorage.getItem('scheduled') || '{}');
 let currency = localStorage.getItem('currency') || 'AED';
@@ -14,14 +15,21 @@ let currency = localStorage.getItem('currency') || 'AED';
 // --- Navigation ---
 tabs.forEach(btn => {
   btn.addEventListener('click', () => {
+    // Update active tab
     tabs.forEach(b => b.classList.remove('active'));
-    contents.forEach(c => c.classList.remove('active'));
+    contents.forEach(c => {
+      c.classList.remove('active');
+      c.hidden = true;
+    });
+    
     btn.classList.add('active');
-    document.getElementById(btn.dataset.tab).classList.add('active');
+    const content = document.getElementById(btn.dataset.tab);
+    content.classList.add('active');
+    content.hidden = false;
   });
 });
 
-// --- Format Currency ---
+// --- Currency Formatting ---
 function formatCurrency(value) {
   return new Intl.NumberFormat('en', {
     style: 'currency',
@@ -29,7 +37,7 @@ function formatCurrency(value) {
   }).format(value);
 }
 
-// --- Save Functions ---
+// --- Data Persistence ---
 function saveVendors() {
   localStorage.setItem('vendors', JSON.stringify(vendors));
 }
@@ -38,36 +46,54 @@ function saveScheduled() {
   localStorage.setItem('scheduled', JSON.stringify(scheduled));
 }
 
-// --- Dashboard ---
+// --- Dashboard Functions ---
 function updateDashboardSummary() {
   const total = vendors.reduce((sum, v) => sum + parseFloat(v.amount || 0), 0);
-  const currency = localStorage.getItem('currency') || 'AED';
-  if (dashboardSummary)
+  if (dashboardSummary) {
     dashboardSummary.innerHTML = `<strong>Total Vendor Payments:</strong> ${formatCurrency(total)}`;
+  }
 }
 
-// --- Render Vendors ---
+// --- Vendor Management ---
 function renderVendors() {
+  if (!vendorList) return;
+  
   vendorList.innerHTML = '';
+  
   vendors.forEach((v, i) => {
-    const div = document.createElement('div');
-    div.className = `vendor-draggable ${v.priority.toLowerCase()}`;
-    div.textContent = `${v.nickname} - ${formatCurrency(v.amount)}`;
-    div.draggable = true;
-    div.ondragstart = e => e.dataTransfer.setData('text/plain', i);
+    const vendorElement = document.createElement('div');
+    vendorElement.className = `vendor-item vendor-${v.priority.toLowerCase()}`;
+    vendorElement.innerHTML = `
+      <div class="vendor-info">
+        <span class="vendor-name">${v.nickname}</span>
+        <span class="vendor-amount">${formatCurrency(v.amount)}</span>
+      </div>
+      <div class="vendor-actions">
+        <button class="btn-remove" aria-label="Remove vendor">×</button>
+      </div>
+    `;
+    
+    vendorElement.draggable = true;
+    vendorElement.dataset.vendorId = i;
+    vendorElement.ondragstart = e => {
+      e.dataTransfer.setData('text/plain', i);
+      e.dataTransfer.effectAllowed = 'move';
+    };
 
-    const removeBtn = document.createElement('button');
-    removeBtn.textContent = "×";
+    const removeBtn = vendorElement.querySelector('.btn-remove');
     removeBtn.onclick = () => {
-      if (confirm("Remove this vendor?")) {
+      if (confirm(`Remove ${v.nickname} from vendors?`)) {
         vendors.splice(i, 1);
-        let newScheduled = {};
+        
+        // Update scheduled payments to maintain correct indices
+        const newScheduled = {};
         Object.entries(scheduled).forEach(([key, dates]) => {
-          let idx = parseInt(key);
+          const idx = parseInt(key);
           if (idx === i) return;
-          let newIndex = idx > i ? idx - 1 : idx;
+          const newIndex = idx > i ? idx - 1 : idx;
           newScheduled[newIndex] = dates;
         });
+        
         scheduled = newScheduled;
         saveVendors();
         saveScheduled();
@@ -76,279 +102,227 @@ function renderVendors() {
         updateDashboardSummary();
       }
     };
-    div.appendChild(removeBtn);
-    vendorList.appendChild(div);
+    
+    vendorList.appendChild(vendorElement);
   });
 }
 
-// --- Submit Form ---
-vendorForm.addEventListener('submit', e => {
+// --- Vendor Form Submission ---
+vendorForm?.addEventListener('submit', e => {
   e.preventDefault();
-  const v = {
-    nickname: nickname.value.trim(),
-    legalName: legalName.value.trim(),
-    amount: parseFloat(amount.value),
-    terms: parseInt(terms.value),
-    priority: priority.value
+  
+  const formData = new FormData(vendorForm);
+  const vendor = {
+    nickname: formData.get('nickname').trim(),
+    legalName: formData.get('legalName').trim(),
+    amount: parseFloat(formData.get('amount')),
+    terms: parseInt(formData.get('terms')),
+    priority: formData.get('priority')
   };
-  vendors.push(v);
-  saveVendors();
-
-  const today = new Date();
-  const dueDate = new Date(today.getTime() + v.terms * 86400000).toISOString().split('T')[0];
-  const index = vendors.length - 1;
-  if (!scheduled[index]) scheduled[index] = [];
-  if (!scheduled[index].includes(dueDate)) {
-    scheduled[index].push(dueDate);
+  
+  // Validate input
+  if (!vendor.nickname || !vendor.legalName || isNaN(vendor.amount) {
+    alert('Please fill all required fields with valid data');
+    return;
   }
+  
+  vendors.push(vendor);
+  saveVendors();
+  
+  // Calculate initial due date
+  const today = new Date();
+  const dueDate = new Date(today.getTime() + vendor.terms * 86400000)
+    .toISOString().split('T')[0];
+  
+  const vendorIndex = vendors.length - 1;
+  if (!scheduled[vendorIndex]) scheduled[vendorIndex] = [];
+  if (!scheduled[vendorIndex].includes(dueDate)) {
+    scheduled[vendorIndex].push(dueDate);
+  }
+  
   saveScheduled();
-
   vendorForm.reset();
   renderVendors();
   renderCalendar();
   updateDashboardSummary();
 });
 
-// --- Render Calendar ---
+// --- Calendar Functions ---
 function renderCalendar() {
+  if (!calendarGrid) return;
+  
   calendarGrid.innerHTML = '';
+  
   const today = new Date();
-  const year = today.getFullYear();
-  const month = today.getMonth();
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
-
+  const currentMonth = today.getMonth();
+  const currentYear = today.getFullYear();
+  const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+  
+  // Create calendar header
+  const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 
+                     'July', 'August', 'September', 'October', 'November', 'December'];
+  const header = document.createElement('div');
+  header.className = 'calendar-header';
+  header.textContent = `${monthNames[currentMonth]} ${currentYear}`;
+  calendarGrid.appendChild(header);
+  
+  // Create calendar days grid
+  const daysGrid = document.createElement('div');
+  daysGrid.className = 'calendar-days-grid';
+  
+  // Add day cells
   for (let day = 1; day <= daysInMonth; day++) {
-    const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+    const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+    const dayOfWeek = new Date(currentYear, currentMonth, day).getDay();
+    const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+    
     const cell = document.createElement('div');
-    cell.className = 'calendar-day';
+    cell.className = `calendar-day ${isWeekend ? 'weekend' : ''}`;
     cell.dataset.date = dateStr;
-    cell.innerHTML = `<h4>${day}</h4>`;
-
-    cell.ondragover = e => e.preventDefault();
-    cell.ondrop = e => {
-      const index = e.dataTransfer.getData('text/plain');
-      if (!vendors[index]) return;
-      if (!scheduled[index]) scheduled[index] = [];
-      if (!scheduled[index].includes(dateStr)) {
-        scheduled[index].push(dateStr);
-      }
-      saveScheduled();
-      renderCalendar();
+    cell.innerHTML = `<div class="day-number">${day}</div>`;
+    
+    // Make cells droppable
+    cell.ondragover = e => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      cell.classList.add('drop-target');
     };
-
-    calendarGrid.appendChild(cell);
+    
+    cell.ondragleave = () => {
+      cell.classList.remove('drop-target');
+    };
+    
+    cell.ondrop = e => {
+      e.preventDefault();
+      cell.classList.remove('drop-target');
+      
+      const vendorIndex = e.dataTransfer.getData('text/plain');
+      if (!vendors[vendorIndex]) return;
+      
+      if (!scheduled[vendorIndex]) scheduled[vendorIndex] = [];
+      if (!scheduled[vendorIndex].includes(dateStr)) {
+        scheduled[vendorIndex].push(dateStr);
+        saveScheduled();
+        renderCalendar();
+      }
+    };
+    
+    daysGrid.appendChild(cell);
   }
-
+  
+  calendarGrid.appendChild(daysGrid);
+  
+  // Add scheduled payments to calendar
   Object.entries(scheduled).forEach(([vendorIdx, dates]) => {
     const vendor = vendors[vendorIdx];
     if (!vendor) return;
-
+    
     dates.forEach(date => {
       const cell = calendarGrid.querySelector(`.calendar-day[data-date="${date}"]`);
       if (cell) {
-        const el = document.createElement('div');
-        el.className = `vendor-draggable ${vendor.priority.toLowerCase()}`;
-        el.textContent = `${vendor.nickname} - ${formatCurrency(vendor.amount)}`;
-        el.draggable = true;
-        el.ondragstart = e => e.dataTransfer.setData('text/plain', vendorIdx);
-
-        const removeBtn = document.createElement('button');
-        removeBtn.textContent = '×';
-        removeBtn.onclick = ev => {
-          ev.stopPropagation();
+        const paymentElement = document.createElement('div');
+        paymentElement.className = `calendar-payment payment-${vendor.priority.toLowerCase()}`;
+        paymentElement.innerHTML = `
+          <span class="payment-name">${vendor.nickname}</span>
+          <span class="payment-amount">${formatCurrency(vendor.amount)}</span>
+          <button class="btn-remove-payment" aria-label="Remove payment">×</button>
+        `;
+        
+        paymentElement.draggable = true;
+        paymentElement.dataset.vendorId = vendorIdx;
+        paymentElement.ondragstart = e => {
+          e.dataTransfer.setData('text/plain', vendorIdx);
+          e.dataTransfer.effectAllowed = 'move';
+        };
+        
+        const removeBtn = paymentElement.querySelector('.btn-remove-payment');
+        removeBtn.onclick = e => {
+          e.stopPropagation();
           scheduled[vendorIdx] = scheduled[vendorIdx].filter(d => d !== date);
           saveScheduled();
           renderCalendar();
         };
-
-        el.appendChild(removeBtn);
-        cell.appendChild(el);
-        if (cell.querySelectorAll('.vendor-draggable').length > 2) {
+        
+        cell.appendChild(paymentElement);
+        
+        // Mark cells with multiple payments
+        if (cell.querySelectorAll('.calendar-payment').length > 2) {
           cell.classList.add('overlap');
-        } else {
-          cell.classList.remove('overlap');
         }
       }
     });
   });
 }
 
-// --- Export CSV ---
+// --- Export Functionality ---
 function exportCSV() {
   const csvHeader = `Nickname,Legal Name,Amount (${currency}),Terms (days),Priority,Due Dates\n`;
-  let csvBody = vendors.map((v, i) => {
+  
+  const csvBody = vendors.map((v, i) => {
     const dates = scheduled[i] ? scheduled[i].join('; ') : '';
     return `"${v.nickname}","${v.legalName}",${v.amount},${v.terms},"${v.priority}","${dates}"`;
   }).join('\n');
   
   const csv = csvHeader + csvBody;
-  const blob = new Blob([csv], { type: 'text/csv' });
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
   const url = URL.createObjectURL(blob);
-
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `duebook_schedule_${currency}.csv`;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
+  
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `duebook_export_${new Date().toISOString().slice(0, 10)}.csv`;
+  link.style.display = 'none';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  setTimeout(() => URL.revokeObjectURL(url), 100);
 }
 
-exportBtn.addEventListener('click', exportCSV);
+exportBtn?.addEventListener('click', exportCSV);
 
-// --- Currency List (Extendable) ---
+// --- Currency Management ---
 const currencies = [
-  // Americas
+  // Major currencies
   { code: "USD", name: "US Dollar" },
-  { code: "CAD", name: "Canadian Dollar" },
-  { code: "MXN", name: "Mexican Peso" },
-  { code: "BRL", name: "Brazilian Real" },
-  { code: "ARS", name: "Argentine Peso" },
-  { code: "CLP", name: "Chilean Peso" },
-  { code: "COP", name: "Colombian Peso" },
-  { code: "PEN", name: "Peruvian Sol" },
-  { code: "VES", name: "Venezuelan Bolívar" },
-  { code: "GTQ", name: "Guatemalan Quetzal" },
-  { code: "CRC", name: "Costa Rican Colón" },
-  { code: "DOP", name: "Dominican Peso" },
-  { code: "HNL", name: "Honduran Lempira" },
-  { code: "PYG", name: "Paraguayan Guaraní" },
-  { code: "UYU", name: "Uruguayan Peso" },
-  { code: "BOB", name: "Bolivian Boliviano" },
-  { code: "NIO", name: "Nicaraguan Córdoba" },
-  { code: "JMD", name: "Jamaican Dollar" },
-  { code: "TTD", name: "Trinidad and Tobago Dollar" },
-  { code: "BZD", name: "Belize Dollar" },
-
-  // Europe
   { code: "EUR", name: "Euro" },
   { code: "GBP", name: "British Pound" },
-  { code: "CHF", name: "Swiss Franc" },
-  { code: "SEK", name: "Swedish Krona" },
-  { code: "NOK", name: "Norwegian Krone" },
-  { code: "DKK", name: "Danish Krone" },
-  { code: "PLN", name: "Polish Złoty" },
-  { code: "CZK", name: "Czech Koruna" },
-  { code: "HUF", name: "Hungarian Forint" },
-  { code: "RON", name: "Romanian Leu" },
-  { code: "BGN", name: "Bulgarian Lev" },
-  { code: "HRK", name: "Croatian Kuna" },
-  { code: "RSD", name: "Serbian Dinar" },
-  { code: "ALL", name: "Albanian Lek" },
-  { code: "ISK", name: "Icelandic Króna" },
-  { code: "UAH", name: "Ukrainian Hryvnia" },
-  { code: "BYN", name: "Belarusian Ruble" },
-  { code: "MDL", name: "Moldovan Leu" },
-  { code: "GEL", name: "Georgian Lari" },
-  { code: "AMD", name: "Armenian Dram" },
-  { code: "AZN", name: "Azerbaijani Manat" },
-  { code: "KZT", name: "Kazakhstani Tenge" },
-
-  // Asia
   { code: "JPY", name: "Japanese Yen" },
+  { code: "AUD", name: "Australian Dollar" },
+  { code: "CAD", name: "Canadian Dollar" },
+  { code: "CHF", name: "Swiss Franc" },
   { code: "CNY", name: "Chinese Yuan" },
+  { code: "HKD", name: "Hong Kong Dollar" },
+  { code: "SGD", name: "Singapore Dollar" },
+  
+  // Middle East
+  { code: "AED", name: "UAE Dirham" },
+  { code: "SAR", name: "Saudi Riyal" },
+  { code: "QAR", name: "Qatari Riyal" },
+  { code: "KWD", name: "Kuwaiti Dinar" },
+  { code: "OMR", name: "Omani Rial" },
+  
+  // Other popular currencies
   { code: "INR", name: "Indian Rupee" },
   { code: "KRW", name: "South Korean Won" },
-  { code: "SGD", name: "Singapore Dollar" },
-  { code: "THB", name: "Thai Baht" },
-  { code: "MYR", name: "Malaysian Ringgit" },
-  { code: "IDR", name: "Indonesian Rupiah" },
-  { code: "VND", name: "Vietnamese Đồng" },
-  { code: "PHP", name: "Philippine Peso" },
-  { code: "BDT", name: "Bangladeshi Taka" },
-  { code: "PKR", name: "Pakistani Rupee" },
-  { code: "LKR", name: "Sri Lankan Rupee" },
-  { code: "NPR", name: "Nepalese Rupee" },
-  { code: "KHR", name: "Cambodian Riel" },
-  { code: "MMK", name: "Myanmar Kyat" },
-  { code: "LAK", name: "Lao Kip" },
-  { code: "MNT", name: "Mongolian Tögrög" },
-  { code: "TWD", name: "New Taiwan Dollar" },
-  { code: "HKD", name: "Hong Kong Dollar" },
-  { code: "MOP", name: "Macanese Pataca" },
-  { code: "BND", name: "Brunei Dollar" },
-  { code: "AFN", name: "Afghan Afghani" },
-  { code: "IRR", name: "Iranian Rial" },
-  { code: "IQD", name: "Iraqi Dinar" },
-  { code: "SYP", name: "Syrian Pound" },
-  { code: "YER", name: "Yemeni Rial" },
-  { code: "OMR", name: "Omani Rial" },
-  { code: "QAR", name: "Qatari Riyal" },
-  { code: "SAR", name: "Saudi Riyal" },
-  { code: "AED", name: "UAE Dirham" },
-  { code: "ILS", name: "Israeli New Shekel" },
-  { code: "JOD", name: "Jordanian Dinar" },
-  { code: "KWD", name: "Kuwaiti Dinar" },
-  { code: "LBP", name: "Lebanese Pound" },
-
-  // Africa
+  { code: "MXN", name: "Mexican Peso" },
+  { code: "BRL", name: "Brazilian Real" },
   { code: "ZAR", name: "South African Rand" },
-  { code: "EGP", name: "Egyptian Pound" },
-  { code: "NGN", name: "Nigerian Naira" },
-  { code: "KES", name: "Kenyan Shilling" },
-  { code: "ETB", name: "Ethiopian Birr" },
-  { code: "GHS", name: "Ghanaian Cedi" },
-  { code: "MAD", name: "Moroccan Dirham" },
-  { code: "DZD", name: "Algerian Dinar" },
-  { code: "TND", name: "Tunisian Dinar" },
-  { code: "XOF", name: "West African CFA Franc" },
-  { code: "XAF", name: "Central African CFA Franc" },
-  { code: "CDF", name: "Congolese Franc" },
-  { code: "RWF", name: "Rwandan Franc" },
-  { code: "UGX", name: "Ugandan Shilling" },
-  { code: "TZS", name: "Tanzanian Shilling" },
-  { code: "MWK", name: "Malawian Kwacha" },
-  { code: "ZMW", name: "Zambian Kwacha" },
-  { code: "AOA", name: "Angolan Kwanza" },
-  { code: "MZN", name: "Mozambican Metical" },
-  { code: "BIF", name: "Burundian Franc" },
-  { code: "DJF", name: "Djiboutian Franc" },
-  { code: "SOS", name: "Somali Shilling" },
-  { code: "SDG", name: "Sudanese Pound" },
-  { code: "SSP", name: "South Sudanese Pound" },
-  { code: "GMD", name: "Gambian Dalasi" },
-  { code: "LRD", name: "Liberian Dollar" },
-  { code: "SLL", name: "Sierra Leonean Leone" },
-  { code: "GNF", name: "Guinean Franc" },
-  { code: "MGA", name: "Malagasy Ariary" },
-  { code: "MUR", name: "Mauritian Rupee" },
-  { code: "SCR", name: "Seychellois Rupee" },
-  { code: "STN", name: "São Tomé and Príncipe Dobra" },
-  { code: "NAD", name: "Namibian Dollar" },
-  { code: "BWP", name: "Botswana Pula" },
-  { code: "LSL", name: "Lesotho Loti" },
-  { code: "SZL", name: "Swazi Lilangeni" },
-
-  // Oceania
-  { code: "AUD", name: "Australian Dollar" },
-  { code: "NZD", name: "New Zealand Dollar" },
-  { code: "FJD", name: "Fijian Dollar" },
-  { code: "PGK", name: "Papua New Guinean Kina" },
-  { code: "WST", name: "Samoan Tālā" },
-  { code: "TOP", name: "Tongan Paʻanga" },
-  { code: "SBD", name: "Solomon Islands Dollar" },
-  { code: "VUV", name: "Vanuatu Vatu" },
-  { code: "XPF", name: "CFP Franc" },
-  { code: "KID", name: "Kiribati Dollar" },
-
-  // Others (Digital/Crypto)
-  { code: "XBT", name: "Bitcoin" },
-  { code: "ETH", name: "Ethereum" },
-  { code: "XRP", name: "Ripple" },
-  { code: "LTC", name: "Litecoin" },
-  { code: "XAU", name: "Gold (Troy Ounce)" },
-  { code: "XAG", name: "Silver (Troy Ounce)" },
-  { code: "XDR", name: "Special Drawing Rights (IMF)" }
+  { code: "RUB", name: "Russian Ruble" },
+  { code: "TRY", name: "Turkish Lira" },
+  { code: "SEK", name: "Swedish Krona" },
+  { code: "NZD", name: "New Zealand Dollar" }
 ];
 
+// Initialize currency selector
 if (currencySelect) {
   currencies.forEach(c => {
-    const opt = document.createElement('option');
-    opt.value = c.code;
-    opt.textContent = `${c.code} - ${c.name}`;
-    currencySelect.appendChild(opt);
+    const option = document.createElement('option');
+    option.value = c.code;
+    option.textContent = `${c.code} - ${c.name}`;
+    currencySelect.appendChild(option);
   });
+  
   currencySelect.value = currency;
+  
   currencySelect.addEventListener('change', () => {
     currency = currencySelect.value;
     localStorage.setItem('currency', currency);
@@ -358,13 +332,29 @@ if (currencySelect) {
   });
 }
 
-// --- Initialize ---
-renderVendors();
-renderCalendar();
-updateDashboardSummary();
-
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('service-worker.js').then(() => {
-    console.log('Service Worker registered');
+// --- Initialization ---
+document.addEventListener('DOMContentLoaded', () => {
+  // Show only the active tab content
+  contents.forEach(c => {
+    if (!c.classList.contains('active')) {
+      c.hidden = true;
+    }
   });
-}
+  
+  renderVendors();
+  renderCalendar();
+  updateDashboardSummary();
+  
+  // Service Worker registration
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('service-worker.js')
+        .then(registration => {
+          console.log('ServiceWorker registration successful with scope: ', registration.scope);
+        })
+        .catch(err => {
+          console.log('ServiceWorker registration failed: ', err);
+        });
+    });
+  }
+});
