@@ -40,8 +40,10 @@ function saveScheduled() {
 
 // --- Dashboard ---
 function updateDashboardSummary() {
-  let total = vendors.reduce((sum, v) => sum + parseFloat(v.amount || 0), 0);
-  dashboardSummary.innerHTML = `<strong>Total Vendor Payments:</strong> ${formatCurrency(total)}`;
+  const total = vendors.reduce((sum, v) => sum + parseFloat(v.amount || 0), 0);
+  const currency = localStorage.getItem('currency') || 'AED';
+  if (dashboardSummary)
+    dashboardSummary.innerHTML = `<strong>Total Vendor Payments:</strong> ${formatCurrency(total)}`;
 }
 
 // --- Render Vendors ---
