@@ -4,7 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>DueBook - Vendor Planner</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="manifest" href="manifest.json" />
 </head>
 <body>
   <nav class="app-nav">
@@ -39,14 +40,21 @@
 
     <section id="calendar" class="tab-content">
       <h2>Calendar View</h2>
+      <button id="export-btn">Export CSV</button>
       <div id="calendar-grid"></div>
     </section>
 
     <section id="settings" class="tab-content">
-      <h2>Settings (Coming Soon)</h2>
+      <h2>Settings</h2>
+      <p>Install this app for offline use from your browser settings.</p>
     </section>
   </main>
 
-  <script src="script.js"></script>
+  <script src="js/script.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js');
+    }
+  </script>
 </body>
 </html>
