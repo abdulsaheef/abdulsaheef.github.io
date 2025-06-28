@@ -107,7 +107,7 @@ function renderAll() {
     const best = overlap[Math.floor(overlap.length/2)];
     const start = DateTime.utc().set({hour:best,minute:0});
     const end = DateTime.utc().set({hour:best+1,minute:0});
-    let text = `🗓 Best Overlap: ${start.toFormat('HH:mm')}–${end.toFormat('HH:mm')} UTC`;
+    let text = `🗓 Best meet time: ${start.toFormat('HH:mm')}–${end.toFormat('HH:mm')} UTC`;
     cities.forEach(c=>{ text += `\n${c.name}: `+ DateTime.utc().set({hour:best}).setZone(c.zone).toFormat('hh:mm a'); });
     shareSummary.innerHTML = `<pre>${text}</pre><button id="copy-summary">Copy Summary</button><button id="copy-link">Copy Link</button>`;
     document.getElementById('copy-summary').onclick = ()=>{navigator.clipboard.writeText(text);alert('Summary copied');};
