@@ -1,9 +1,20 @@
 {
-  "name": "DueBook - Vendor Planner",
+  "name": "DueBook",
   "short_name": "DueBook",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#1d2671",
-  "theme_color": "#1d2671",
-  "icons": []
+  "theme_color": "#c33764",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
 }
