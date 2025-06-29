@@ -3,8 +3,9 @@ const tabs = document.querySelectorAll('nav button');
 const contents = document.querySelectorAll('.tab-content');
 const vendorForm = document.getElementById('vendor-form');
 const vendorList = document.getElementById('vendor-list');
-const calendarGrid = document.getElementById('calendar-views');
+const calendarGrid = document.getElementById('calendar-grid');
 const exportBtn = document.getElementById('export-btn');
+const aiScheduleBtn = document.getElementById('ai-schedule-btn');
 const currencySelect = document.getElementById('currency-select');
 const riskThresholdInput = document.getElementById('risk-threshold');
 const saveSettingsBtn = document.getElementById('save-settings');
@@ -17,15 +18,13 @@ let vendors = JSON.parse(localStorage.getItem('vendors') || '[]');
 let scheduled = JSON.parse(localStorage.getItem('scheduled') || '{}');
 let currency = localStorage.getItem('currency') || 'AED';
 let riskThreshold = parseInt(localStorage.getItem('riskThreshold')) || 7;
-let currentView = "month";
-let currentDate = new Date();
 
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
   initNavigation();
   initCurrencySelector();
   renderVendors();
-  initSuperCalendar();
+  renderCalendar();
   updateDashboard();
   generateAlerts();
   renderAIInsights();
@@ -42,10 +41,6 @@ function initNavigation() {
       
       btn.classList.add('active');
       document.getElementById(btn.dataset.tab).classList.add('active');
-      
-      if (btn.dataset.tab === 'calendar') {
-        renderCalendar();
-      }
     });
   });
 }
@@ -173,180 +168,99 @@ function removeVendor(index) {
   }
 }
 
-/* ================== SUPER CALENDAR ================== */
+// Calendar
 function renderCalendar() {
-  const calendar = document.getElementById('calendar-views');
-  if (!calendar) return;
+  if (!calendarGrid) return;
   
-  calendar.innerHTML = '';
-  document.getElementById('current-month').textContent = 
-    currentDate.toLocaleDateString('default', { month: 'long', year: 'numeric' });
+  calendarGrid.innerHTML = '';
+  
+  const today = new Date();
+  const currentMonth = today.getMonth();
+  const currentYear = today.getFullYear();
+  const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+  const firstDay = new Date(currentYear, currentMonth, 1).getDay();
 
-  if (currentView === "month") {
-    renderMonthView();
-  } else {
-    renderTimelineView();
-  }
-}
+  // Create month header
+  const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 
+                     'July', 'August', 'September', 'October', 'November', 'December'];
+  const monthHeader = document.createElement('div');
+  monthHeader.className = 'calendar-month-header';
+  monthHeader.textContent = `${monthNames[currentMonth]} ${currentYear}`;
+  monthHeader.colSpan = 7;
+  calendarGrid.appendChild(monthHeader);
 
-function renderMonthView() {
-  const calendar = document.getElementById('calendar-views');
-  const firstDay = new Date(
-    currentDate.getFullYear(), 
-    currentDate.getMonth(), 
-    1
-  ).getDay();
-  
-  const daysInMonth = new Date(
-    currentDate.getFullYear(), 
-    currentDate.getMonth() + 1, 
-    0
-  ).getDate();
-  
-  const heatmapData = calculatePaymentHeatmap();
-  
-  let html = `
-    <div class="month-grid" 
-         style="--rows: ${Math.ceil((daysInMonth + firstDay) / 7)}">
-  `;
-  
-  // Day headers
-  ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].forEach(day => {
-    html += `<div class="day-header">${day}</div>`;
+  // Create day headers
+  const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  dayNames.forEach(day => {
+    const dayHeader = document.createElement('div');
+    dayHeader.className = 'calendar-day-header';
+    dayHeader.textContent = day;
+    calendarGrid.appendChild(dayHeader);
   });
-  
-  // Empty cells
+
+  // Add empty cells for days before the 1st
   for (let i = 0; i < firstDay; i++) {
-    html += `<div class="day empty"></div>`;
+    const emptyCell = document.createElement('div');
+    emptyCell.className = 'calendar-day empty';
+    calendarGrid.appendChild(emptyCell);
   }
-  
-  // Day cells
+
+  // Add day cells
   for (let day = 1; day <= daysInMonth; day++) {
-    const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
-    const dateString = date.toISOString().split('T')[0];
-    const heatValue = heatmapData[dateString] || 0;
-    const isToday = date.toDateString() === new Date().toDateString();
-    
-    html += `
-      <div class="day heat-${Math.min(Math.floor(heatValue / 3), 4)}" 
-           data-date="${dateString}"
-           draggable="false">
-        <div class="day-number">${day}</div>
-        ${renderPaymentsForDate(dateString)}
-        ${isToday ? '<div class="today-marker"></div>' : ''}
-      </div>`;
-  }
-  
-  calendar.innerHTML = html + '</div>';
-  initDayInteractions();
-}
+    const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+    const dayOfWeek = new Date(currentYear, currentMonth, day).getDay();
+    const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+    const isToday = day === today.getDate() && currentMonth === today.getMonth() && currentYear === today.getFullYear();
 
-function renderTimelineView() {
-  const calendar = document.getElementById('calendar-views');
-  const payments = getAllPaymentsSorted();
-  
-  let html = `<div class="timeline-view">`;
-  
-  payments.forEach(payment => {
-    const paymentDate = new Date(payment.date);
-    const isOverdue = paymentDate < new Date() && paymentDate.toDateString() !== new Date().toDateString();
-    
-    html += `
-      <div class="timeline-item" data-date="${payment.date}">
-        <div class="timeline-badge ${payment.vendor.priority.toLowerCase()}"></div>
-        <div class="timeline-content">
-          <h4>${payment.vendor.nickname}</h4>
-          <p>${formatCurrency(payment.vendor.amount)}</p>
-          <small>${paymentDate.toLocaleDateString()}</small>
-          ${isOverdue ? '<span class="overdue-badge">Overdue</span>' : ''}
-        </div>
-        <div class="timeline-actions">
-          <button class="btn-reschedule" data-id="${payment.vendorIndex}">↻ Reschedule</button>
-        </div>
-      </div>`;
-  });
-  
-  calendar.innerHTML = html + '</div>';
-  
-  // Add reschedule event listeners
-  document.querySelectorAll('.btn-reschedule').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      const vendorIndex = e.target.dataset.id;
-      optimizeVendorSchedule(vendorIndex);
-    });
-  });
-}
+    const cell = document.createElement('div');
+    cell.className = `calendar-day ${isWeekend ? 'weekend' : ''} ${isToday ? 'today' : ''}`;
+    cell.dataset.date = dateStr;
+    cell.innerHTML = `<div class="day-number">${day}</div>`;
 
-function calculatePaymentHeatmap() {
-  const heatmap = {};
-  Object.entries(scheduled).forEach(([vendorIndex, dates]) => {
-    const vendor = vendors[vendorIndex];
-    dates.forEach(date => {
-      heatmap[date] = (heatmap[date] || 0) + vendor.amount;
-    });
-  });
-  return heatmap;
-}
-
-function getAllPaymentsSorted() {
-  const allPayments = [];
-  Object.entries(scheduled).forEach(([vendorIndex, dates]) => {
-    const vendor = vendors[vendorIndex];
-    dates.forEach(date => {
-      allPayments.push({
-        date,
-        vendor,
-        vendorIndex
-      });
-    });
-  });
-  return allPayments.sort((a, b) => new Date(a.date) - new Date(b.date));
-}
-
-function renderPaymentsForDate(dateString) {
-  let paymentsHTML = '';
-  Object.entries(scheduled).forEach(([vendorIndex, dates]) => {
-    if (dates.includes(dateString)) {
-      const vendor = vendors[vendorIndex];
-      paymentsHTML += `
-        <div class="payment-entry ${vendor.priority.toLowerCase()}" 
-             draggable="true"
-             data-vendor-index="${vendorIndex}"
-             data-date="${dateString}">
-          ${vendor.nickname} - ${formatCurrency(vendor.amount)}
-        </div>`;
-    }
-  });
-  return paymentsHTML;
-}
-
-function initDayInteractions() {
-  // Make days droppable
-  document.querySelectorAll('.day').forEach(day => {
-    day.addEventListener('dragover', e => {
+    // Make cells droppable
+    cell.ondragover = e => e.preventDefault();
+    cell.ondrop = e => {
       e.preventDefault();
-      day.classList.add('drop-target');
-    });
-    
-    day.addEventListener('dragleave', () => {
-      day.classList.remove('drop-target');
-    });
-    
-    day.addEventListener('drop', e => {
-      e.preventDefault();
-      day.classList.remove('drop-target');
       const vendorIndex = e.dataTransfer.getData('text/plain');
-      const date = day.dataset.date;
-      if (vendorIndex && date) {
-        schedulePayment(vendorIndex, date);
+      schedulePayment(vendorIndex, dateStr);
+    };
+
+    calendarGrid.appendChild(cell);
+  }
+
+  // Add scheduled payments to calendar
+  Object.entries(scheduled).forEach(([vendorIdx, dates]) => {
+    const vendor = vendors[vendorIdx];
+    if (!vendor) return;
+
+    dates.forEach(date => {
+      const cell = calendarGrid.querySelector(`.calendar-day[data-date="${date}"]`);
+      if (cell) {
+        const paymentElement = document.createElement('div');
+        paymentElement.className = `calendar-payment payment-${vendor.priority.toLowerCase()}`;
+        paymentElement.innerHTML = `
+          <span>${vendor.nickname}</span>
+          <span>${formatCurrency(vendor.amount)}</span>
+          <button class="btn-remove-payment" data-vendor="${vendorIdx}" data-date="${date}">×</button>
+        `;
+        
+        paymentElement.draggable = true;
+        paymentElement.dataset.vendorId = vendorIdx;
+        paymentElement.ondragstart = e => {
+          e.dataTransfer.setData('text/plain', vendorIdx);
+        };
+
+        cell.appendChild(paymentElement);
       }
     });
   });
 
-  // Make payments draggable
-  document.querySelectorAll('.payment-entry').forEach(payment => {
-    payment.addEventListener('dragstart', e => {
-      e.dataTransfer.setData('text/plain', payment.dataset.vendorIndex);
+  // Add remove payment event listeners
+  document.querySelectorAll('.btn-remove-payment').forEach(btn => {
+    btn.addEventListener('click', e => {
+      const vendorIdx = e.target.dataset.vendor;
+      const date = e.target.dataset.date;
+      removeScheduledPayment(vendorIdx, date);
     });
   });
 }
@@ -361,6 +275,282 @@ function schedulePayment(vendorIndex, date) {
     renderAIInsights();
     showNotification('Payment scheduled');
   }
+}
+
+function removeScheduledPayment(vendorIndex, date) {
+  scheduled[vendorIndex] = scheduled[vendorIndex].filter(d => d !== date);
+  saveScheduled();
+  renderCalendar();
+  generateAlerts();
+  renderAIInsights();
+  showNotification('Payment removed');
+}
+
+// AI Features
+function generateAlerts() {
+  if (!alertContainer) return;
+  
+  alertContainer.innerHTML = '';
+  
+  // 1. Check for payment concentration
+  const paymentConcentration = checkPaymentConcentration();
+  if (paymentConcentration.length > 0) {
+    paymentConcentration.forEach(alert => {
+      const alertElement = document.createElement('div');
+      alertElement.className = 'alert-item alert-danger';
+      alertElement.innerHTML = `
+        <div class="alert-icon">⚠️</div>
+        <div class="alert-content">
+          <strong>High Payment Concentration on ${alert.date}</strong>
+          <p>${alert.count} payments totaling ${formatCurrency(alert.total)} due on this day</p>
+          <button class="btn-secondary btn-fix" data-date="${alert.date}">Suggest Reschedule</button>
+        </div>
+      `;
+      alertContainer.appendChild(alertElement);
+    });
+  }
+
+  // 2. Check for high priority vendors with approaching due dates
+  const priorityAlerts = checkPriorityVendors();
+  if (priorityAlerts.length > 0) {
+    priorityAlerts.forEach(alert => {
+      const alertElement = document.createElement('div');
+      alertElement.className = 'alert-item alert-warning';
+      alertElement.innerHTML = `
+        <div class="alert-icon">⚠️</div>
+        <div class="alert-content">
+          <strong>High Priority Payment Due Soon</strong>
+          <p>${alert.vendor.nickname} (${formatCurrency(alert.vendor.amount)}) due in ${alert.daysLeft} days</p>
+          <button class="btn-secondary btn-fix" data-vendor="${alert.vendorIndex}" data-date="${alert.date}">Reschedule</button>
+        </div>
+      `;
+      alertContainer.appendChild(alertElement);
+    });
+  }
+
+  // 3. Check for risk scores
+  const riskAlerts = calculateRiskScores();
+  if (riskAlerts.length > 0) {
+    riskAlerts.forEach(alert => {
+      const alertElement = document.createElement('div');
+      alertElement.className = 'alert-item alert-info';
+      alertElement.innerHTML = `
+        <div class="alert-icon">ℹ️</div>
+        <div class="alert-content">
+          <strong>Risk Assessment</strong>
+          <p>${alert.vendor.nickname} has a risk score of ${alert.riskScore}/10 due to ${alert.reason}</p>
+        </div>
+      `;
+      alertContainer.appendChild(alertElement);
+    });
+  }
+
+  // Add event listeners to fix buttons
+  document.querySelectorAll('.btn-fix').forEach(btn => {
+    btn.addEventListener('click', e => {
+      if (btn.dataset.date) {
+        suggestReschedule(btn.dataset.date);
+      } else if (btn.dataset.vendor) {
+        const vendorIndex = btn.dataset.vendor;
+        const date = btn.dataset.date;
+        optimizeVendorSchedule(vendorIndex);
+      }
+    });
+  });
+}
+
+function renderAIInsights() {
+  if (!aiInsightsContainer) return;
+  
+  aiInsightsContainer.innerHTML = '';
+  
+  // 1. Payment concentration insight
+  const concentration = checkPaymentConcentration();
+  if (concentration.length > 0) {
+    const worstDay = concentration.reduce((max, day) => 
+      day.count > max.count ? day : max, concentration[0]);
+    
+    const insightElement = document.createElement('div');
+    insightElement.innerHTML = `
+      <p><strong>AI Insight:</strong> Your highest payment concentration is on ${worstDay.date} 
+      with ${worstDay.count} payments totaling ${formatCurrency(worstDay.total)}.</p>
+      <p>Consider spreading these payments to improve cash flow.</p>
+    `;
+    aiInsightsContainer.appendChild(insightElement);
+  }
+
+  // 2. Upcoming payments insight
+  const upcoming = getUpcomingPayments();
+  if (upcoming.length > 0) {
+    const insightElement = document.createElement('div');
+    insightElement.innerHTML = `
+      <p><strong>AI Insight:</strong> You have ${upcoming.length} payments coming up in the next 7 days.</p>
+    `;
+    aiInsightsContainer.appendChild(insightElement);
+  }
+
+  // 3. Risk insight
+  const risks = calculateRiskScores();
+  if (risks.length > 0) {
+    const highRisk = risks.filter(r => r.riskScore >= 7);
+    if (highRisk.length > 0) {
+      const insightElement = document.createElement('div');
+      insightElement.innerHTML = `
+        <p><strong>AI Insight:</strong> You have ${highRisk.length} high-risk vendors with risk scores ≥7.</p>
+        <p>Consider prioritizing these payments or negotiating better terms.</p>
+      `;
+      aiInsightsContainer.appendChild(insightElement);
+    }
+  }
+}
+
+function checkPaymentConcentration() {
+  const paymentDays = {};
+  
+  // Count payments per day
+  Object.entries(scheduled).forEach(([vendorIdx, dates]) => {
+    const vendor = vendors[vendorIdx];
+    if (!vendor) return;
+    
+    dates.forEach(date => {
+      if (!paymentDays[date]) {
+        paymentDays[date] = {
+          count: 0,
+          total: 0
+        };
+      }
+      paymentDays[date].count++;
+      paymentDays[date].total += vendor.amount;
+    });
+  });
+
+  // Filter days with more than 2 payments
+  return Object.entries(paymentDays)
+    .filter(([_, day]) => day.count > 2)
+    .map(([date, day]) => ({
+      date,
+      count: day.count,
+      total: day.total
+    }));
+}
+
+function checkPriorityVendors() {
+  const today = new Date();
+  const alerts = [];
+  
+  Object.entries(scheduled).forEach(([vendorIdx, dates]) => {
+    const vendor = vendors[vendorIdx];
+    if (!vendor || vendor.priority !== 'High') return;
+    
+    dates.forEach(date => {
+      const dueDate = new Date(date);
+      const daysLeft = Math.ceil((dueDate - today) / (1000 * 60 * 60 * 24));
+      
+      if (daysLeft <= riskThreshold) {
+        alerts.push({
+          vendor,
+          vendorIndex: vendorIdx,
+          date,
+          daysLeft
+        });
+      }
+    });
+  });
+  
+  return alerts;
+}
+
+function calculateRiskScores() {
+  const today = new Date();
+  const risks = [];
+  
+  vendors.forEach((vendor, index) => {
+    if (!scheduled[index] || scheduled[index].length === 0) return;
+    
+    const nextPaymentDate = new Date(scheduled[index][0]);
+    const daysUntilPayment = Math.ceil((nextPaymentDate - today) / (1000 * 60 * 60 * 24));
+    
+    let riskScore = 0;
+    let reason = '';
+    
+    // High priority increases risk
+    if (vendor.priority === 'High') {
+      riskScore += 3;
+      reason += 'high priority, ';
+    }
+    
+    // Short payment terms increase risk
+    if (vendor.terms < 15) {
+      riskScore += 2;
+      reason += 'short terms, ';
+    }
+    
+    // Large amount increases risk
+    if (vendor.amount > 10000) {
+      riskScore += 2;
+      reason += 'large amount, ';
+    }
+    
+    // Approaching due date increases risk
+    if (daysUntilPayment <= riskThreshold) {
+      riskScore += 3;
+      reason += 'approaching due date';
+    }
+    
+    if (riskScore > 0) {
+      risks.push({
+        vendor,
+        vendorIndex: index,
+        riskScore: Math.min(riskScore, 10), // Cap at 10
+        reason: reason.replace(/,\s*$/, '') // Remove trailing comma
+      });
+    }
+  });
+  
+  return risks.sort((a, b) => b.riskScore - a.riskScore);
+}
+
+function suggestReschedule(date) {
+  const vendorsOnDate = [];
+  
+  // Find all vendors scheduled on this date
+  Object.entries(scheduled).forEach(([vendorIdx, dates]) => {
+    if (dates.includes(date)) {
+      vendorsOnDate.push({
+        vendor: vendors[vendorIdx],
+        vendorIndex: vendorIdx
+      });
+    }
+  });
+
+  if (vendorsOnDate.length === 0) return;
+
+  // Sort by amount (descending)
+  vendorsOnDate.sort((a, b) => b.vendor.amount - a.vendor.amount);
+
+  // Keep the largest payment on original date
+  const keepVendor = vendorsOnDate.shift();
+
+  // Reschedule others to subsequent days
+  vendorsOnDate.forEach((vendor, i) => {
+    const newDate = new Date(date);
+    newDate.setDate(newDate.getDate() + i + 1);
+    const newDateStr = newDate.toISOString().split('T')[0];
+
+    // Remove from original date
+    scheduled[vendor.vendorIndex] = scheduled[vendor.vendorIndex].filter(d => d !== date);
+    
+    // Add to new date
+    if (!scheduled[vendor.vendorIndex].includes(newDateStr)) {
+      scheduled[vendor.vendorIndex].push(newDateStr);
+    }
+  });
+
+  saveScheduled();
+  renderCalendar();
+  generateAlerts();
+  renderAIInsights();
+  showNotification(`Rescheduled ${vendorsOnDate.length} payments from ${date}`);
 }
 
 function optimizeVendorSchedule(vendorIndex) {
@@ -385,123 +575,73 @@ function optimizeVendorSchedule(vendorIndex) {
   }
 }
 
-function autoSchedulePayments() {
-  const paymentDays = {};
+aiScheduleBtn?.addEventListener('click', () => {
+  // Find all high concentration days
+  const concentration = checkPaymentConcentration();
   
-  // Group payments by date
-  Object.entries(scheduled).forEach(([vendorIndex, dates]) => {
-    dates.forEach(date => {
-      if (!paymentDays[date]) paymentDays[date] = [];
-      paymentDays[date].push({
-        vendorIndex,
-        amount: vendors[vendorIndex].amount,
-        priority: vendors[vendorIndex].priority
-      });
-    });
-  });
-  
-  // Reschedule conflicts
-  Object.entries(paymentDays).forEach(([date, payments]) => {
-    if (payments.length > 2) {
-      // Sort by priority and amount
-      payments.sort((a, b) => {
-        const priorityOrder = { High: 3, Medium: 2, Low: 1 };
-        return priorityOrder[b.priority] - priorityOrder[a.priority] || b.amount - a.amount;
-      });
-      
-      // Keep top 2 payments on original date
-      const toReschedule = payments.slice(2);
-      
-      toReschedule.forEach((payment, i) => {
-        const newDate = new Date(date);
-        newDate.setDate(newDate.getDate() + Math.floor(i / 2) + 1);
-        const newDateStr = newDate.toISOString().split('T')[0];
-        
-        // Remove from original date
-        scheduled[payment.vendorIndex] = scheduled[payment.vendorIndex].filter(d => d !== date);
-        
-        // Add to new date
-        if (!scheduled[payment.vendorIndex].includes(newDateStr)) {
-          scheduled[payment.vendorIndex].push(newDateStr);
-        }
-      });
-    }
-  });
-  
-  saveScheduled();
-  renderCalendar();
-  showNotification('Payments optimally scheduled! ✨');
-}
-
-function initSuperCalendar() {
-  renderCalendar();
-  
-  // Event listeners
-  document.getElementById('view-toggle').addEventListener('click', toggleView);
-  document.getElementById('today-btn').addEventListener('click', goToToday);
-  document.getElementById('schedule-all').addEventListener('click', autoSchedulePayments);
-  
-  // Navigation
-  document.getElementById('prev-month').addEventListener('click', () => navigateMonth(-1));
-  document.getElementById('next-month').addEventListener('click', () => navigateMonth(1));
-  document.getElementById('prev-year').addEventListener('click', () => navigateMonth(-12));
-  document.getElementById('next-year').addEventListener('click', () => navigateMonth(12));
-  
-  // Time filters
-  document.querySelectorAll('.time-filters button').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const filter = btn.dataset.filter;
-      highlightPayments(filter);
-    });
-  });
-}
-
-function toggleView() {
-  currentView = currentView === "month" ? "list" : "month";
-  document.getElementById('view-toggle').textContent = 
-    currentView === "month" ? "🌗 List View" : "📅 Month View";
-  renderCalendar();
-}
-
-function goToToday() {
-  currentDate = new Date();
-  renderCalendar();
-}
-
-function navigateMonth(offset) {
-  currentDate.setMonth(currentDate.getMonth() + offset);
-  renderCalendar();
-}
-
-function highlightPayments(filter) {
-  const today = new Date().toISOString().split('T')[0];
-  
-  if (currentView === "month") {
-    document.querySelectorAll('.payment-entry').forEach(entry => {
-      const date = entry.closest('.day').dataset.date;
-      entry.style.opacity = 1;
-      
-      if (filter === 'upcoming' && date < today) {
-        entry.style.opacity = 0.3;
-      } else if (filter === 'overdue' && date >= today) {
-        entry.style.opacity = 0.3;
-      }
-    });
-  } else {
-    document.querySelectorAll('.timeline-item').forEach(item => {
-      const date = item.dataset.date;
-      item.style.opacity = 1;
-      
-      if (filter === 'upcoming' && date < today) {
-        item.style.opacity = 0.3;
-      } else if (filter === 'overdue' && date >= today) {
-        item.style.opacity = 0.3;
-      }
-    });
+  if (concentration.length === 0) {
+    showNotification('No payment concentration issues found', 'info');
+    return;
   }
+
+  // Reschedule each concentrated day
+  concentration.forEach(day => {
+    suggestReschedule(day.date);
+  });
+
+  showNotification('Optimized payment schedule based on AI recommendations');
+});
+
+// Dashboard
+function updateDashboard() {
+  const total = vendors.reduce((sum, v) => sum + (v.amount || 0), 0);
+  const upcoming = getUpcomingPayments().length;
+  const highRisk = calculateRiskScores().filter(r => r.riskScore >= 7).length;
+
+  document.getElementById('total-payments').textContent = formatCurrency(total);
+  document.getElementById('upcoming-count').textContent = upcoming;
+  document.getElementById('high-risk-count').textContent = highRisk;
 }
 
-// [Rest of your existing functions (updateDashboard, generateAlerts, etc.)]
+function getUpcomingPayments() {
+  const today = new Date();
+  const nextWeek = new Date(today);
+  nextWeek.setDate(nextWeek.getDate() + 7);
+  
+  const upcoming = [];
+  
+  Object.entries(scheduled).forEach(([vendorIdx, dates]) => {
+    const vendor = vendors[vendorIdx];
+    if (!vendor) return;
+    
+    dates.forEach(date => {
+      const dueDate = new Date(date);
+      if (dueDate >= today && dueDate <= nextWeek) {
+        upcoming.push({
+          vendor,
+          date
+        });
+      }
+    });
+  });
+  
+  return upcoming;
+}
+
+// Settings
+saveSettingsBtn?.addEventListener('click', () => {
+  currency = currencySelect.value;
+  riskThreshold = parseInt(riskThresholdInput.value) || 7;
+  
+  localStorage.setItem('currency', currency);
+  localStorage.setItem('riskThreshold', riskThreshold.toString());
+  
+  renderCalendar();
+  updateDashboard();
+  generateAlerts();
+  renderAIInsights();
+  showNotification('Settings saved successfully');
+});
 
 // Helper Functions
 function formatCurrency(value) {
@@ -529,4 +669,32 @@ function showNotification(message, type = 'success') {
   setTimeout(() => {
     notification.classList.add('hidden');
   }, 3000);
+}
+
+// Export
+exportBtn?.addEventListener('click', exportCSV);
+
+function exportCSV() {
+  const csvHeader = `Vendor,Legal Name,Amount,Priority,Due Dates,Risk Score\n`;
+  
+  const csvBody = vendors.map((v, i) => {
+    const dates = scheduled[i] ? scheduled[i].join('; ') : '';
+    const risk = calculateRiskScores().find(r => r.vendorIndex === i);
+    const riskScore = risk ? risk.riskScore : 0;
+    
+    return `"${v.nickname}","${v.legalName}",${v.amount} ${currency},"${v.priority}","${dates}",${riskScore}`;
+  }).join('\n');
+  
+  const csv = csvHeader + csvBody;
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `duebook_export_${new Date().toISOString().slice(0, 10)}.csv`;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  
+  showNotification('CSV exported successfully');
 }
