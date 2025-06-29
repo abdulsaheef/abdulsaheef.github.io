@@ -76,25 +76,12 @@
     </section>
 
     <section id="calendar" class="tab-content" aria-labelledby="calendar-heading" hidden>
-      <h2 id="calendar-heading">Payment Calendar</h2>
-      <div class="calendar-toolbar">
-        <button id="view-toggle">🌗 List View</button>
-        <button id="today-btn">⏎ Today</button>
-        <div class="month-nav">
-          <button id="prev-year">«</button>
-          <button id="prev-month">‹</button>
-          <h3 id="current-month">June 2023</h3>
-          <button id="next-month">›</button>
-          <button id="next-year">»</button>
-        </div>
-        <button id="schedule-all">✨ Auto-Schedule</button>
-        <div class="time-filters">
-          <button data-filter="upcoming">↑ Upcoming</button>
-          <button data-filter="overdue">↓ Overdue</button>
-          <button data-filter="all">All</button>
-        </div>
+      <h2 id="calendar-heading">Calendar View</h2>
+      <div class="calendar-header">
+        <button id="export-btn" class="btn-primary">Export CSV</button>
+        <button id="ai-schedule-btn" class="btn-secondary">Optimize Schedule</button>
       </div>
-      <div id="calendar-views"></div>
+      <div id="calendar-grid"></div>
     </section>
 
     <section id="settings" class="tab-content" aria-labelledby="settings-heading" hidden>
