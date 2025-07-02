@@ -1,0 +1,7 @@
+[
+  { "symbol": "INFY", "name": "Infosys Ltd.", "price": 1580 },
+  { "symbol": "TCS",  "name": "Tata Consultancy", "price": 3450 },
+  { "symbol": "RELIANCE", "name": "Reliance Industries", "price": 2810 },
+  { "symbol": "HDFC", "name": "HDFC Bank", "price": 1520 },
+  { "symbol": "ICICI", "name": "ICICI Bank", "price": 940 }
+]
