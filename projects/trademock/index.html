@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>TradeMock</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Login Overlay -->
+  <div id="login-screen" class="overlay">
+    <div class="login-box">
+      <h2>Welcome to TradeMock</h2>
+      <input id="login-username" placeholder="Enter username" />
+      <button id="login-btn">Start / Resume</button>
+    </div>
+  </div>
+
+  <!-- App Container -->
+  <div id="app" class="hidden">
+    <!-- Views -->
+    <section id="dashboard" class="page active">
+      <h1>Dashboard</h1>
+      <div class="card">
+        <p>Balance: ₹<span id="balance">0</span></p>
+        <p>Invested: ₹<span id="invested">0</span></p>
+      </div>
+      <div class="card">
+        <h3>Demat Snapshot</h3>
+        <ul id="demat-list"></ul>
+      </div>
+    </section>
+
+    <section id="market" class="page">
+      <h1>Market Watch</h1>
+      <ul id="market-list"></ul>
+    </section>
+
+    <section id="portfolio" class="page">
+      <h1>Portfolio</h1>
+      <ul id="portfolio-list"></ul>
+    </section>
+
+    <section id="demat" class="page">
+      <h1>Demat Statement</h1>
+      <ul id="demat-statement"></ul>
+    </section>
+
+    <section id="history" class="page">
+      <h1>Trade History</h1>
+      <ul id="trade-history"></ul>
+    </section>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+      <button data-target="dashboard">🏠</button>
+      <button data-target="market">📈</button>
+      <button data-target="portfolio">💼</button>
+      <button data-target="demat">📃</button>
+      <button data-target="history">🧾</button>
+    </nav>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
