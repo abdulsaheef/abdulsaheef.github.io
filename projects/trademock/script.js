@@ -110,13 +110,19 @@ function updateUI() {
 function renderMarket() {
   const ul = document.getElementById('market-list');
   ul.innerHTML = '';
+
+  if (!state.stocks.length) {
+    ul.innerHTML = '<li>📉 No stock data loaded.</li>';
+    return;
+  }
+
   state.stocks.forEach(s => {
     const li = document.createElement('li');
     li.innerHTML = `
       <span>${s.symbol} - ₹${s.price}</span>
       <button onclick="openTrade('${s.symbol}')">Trade</button>
     `;
-    ul.append(li);
+    ul.appendChild(li);
   });
 }
 
