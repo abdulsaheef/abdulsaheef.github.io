@@ -24,8 +24,29 @@ window.onload = async () => {
 
 // Load mock stocks
 async function loadStocks() {
-  const res = await fetch('data/mock-stocks.json');
-  state.stocks = await res.json();
+  async function loadStocks() {
+  const symbols = ["INFY.NS", "TCS.NS", "RELIANCE.NS", "HDFCBANK.NS"];
+  const apiKey = "YOUR_API_KEY"; // Replace this with your actual API key
+
+  const requests = symbols.map(sym =>
+    fetch(`https://api.twelvedata.com/price?symbol=${sym}&apikey=${apiKey}`)
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.price) {
+          return {
+            symbol: sym.replace(".NS", ""),
+            name: sym,
+            price: parseFloat(data.price)
+          };
+        } else {
+          return null;
+        }
+      })
+  );
+
+  const results = await Promise.all(requests);
+  state.stocks = results.filter(item => item !== null);
+}
 }
 
 // —————————————————————————————
