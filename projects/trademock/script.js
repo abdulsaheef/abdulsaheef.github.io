@@ -1,448 +1,313 @@
-// API Configuration
+// ========== CONFIGURATION ==========
 const API_KEY = '8aabf877b0ec41bd87662871378e0ef4';
 const BASE_URL = 'https://api.twelvedata.com';
-const DEFAULT_SYMBOLS = ['RELIANCE', 'TATASTEEL', 'HDFCBANK', 'INFY', 'TCS', 'ITC', 'BHARTIARTL', 'HINDUNILVR', 'ICICIBANK', 'SBIN'];
+const DEFAULT_SYMBOLS = ['RELIANCE.NS', 'TCS.NS', 'INFY.NS', 'HDFCBANK.NS', 'ICICIBANK.NS'];
 
-// DOM Elements
-const stocksContainer = document.getElementById('stocks-container');
-const portfolioStocks = document.getElementById('portfolio-stocks');
-const pendingSettlements = document.getElementById('pending-settlements');
-const completedSettlements = document.getElementById('completed-settlements');
-const tradeHistory = document.getElementById('trade-history');
-const availableBalance = document.getElementById('available-balance');
+// ========== APP STATE ==========
+let state = {
+  user: null,
+  balance: 100000,
+  holdings: {},
+  dematQueue: [],
+  trades: [],
+  stocks: []
+};
+
+// ========== DOM REFERENCES ==========
+const loginForm = document.getElementById('login-form');
+const appContainer = document.getElementById('app-container');
+const profileUsername = document.getElementById('profile-username');
 const profileBalance = document.getElementById('profile-balance');
+const availableBalance = document.getElementById('available-balance');
+const logoutBtn = document.getElementById('logout-btn');
 
-// App State
-let stocksData = {};
-let portfolio = {};
-let demat = { pending: [], completed: [] };
-let tradeHistoryData = [];
-let balance = 100000; // Starting balance
-
-// Initialize the app
-document.addEventListener('DOMContentLoaded', function() {
-    setupNavigation();
-    setupEventListeners();
-    fetchMarketData();
-    loadUserData();
-    updateUI();
-    
-    // Set up interval to fetch prices every 10 seconds
-    setInterval(fetchMarketData, 10000);
+// ========== INITIALIZE ==========
+document.addEventListener('DOMContentLoaded', () => {
+  setupLogin();
+  setupNavigation();
+  setupTradeModal();
+  loadStocks();
+  setInterval(loadStocks, 60000); // refresh every minute
 });
 
-// Navigation Setup (same as before)
+// ========== LOGIN ==========
+function setupLogin() {
+  loginForm.addEventListener('submit', e => {
+    e.preventDefault();
+    const username = document.getElementById('username').value.trim();
+    if (!username) return;
+
+    state.user = username;
+    loadSession();
+
+    profileUsername.textContent = username;
+    profileBalance.textContent = state.balance.toFixed(2);
+    availableBalance.textContent = state.balance.toFixed(2);
+
+    document.getElementById('auth-screen').style.display = 'none';
+    appContainer.style.display = 'block';
+  });
+}
+
+function loadSession() {
+  const data = localStorage.getItem(`trademock_${state.user}`);
+  if (data) {
+    const parsed = JSON.parse(data);
+    state.balance = parsed.balance || 100000;
+    state.holdings = parsed.holdings || {};
+    state.dematQueue = parsed.dematQueue || [];
+    state.trades = parsed.trades || [];
+  }
+}
+
+function saveSession() {
+  localStorage.setItem(
+    `trademock_${state.user}`,
+    JSON.stringify({
+      balance: state.balance,
+      holdings: state.holdings,
+      dematQueue: state.dematQueue,
+      trades: state.trades
+    })
+  );
+}
+
+// ========== NAVIGATION ==========
 function setupNavigation() {
-    // ... (keep the existing navigation code from previous version)
-}
+  const navItems = document.querySelectorAll('.nav-item');
+  const mobileNavBtns = document.querySelectorAll('.mobile-nav-btn');
+  const dematTabs = document.querySelectorAll('.demat-tab');
 
-// Event Listeners
-function setupEventListeners() {
-    // Trade modal close button
-    document.querySelector('.modal-close').addEventListener('click', closeTradeModal);
-    
-    // Trade type buttons
-    const tradeTypeBtns = document.querySelectorAll('.trade-type-btn');
-    tradeTypeBtns.forEach(btn => {
-        btn.addEventListener('click', function() {
-            tradeTypeBtns.forEach(b => b.classList.remove('active'));
-            this.classList.add('active');
-        });
+  navItems.forEach(item => {
+    item.addEventListener('click', () => {
+      navItems.forEach(i => i.classList.remove('active'));
+      item.classList.add('active');
+      showSection(item.dataset.section);
+      updateMobileNav(item.dataset.section);
     });
-    
-    // Trade submit button
-    document.getElementById('trade-submit').addEventListener('click', executeTrade);
-    
-    // Login form submission
-    document.getElementById('login-form').addEventListener('submit', function(e) {
-        e.preventDefault();
-        const username = document.getElementById('username').value;
-        if (username) {
-            document.getElementById('profile-username').textContent = username;
-            document.getElementById('auth-screen').style.display = 'none';
-            document.getElementById('app-container').style.display = 'block';
-        }
+  });
+
+  mobileNavBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      mobileNavBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      showSection(btn.dataset.section);
+      updateDesktopNav(btn.dataset.section);
     });
-    
-    // Logout button
-    document.getElementById('logout-btn').addEventListener('click', function() {
-        document.getElementById('auth-screen').style.display = 'flex';
-        document.getElementById('app-container').style.display = 'none';
+  });
+
+  dematTabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      dematTabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      document.querySelectorAll('.demat-content').forEach(c => c.classList.add('hidden'));
+      document.getElementById(`demat-${tab.dataset.tab}`).classList.remove('hidden');
     });
+  });
+
+  logoutBtn.addEventListener('click', () => {
+    document.getElementById('auth-screen').style.display = 'flex';
+    appContainer.style.display = 'none';
+  });
 }
 
-// Fetch Market Data from TwelveData API
-async function fetchMarketData() {
-    try {
-        // Fetch price data for all default symbols
-        const symbols = DEFAULT_SYMBOLS.join(',');
-        const response = await fetch(`${BASE_URL}/price?symbol=${symbols}&apikey=${API_KEY}`);
-        const priceData = await response.json();
-        
-        // Fetch quote data for additional info (change, percent change)
-        const quoteResponse = await fetch(`${BASE_URL}/quote?symbol=${symbols}&apikey=${API_KEY}`);
-        const quoteData = await quoteResponse.json();
-        
-        // Process the data
-        DEFAULT_SYMBOLS.forEach(symbol => {
-            if (priceData[symbol] && !priceData[symbol].error) {
-                const price = parseFloat(priceData[symbol].price);
-                const quote = quoteData[symbol];
-                
-                stocksData[symbol] = {
-                    symbol: symbol,
-                    name: quote.name || symbol,
-                    price: price,
-                    change: parseFloat(quote.change || 0),
-                    changePercent: parseFloat(quote.percent_change || 0),
-                    high: parseFloat(quote.high || 0),
-                    low: parseFloat(quote.low || 0),
-                    open: parseFloat(quote.open || 0),
-                    previousClose: parseFloat(quote.previous_close || 0)
-                };
-            }
-        });
-        
-        updateStocksDisplay();
-        updatePortfolioValues();
-    } catch (error) {
-        console.error('Error fetching market data:', error);
-        // Fallback: Use previous data if available
-        if (Object.keys(stocksData).length > 0) {
-            updateStocksDisplay();
-        }
-    }
+function showSection(section) {
+  document.querySelectorAll('.content-section').forEach(sec => {
+    sec.classList.add('hidden');
+  });
+  document.getElementById(`${section}-section`).classList.remove('hidden');
+  document.getElementById('section-title').textContent = 
+    section.charAt(0).toUpperCase() + section.slice(1);
 }
 
-// Update Stocks Display
-function updateStocksDisplay() {
-    stocksContainer.innerHTML = '';
-    
-    Object.values(stocksData).forEach(stock => {
-        const stockCard = document.createElement('div');
-        stockCard.className = 'stock-card';
-        stockCard.dataset.symbol = stock.symbol;
-        stockCard.innerHTML = `
-            <div class="stock-header">
-                <div>
-                    <div class="stock-name">${stock.name}</div>
-                    <div class="stock-symbol">${stock.symbol}</div>
-                </div>
-                <div class="stock-price">₹${stock.price.toFixed(2)}</div>
-            </div>
-            <div class="stock-change ${stock.change >= 0 ? 'positive' : 'negative'}">
-                ${stock.change >= 0 ? '+' : ''}${stock.change.toFixed(2)} (${stock.changePercent.toFixed(2)}%)
-            </div>
-            <div class="stock-actions">
-                <button class="stock-btn buy" onclick="openTradeModal('${stock.symbol}', '${stock.name}', ${stock.price}, 'buy')">
-                    Buy
-                </button>
-                <button class="stock-btn sell" onclick="openTradeModal('${stock.symbol}', '${stock.name}', ${stock.price}, 'sell')">
-                    Sell
-                </button>
-            </div>
-        `;
-        stocksContainer.appendChild(stockCard);
+function updateMobileNav(section) {
+  document.querySelectorAll('.mobile-nav-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.section === section);
+  });
+}
+
+function updateDesktopNav(section) {
+  document.querySelectorAll('.nav-item').forEach(item => {
+    item.classList.toggle('active', item.dataset.section === section);
+  });
+}
+
+// ========== STOCK LOADING ==========
+async function loadStocks() {
+  try {
+    const symbols = DEFAULT_SYMBOLS.join(',');
+    const priceRes = await fetch(`${BASE_URL}/price?symbol=${symbols}&apikey=${API_KEY}`);
+    const quoteRes = await fetch(`${BASE_URL}/quote?symbol=${symbols}&apikey=${API_KEY}`);
+
+    const priceData = await priceRes.json();
+    const quoteData = await quoteRes.json();
+
+    state.stocks = DEFAULT_SYMBOLS.map(symbol => {
+      const base = symbol.replace('.NS', '');
+      const quote = quoteData[symbol] || {};
+      return {
+        symbol: base,
+        name: quote.name || base,
+        price: parseFloat(priceData[symbol]?.price || 0),
+        change: parseFloat(quote.change || 0),
+        changePercent: parseFloat(quote.percent_change || 0)
+      };
     });
+
+    updateMarket();
+    updatePortfolioValues();
+  } catch (err) {
+    console.error('Stock fetch failed:', err);
+  }
 }
 
-// Trade Modal Functions
-function openTradeModal(stockSymbol, stockName, stockPrice, action = 'buy') {
-    document.getElementById('trade-modal-title').textContent = action === 'buy' ? 'Buy Stock' : 'Sell Stock';
-    document.getElementById('trade-stock-symbol').textContent = stockSymbol;
-    document.getElementById('trade-stock-name').textContent = stockName;
-    document.getElementById('trade-stock-price').textContent = `₹${stockPrice.toFixed(2)}`;
-    document.getElementById('trade-price').value = stockPrice.toFixed(2);
-    
-    // Set trade type
-    const tradeTypeBtns = document.querySelectorAll('.trade-type-btn');
-    tradeTypeBtns.forEach(btn => {
-        btn.classList.remove('active');
-        if (btn.getAttribute('data-type') === action) {
-            btn.classList.add('active');
-        }
+function updateMarket() {
+  const container = document.getElementById('stocks-container');
+  container.innerHTML = '';
+
+  state.stocks.forEach(stock => {
+    const card = document.createElement('div');
+    card.className = 'stock-card';
+    card.innerHTML = `
+      <div class="stock-header">
+        <div>
+          <div class="stock-name">${stock.name}</div>
+          <div class="stock-symbol">${stock.symbol}</div>
+        </div>
+        <div class="stock-price">₹${stock.price.toFixed(2)}</div>
+      </div>
+      <div class="stock-change ${stock.change >= 0 ? 'positive' : 'negative'}">
+        ${stock.change >= 0 ? '+' : ''}${stock.change.toFixed(2)} 
+        (${stock.changePercent.toFixed(2)}%)
+      </div>
+      <div class="stock-actions">
+        <button class="stock-btn buy" onclick="openTradeModal('${stock.symbol}', 'buy')">Buy</button>
+        <button class="stock-btn sell" onclick="openTradeModal('${stock.symbol}', 'sell')">Sell</button>
+      </div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+// ========== TRADE MODAL ==========
+function setupTradeModal() {
+  const modal = document.getElementById('trade-modal');
+  const closeBtn = modal.querySelector('.modal-close');
+  closeBtn.addEventListener('click', () => modal.classList.add('hidden'));
+
+  document.getElementById('trade-submit').addEventListener('click', handleTradeSubmit);
+
+  const typeBtns = document.querySelectorAll('.trade-type-btn');
+  typeBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      typeBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
     });
-    
-    // Update total amount when quantity or price changes
-    document.getElementById('trade-qty').addEventListener('input', updateTradeTotal);
-    document.getElementById('trade-price').addEventListener('input', updateTradeTotal);
-    
-    // Show modal
-    document.getElementById('trade-modal').classList.add('show');
+  });
+
+  document.getElementById('trade-qty').addEventListener('input', updateTradeSummary);
+  document.getElementById('trade-price').addEventListener('input', updateTradeSummary);
 }
 
-function closeTradeModal() {
-    document.getElementById('trade-modal').classList.remove('show');
-    // Remove event listeners to prevent duplicates
-    document.getElementById('trade-qty').removeEventListener('input', updateTradeTotal);
-    document.getElementById('trade-price').removeEventListener('input', updateTradeTotal);
+let currentTrade = { symbol: '', action: 'buy', price: 0 };
+
+function openTradeModal(symbol, action) {
+  const stock = state.stocks.find(s => s.symbol === symbol);
+  if (!stock) return;
+
+  currentTrade = { symbol, action, price: stock.price };
+  document.getElementById('trade-stock-symbol').textContent = stock.symbol;
+  document.getElementById('trade-stock-name').textContent = stock.name;
+  document.getElementById('trade-stock-price').textContent = `₹${stock.price.toFixed(2)}`;
+  document.getElementById('trade-qty').value = 1;
+  document.getElementById('trade-price').value = stock.price.toFixed(2);
+
+  updateTradeSummary();
+  document.getElementById('trade-modal').classList.remove('hidden');
+
+  document.querySelectorAll('.trade-type-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.type === action);
+  });
 }
 
-function updateTradeTotal() {
-    const qty = parseInt(document.getElementById('trade-qty').value) || 0;
-    const price = parseFloat(document.getElementById('trade-price').value) || 0;
-    const total = qty * price;
-    
-    document.getElementById('trade-total').textContent = `₹${total.toFixed(2)}`;
-    
-    // Calculate brokerage (example: 0.1% or min ₹20)
-    const brokerage = Math.max(total * 0.001, 20);
-    document.getElementById('trade-brokerage').textContent = `₹${brokerage.toFixed(2)}`;
-    
-    // Calculate net amount
-    const netAmount = total + brokerage;
-    document.getElementById('trade-net').textContent = `₹${netAmount.toFixed(2)}`;
+function updateTradeSummary() {
+  const qty = parseInt(document.getElementById('trade-qty').value || 1);
+  const price = parseFloat(document.getElementById('trade-price').value || 0);
+  const amount = qty * price;
+  const brokerage = amount * 0.001;
+  const net = amount + brokerage;
+
+  document.getElementById('trade-total').textContent = `₹${amount.toFixed(2)}`;
+  document.getElementById('trade-brokerage').textContent = `₹${brokerage.toFixed(2)}`;
+  document.getElementById('trade-net').textContent = `₹${net.toFixed(2)}`;
 }
 
-// Execute Trade
-function executeTrade() {
-    const action = document.querySelector('.trade-type-btn.active').getAttribute('data-type');
-    const symbol = document.getElementById('trade-stock-symbol').textContent;
-    const name = document.getElementById('trade-stock-name').textContent;
-    const qty = parseInt(document.getElementById('trade-qty').value);
-    const price = parseFloat(document.getElementById('trade-price').value);
-    const total = qty * price;
-    const brokerage = Math.max(total * 0.001, 20);
-    const netAmount = total + brokerage;
-    
-    if (action === 'buy') {
-        if (netAmount > balance) {
-            alert('Insufficient balance for this trade');
-            return;
-        }
-        
-        // Update balance
-        balance -= netAmount;
-        
-        // Add to portfolio or update existing position
-        if (portfolio[symbol]) {
-            const avgPrice = ((portfolio[symbol].avgPrice * portfolio[symbol].qty) + (price * qty)) / (portfolio[symbol].qty + qty);
-            portfolio[symbol] = {
-                ...portfolio[symbol],
-                qty: portfolio[symbol].qty + qty,
-                avgPrice: avgPrice,
-                invested: portfolio[symbol].invested + total
-            };
-        } else {
-            portfolio[symbol] = {
-                symbol: symbol,
-                name: name,
-                qty: qty,
-                avgPrice: price,
-                invested: total
-            };
-        }
-    } else { // Sell
-        if (!portfolio[symbol] || portfolio[symbol].qty < qty) {
-            alert('You don\'t have enough shares to sell');
-            return;
-        }
-        
-        // Update balance (we add the total amount minus brokerage)
-        balance += (total - brokerage);
-        
-        // Update portfolio
-        portfolio[symbol].qty -= qty;
-        portfolio[symbol].invested = portfolio[symbol].avgPrice * portfolio[symbol].qty;
-        
-        // Remove from portfolio if quantity reaches zero
-        if (portfolio[symbol].qty === 0) {
-            delete portfolio[symbol];
-        }
-    }
-    
-    // Record the trade
-    const tradeRecord = {
-        date: new Date().toISOString(),
-        symbol: symbol,
-        name: name,
-        type: action,
-        qty: qty,
-        price: price,
-        amount: total,
-        brokerage: brokerage,
-        status: 'completed'
-    };
-    
-    tradeHistoryData.unshift(tradeRecord);
-    
-    // For sells, add to demat (T+2 settlement)
-    if (action === 'sell') {
-        const settlementDate = new Date();
-        settlementDate.setDate(settlementDate.getDate() + 2);
-        
-        demat.pending.unshift({
-            ...tradeRecord,
-            settlementDate: settlementDate.toISOString()
-        });
-    }
-    
-    // Update UI
-    closeTradeModal();
-    updateUI();
-    saveUserData();
+function handleTradeSubmit() {
+  const qty = parseInt(document.getElementById('trade-qty').value);
+  const price = parseFloat(document.getElementById('trade-price').value);
+  const total = qty * price;
+  const action = document.querySelector('.trade-type-btn.active').dataset.type;
+
+  if (action === 'buy') {
+    if (state.balance < total) return alert("Insufficient funds");
+    state.balance -= total;
+    state.holdings[currentTrade.symbol] = (state.holdings[currentTrade.symbol] || 0) + qty;
+  } else {
+    if ((state.holdings[currentTrade.symbol] || 0) < qty) return alert("Insufficient shares");
+    state.balance += total;
+    state.holdings[currentTrade.symbol] -= qty;
+  }
+
+  state.trades.push({
+    symbol: currentTrade.symbol,
+    qty,
+    price,
+    type: action,
+    date: new Date().toISOString(),
+    amount: total,
+    status: 'completed'
+  });
+
+  saveSession();
+  updateMarket();
+  updatePortfolioValues();
+  document.getElementById('trade-modal').classList.add('hidden');
 }
 
-// Update Portfolio Values with current prices
+// ========== PORTFOLIO UI ==========
 function updatePortfolioValues() {
-    let totalInvested = 0;
-    let currentValue = 0;
-    
-    Object.keys(portfolio).forEach(symbol => {
-        if (stocksData[symbol]) {
-            const currentPrice = stocksData[symbol].price;
-            portfolio[symbol].currentPrice = currentPrice;
-            portfolio[symbol].currentValue = currentPrice * portfolio[symbol].qty;
-            portfolio[symbol].pnl = portfolio[symbol].currentValue - portfolio[symbol].invested;
-            portfolio[symbol].pnlPercent = (portfolio[symbol].pnl / portfolio[symbol].invested) * 100;
-            
-            totalInvested += portfolio[symbol].invested;
-            currentValue += portfolio[symbol].currentValue;
-        }
-    });
-    
-    // Check for pending settlements that are now complete
-    const now = new Date();
-    demat.pending = demat.pending.filter(item => {
-        if (new Date(item.settlementDate) <= now) {
-            demat.completed.unshift(item);
-            return false;
-        }
-        return true;
-    });
-    
-    // Update UI
-    updateUI();
-}
+  const table = document.getElementById('portfolio-stocks');
+  table.innerHTML = '';
+  let investment = 0;
+  let currentValue = 0;
 
-// Update All UI Elements
-function updateUI() {
-    // Update balance displays
-    availableBalance.textContent = balance.toFixed(2);
-    profileBalance.textContent = balance.toFixed(2);
-    
-    // Update portfolio summary
-    let totalInvested = 0;
-    let currentValue = 0;
-    let totalPnl = 0;
-    
-    Object.values(portfolio).forEach(stock => {
-        totalInvested += stock.invested;
-        currentValue += (stock.currentPrice || stock.avgPrice) * stock.qty;
-    });
-    
-    totalPnl = currentValue - totalInvested;
-    const pnlPercent = totalInvested > 0 ? (totalPnl / totalInvested) * 100 : 0;
-    
-    document.getElementById('total-investment').textContent = `₹${totalInvested.toFixed(2)}`;
-    document.getElementById('current-value').textContent = `₹${currentValue.toFixed(2)}`;
-    document.getElementById('profit-loss').textContent = `₹${totalPnl.toFixed(2)}`;
-    document.getElementById('profit-loss-percent').textContent = `${pnlPercent.toFixed(2)}%`;
-    document.getElementById('profit-loss-percent').className = `summary-change ${totalPnl >= 0 ? 'positive' : 'negative'}`;
-    
-    // Update portfolio table
-    portfolioStocks.innerHTML = '';
-    Object.values(portfolio).forEach(stock => {
-        const currentPrice = stock.currentPrice || stock.avgPrice;
-        const currentValue = currentPrice * stock.qty;
-        const pnl = currentValue - stock.invested;
-        const pnlPercent = (pnl / stock.invested) * 100;
-        
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td>
-                <strong>${stock.symbol}</strong>
-                <div class="text-muted">${stock.name}</div>
-            </td>
-            <td>${stock.qty}</td>
-            <td>₹${stock.avgPrice.toFixed(2)}</td>
-            <td>₹${currentPrice.toFixed(2)}</td>
-            <td class="${pnl >= 0 ? 'positive' : 'negative'}">
-                ₹${pnl.toFixed(2)}<br>
-                <small>${pnlPercent.toFixed(2)}%</small>
-            </td>
-            <td>
-                <button class="action-btn view" onclick="openTradeModal('${stock.symbol}', '${stock.name}', ${currentPrice}, 'buy')">
-                    Buy
-                </button>
-                <button class="action-btn sell" onclick="openTradeModal('${stock.symbol}', '${stock.name}', ${currentPrice}, 'sell')">
-                    Sell
-                </button>
-            </td>
-        `;
-        portfolioStocks.appendChild(row);
-    });
-    
-    // Update demat tables
-    updateDematTable('pending');
-    updateDematTable('completed');
-    
-    // Update trade history
-    updateTradeHistory();
-}
+  Object.keys(state.holdings).forEach(symbol => {
+    const qty = state.holdings[symbol];
+    const stock = state.stocks.find(s => s.symbol === symbol);
+    if (!stock || qty === 0) return;
 
-function updateDematTable(type) {
-    const tableBody = document.getElementById(`${type}-settlements`);
-    tableBody.innerHTML = '';
-    
-    demat[type].forEach(item => {
-        const row = document.createElement('tr');
-        const date = new Date(item.date);
-        const settlementDate = type === 'pending' ? new Date(item.settlementDate) : new Date(item.date);
-        
-        row.innerHTML = `
-            <td>${date.toLocaleDateString()} ${date.toLocaleTimeString()}</td>
-            <td>${item.symbol}</td>
-            <td>${item.type}</td>
-            <td>${item.qty}</td>
-            <td>₹${item.price.toFixed(2)}</td>
-            <td>₹${item.amount.toFixed(2)}</td>
-            <td>${settlementDate.toLocaleDateString()}</td>
-        `;
-        tableBody.appendChild(row);
-    });
-}
+    const avgPrice = stock.price;
+    const value = qty * stock.price;
+    investment += qty * avgPrice;
+    currentValue += value;
 
-function updateTradeHistory() {
-    tradeHistory.innerHTML = '';
-    
-    tradeHistoryData.forEach(item => {
-        const row = document.createElement('tr');
-        const date = new Date(item.date);
-        
-        row.innerHTML = `
-            <td>${date.toLocaleDateString()} ${date.toLocaleTimeString()}</td>
-            <td>${item.symbol}</td>
-            <td class="${item.type}">${item.type.toUpperCase()}</td>
-            <td>${item.qty}</td>
-            <td>₹${item.price.toFixed(2)}</td>
-            <td>₹${item.amount.toFixed(2)}</td>
-            <td><span class="status ${item.status}">${item.status.toUpperCase()}</span></td>
-        `;
-        tradeHistory.appendChild(row);
-    });
-}
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td>${symbol}</td>
+      <td>${qty}</td>
+      <td>₹${avgPrice.toFixed(2)}</td>
+      <td>₹${stock.price.toFixed(2)}</td>
+      <td class="${value >= investment ? 'positive' : 'negative'}">₹${(value - investment).toFixed(2)}</td>
+      <td>
+        <button class="action-btn sell" onclick="openTradeModal('${symbol}', 'sell')">Sell</button>
+      </td>
+    `;
+    table.appendChild(row);
+  });
 
-// Local Storage Functions
-function saveUserData() {
-    const userData = {
-        portfolio: portfolio,
-        demat: demat,
-        tradeHistory: tradeHistoryData,
-        balance: balance,
-        lastUpdated: new Date().toISOString()
-    };
-    localStorage.setItem('tradeMockUserData', JSON.stringify(userData));
+  document.getElementById('total-investment').textContent = `₹${investment.toFixed(2)}`;
+  document.getElementById('current-value').textContent = `₹${currentValue.toFixed(2)}`;
+  const profit = currentValue - investment;
+  document.getElementById('profit-loss').textContent = `₹${profit.toFixed(2)}`;
+  document.getElementById('profit-loss-percent').textContent = `${((profit / investment) * 100).toFixed(2)}%`;
 }
-
-function loadUserData() {
-    const savedData = localStorage.getItem('tradeMockUserData');
-    if (savedData) {
-        const userData = JSON.parse(savedData);
-        portfolio = userData.portfolio || {};
-        demat = userData.demat || { pending: [], completed: [] };
-        tradeHistoryData = userData.tradeHistory || [];
-        balance = userData.balance || 100000;
-    }
-}
-
