@@ -1,0 +1,50 @@
+/* Reset & Base */
+* { margin:0; padding:0; box-sizing:border-box; }
+body, html { height:100%; font-family: sans-serif; }
+
+/* Hidden/Login */
+.hidden { display:none; }
+.overlay {
+  position:fixed; top:0; left:0; width:100%; height:100%;
+  background:rgba(0,0,0,0.5); display:flex; align-items:center; justify-content:center;
+}
+.login-box {
+  background:#fff; padding:2rem; border-radius:8px; text-align:center;
+}
+.login-box input { width:100%; padding:0.5rem; margin:1rem 0; }
+.login-box button { padding:0.5rem 1rem; }
+
+/* App Layout */
+#app { padding-bottom:60px; /* space for nav */ }
+.page { display:none; padding:1rem; }
+.page.active { display:block; }
+h1 { margin-bottom:1rem; }
+
+/* Cards */
+.card {
+  background:#f5f5f5; padding:1rem; border-radius:6px; margin-bottom:1rem;
+}
+
+/* Lists */
+ul { list-style:none; }
+ul li {
+  padding:0.75rem; border-bottom:1px solid #ddd;
+  display:flex; justify-content:space-between;
+}
+
+/* Bottom Navigation */
+.bottom-nav {
+  position:fixed; bottom:0; left:0; width:100%; height:60px;
+  background:#fff; border-top:1px solid #ccc; display:flex;
+}
+.bottom-nav button {
+  flex:1; border:none; background:none; font-size:1.5rem;
+}
+.bottom-nav button:focus { background:#eee; outline:none; }
+
+/* Responsive */
+@media(min-width:600px) {
+  .bottom-nav { display:none; }
+  nav.sidebar { display:block; width:200px; position:fixed; height:100%; }
+  #app { margin-left:200px; }
+}
