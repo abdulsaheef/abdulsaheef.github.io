@@ -5,17 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>TradeMock | Virtual Stock Trading</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700" rel="stylesheet"/>
   <link rel="stylesheet" href="css/style.css"/>
 </head>
 <body>
-  <!-- Auth Screen -->
+  <!-- Login Screen -->
   <div id="auth-screen" class="auth-container">
     <div class="auth-card">
-      <div class="app-logo">
-        <i class="fas fa-chart-line"></i>
-        <h1>TradeMock</h1>
-      </div>
+      <div class="app-logo"><i class="fas fa-chart-line"></i><h1>TradeMock</h1></div>
       <p class="app-tagline">Learn trading with virtual money</p>
       <form id="login-form" class="auth-form">
         <div class="input-group">
@@ -23,8 +20,7 @@
           <input type="text" id="username" placeholder="Enter your username" required/>
         </div>
         <button type="submit" class="auth-button">
-          <span>Sign In</span>
-          <i class="fas fa-arrow-right"></i>
+          <span>Sign In</span><i class="fas fa-arrow-right"></i>
         </button>
       </form>
     </div>
@@ -32,30 +28,15 @@
 
   <!-- Main App -->
   <div id="app-container" class="app-container">
-    <!-- Sidebar Navigation -->
+    <!-- Sidebar -->
     <aside class="sidebar">
-      <div class="sidebar-header">
-        <i class="fas fa-chart-line"></i>
-        <h2>TradeMock</h2>
-      </div>
+      <div class="sidebar-header"><i class="fas fa-chart-line"></i><h2>TradeMock</h2></div>
       <nav class="sidebar-nav">
         <ul>
-          <li class="nav-item active" data-section="market">
-            <i class="fas fa-home"></i>
-            <span>Market</span>
-          </li>
-          <li class="nav-item" data-section="portfolio">
-            <i class="fas fa-wallet"></i>
-            <span>Portfolio</span>
-          </li>
-          <li class="nav-item" data-section="demat">
-            <i class="fas fa-landmark"></i>
-            <span>Demat</span>
-          </li>
-          <li class="nav-item" data-section="history">
-            <i class="fas fa-history"></i>
-            <span>History</span>
-          </li>
+          <li class="nav-item active" data-section="market"><i class="fas fa-home"></i><span>Market</span></li>
+          <li class="nav-item" data-section="portfolio"><i class="fas fa-wallet"></i><span>Portfolio</span></li>
+          <li class="nav-item" data-section="demat"><i class="fas fa-landmark"></i><span>Demat</span></li>
+          <li class="nav-item" data-section="history"><i class="fas fa-history"></i><span>History</span></li>
         </ul>
       </nav>
       <div class="user-profile">
@@ -68,7 +49,7 @@
       </div>
     </aside>
 
-    <!-- Main Content Area -->
+    <!-- Main Content -->
     <main class="main-content">
       <header class="content-header">
         <h1 id="section-title">Market</h1>
@@ -80,27 +61,19 @@
         </div>
       </header>
 
-      <!-- Sections will be dynamically toggled -->
+      <!-- Sections -->
       <section id="market-section" class="content-section"></section>
       <section id="portfolio-section" class="content-section hidden"></section>
       <section id="demat-section" class="content-section hidden"></section>
       <section id="history-section" class="content-section hidden"></section>
     </main>
 
-    <!-- Bottom Nav (Mobile) -->
+    <!-- Mobile Bottom Navigation -->
     <nav class="mobile-nav">
-      <button class="mobile-nav-btn active" data-section="market">
-        <i class="fas fa-home"></i><span>Market</span>
-      </button>
-      <button class="mobile-nav-btn" data-section="portfolio">
-        <i class="fas fa-wallet"></i><span>Portfolio</span>
-      </button>
-      <button class="mobile-nav-btn" data-section="demat">
-        <i class="fas fa-landmark"></i><span>Demat</span>
-      </button>
-      <button class="mobile-nav-btn" data-section="history">
-        <i class="fas fa-history"></i><span>History</span>
-      </button>
+      <button class="mobile-nav-btn active" data-section="market"><i class="fas fa-home"></i><span>Market</span></button>
+      <button class="mobile-nav-btn" data-section="portfolio"><i class="fas fa-wallet"></i><span>Portfolio</span></button>
+      <button class="mobile-nav-btn" data-section="demat"><i class="fas fa-landmark"></i><span>Demat</span></button>
+      <button class="mobile-nav-btn" data-section="history"><i class="fas fa-history"></i><span>History</span></button>
     </nav>
 
     <!-- Trade Modal -->
@@ -114,8 +87,7 @@
             <span id="trade-stock-name">Reliance Industries</span>
           </div>
           <div class="trade-price">
-            <span>LTP:</span>
-            <span id="trade-stock-price">₹2450.75</span>
+            <span>LTP:</span><span id="trade-stock-price">₹2450.75</span>
           </div>
         </div>
         <div class="trade-form">
@@ -124,28 +96,21 @@
             <button class="trade-type-btn" data-type="sell">Sell</button>
           </div>
           <div class="form-group">
-            <label for="trade-qty">Quantity</label>
-            <input type="number" id="trade-qty" min="1" value="1" />
+            <label for="trade-qty">Quantity</label><input type="number" id="trade-qty" min="1" value="1"/>
           </div>
           <div class="form-group">
-            <label for="trade-price">Price (₹)</label>
-            <input type="number" id="trade-price" step="0.01" />
+            <label for="trade-price">Price (₹)</label><input type="number" id="trade-price" step="0.01"/>
           </div>
           <div class="trade-summary">
-            <div class="summary-row">
-              <span>Total Amount</span><span id="trade-total">₹0.00</span>
-            </div>
-            <div class="summary-row">
-              <span>Brokerage</span><span id="trade-brokerage">₹0.00</span>
-            </div>
-            <div class="summary-row total">
-              <span>Net Amount</span><span id="trade-net">₹0.00</span>
-            </div>
+            <div class="summary-row"><span>Total Amount</span><span id="trade-total">₹0.00</span></div>
+            <div class="summary-row"><span>Brokerage</span><span id="trade-brokerage">₹0.00</span></div>
+            <div class="summary-row total"><span>Net Amount</span><span id="trade-net">₹0.00</span></div>
           </div>
           <button id="trade-submit" class="trade-submit-btn">Place Order</button>
         </div>
       </div>
     </div>
+
   </div>
 
   <script src="js/script.js"></script>
