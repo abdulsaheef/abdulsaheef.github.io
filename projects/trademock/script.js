@@ -41,13 +41,20 @@ async function loadStocks() {
 function setupLogin() {
   const loginScreen = document.getElementById('login-screen');
   const app = document.getElementById('app');
+
   document.getElementById('login-btn').onclick = () => {
     const uname = document.getElementById('login-username').value.trim();
     if (!uname) return alert('Enter username');
+
     state.user = uname;
     loadSession();
-    loginScreen.classList.add('hidden');
+
+    // ✅ HIDE LOGIN SCREEN
+    loginScreen.style.display = 'none';
+
+    // ✅ SHOW MAIN APP
     app.classList.remove('hidden');
+
     updateUI();
   };
 }
