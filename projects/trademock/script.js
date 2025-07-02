@@ -1,28 +1,14 @@
-// —————————————————————————————
-// TradeMock v0.1
-// —————————————————————————————
 const defaultBalance = 100000;
 let state = {
   user: null,
   balance: 0,
-  holdings: {},    // { symbol: { qty, avgPrice } }
-  dematQueue: [],  // unsettled T+2 trades
-  trades: [],      // history
-  stocks: []       // market data
+  holdings: {},
+  dematQueue: [],
+  trades: [],
+  stocks: []
 };
 
-// —————————————————————————————
-// Initialization
-// —————————————————————————————
-window.onload = async () => {
-  await loadStocks();
-  setupLogin();
-  setupNav();
-  updateUI();
-  processSettlement();
-};
-
-// Load mock stocks
+// ✅ Load Live Stocks via TwelveData API
 async function loadStocks() {
   const symbols = ["INFY.NS", "TCS.NS", "RELIANCE.NS", "HDFCBANK.NS", "ICICIBANK.NS"];
   const apiKey = "8aabf877b0ec41bd87662871378e0ef4";
@@ -50,11 +36,8 @@ async function loadStocks() {
   const results = await Promise.all(requests);
   state.stocks = results.filter(item => item !== null);
 }
-}
 
-// —————————————————————————————
-// Local Login System
-// —————————————————————————————
+// 🔐 Login Setup
 function setupLogin() {
   const loginScreen = document.getElementById('login-screen');
   const app = document.getElementById('app');
@@ -88,9 +71,7 @@ function saveSession() {
   localStorage.setItem(key, JSON.stringify(state));
 }
 
-// —————————————————————————————
-// SPA Navigation
-// —————————————————————————————
+// 📱 Bottom Navigation SPA
 function setupNav() {
   document.querySelectorAll('.bottom-nav button').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -106,12 +87,10 @@ function setupNav() {
   });
 }
 
-// —————————————————————————————
-// UI Updates
-// —————————————————————————————
+// 📊 Update All Views
 function updateUI() {
   document.getElementById('balance').innerText = state.balance.toFixed(2);
-  document.getElementById('invested').innerText = 
+  document.getElementById('invested').innerText =
     Object.values(state.holdings)
       .reduce((sum,h)=> sum + h.qty * h.avgPrice, 0).toFixed(2);
   renderMarket();
@@ -120,9 +99,7 @@ function updateUI() {
   renderHistory();
 }
 
-// —————————————————————————————
-// Render Market View
-// —————————————————————————————
+// 📈 Market View
 function renderMarket() {
   const ul = document.getElementById('market-list');
   ul.innerHTML = '';
@@ -136,9 +113,7 @@ function renderMarket() {
   });
 }
 
-// —————————————————————————————
-// Open Buy/Sell Panel
-// —————————————————————————————
+// 🔁 Trade Execution Panel
 function openTrade(symbol) {
   const price = state.stocks.find(s=>s.symbol===symbol).price;
   const qty = prompt(`Price ₹${price}\nEnter qty to BUY (positive) or SELL (negative):`);
@@ -147,21 +122,14 @@ function openTrade(symbol) {
   executeTrade(symbol, price, q);
 }
 
-// —————————————————————————————
-// Execute Trade
-// —————————————————————————————
 function executeTrade(symbol, price, qty) {
   const cost = price * qty;
-  // Selling
   if (qty < 0) {
     const holding = state.holdings[symbol] || { qty:0, avgPrice:0 };
     if (holding.qty + qty < 0) return alert('Not enough shares');
   }
-  // Buying: check balance
   if (qty > 0 && cost > state.balance) return alert('Insufficient cash');
-  // Deduct/Add balance
   state.balance -= cost;
-  // Update holdings
   const h = state.holdings[symbol] || { qty:0, avgPrice:0 };
   const newQty = h.qty + qty;
   const newAvg = qty>0
@@ -169,7 +137,6 @@ function executeTrade(symbol, price, qty) {
     : h.avgPrice;
   if (newQty===0) delete state.holdings[symbol];
   else state.holdings[symbol] = { qty: newQty, avgPrice: newAvg };
-  // T+2 settlement for buys
   if (qty>0) {
     state.dematQueue.push({
       symbol, qty, price,
@@ -177,64 +144,52 @@ function executeTrade(symbol, price, qty) {
       settleDate: settlementDate(2)
     });
   }
-  // Log trade
   state.trades.push({ symbol, price, qty, time: new Date().toISOString() });
   saveSession();
   updateUI();
 }
 
-// —————————————————————————————
-// Settlement Logic (T+2)
-// —————————————————————————————
 function settlementDate(days) {
   const d = new Date();
   d.setDate(d.getDate() + days);
   return d.toISOString().split('T')[0];
 }
+
 function processSettlement() {
   const today = new Date().toISOString().split('T')[0];
   state.dematQueue = state.dematQueue.filter(item => {
-    if (item.settleDate <= today) {
-      // move to holdings (already added avg/qty in executeTrade)
-      return false;
-    }
+    if (item.settleDate <= today) return false;
     return true;
   });
   saveSession();
 }
 
-// —————————————————————————————
-// Render Portfolio
-// —————————————————————————————
+// 💼 Portfolio View
 function renderPortfolio() {
   const ul = document.getElementById('portfolio-list');
   ul.innerHTML = '';
   for (let sym in state.holdings) {
     const h = state.holdings[sym];
-    const cur = state.stocks.find(s=>s.symbol===sym).price;
+    const cur = state.stocks.find(s=>s.symbol===sym)?.price || 0;
     const pnl = ((cur - h.avgPrice) * h.qty).toFixed(2);
     const li = document.createElement('li');
-    li.innerHTML = `${sym}: ${h.qty} @ ₹${h.avgPrice.toFixed(2)} → ₹${cur} (${pnl})`;
+    li.textContent = `${sym}: ${h.qty} @ ₹${h.avgPrice.toFixed(2)} → ₹${cur} (P&L: ₹${pnl})`;
     ul.append(li);
   }
 }
 
-// —————————————————————————————
-// Render Demat Statement
-// —————————————————————————————
+// 📃 Demat T+2 View
 function renderDemat() {
   const ul = document.getElementById('demat-statement');
   ul.innerHTML = '';
   state.dematQueue.forEach(it => {
     const li = document.createElement('li');
-    li.textContent = `${it.symbol}: +${it.qty} shares on T+2 (${it.settleDate})`;
+    li.textContent = `${it.symbol}: +${it.qty} shares (T+2 → ${it.settleDate})`;
     ul.append(li);
   });
 }
 
-// —————————————————————————————
-// Render Trade History
-// —————————————————————————————
+// 🧾 History View
 function renderHistory() {
   const ul = document.getElementById('trade-history');
   ul.innerHTML = '';
@@ -244,3 +199,20 @@ function renderHistory() {
     ul.append(li);
   });
 }
+
+// 🟢 Init App
+window.onload = async () => {
+  await loadStocks();
+  setupLogin();
+  setupNav();
+  updateUI();
+  processSettlement();
+
+  // 🔁 Auto-refresh market every 60 seconds
+  setInterval(async () => {
+    await loadStocks();
+    updateUI();
+    console.log("📈 Market prices updated.");
+  }, 60000);
+};
+
