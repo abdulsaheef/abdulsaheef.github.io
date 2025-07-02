@@ -10,43 +10,14 @@ let state = {
 
 // ✅ Load Live Stocks via TwelveData API
 async function loadStocks() {
-  const symbols = ["INFY.NS", "TCS.NS", "RELIANCE.NS", "HDFCBANK.NS", "ICICIBANK.NS"];
-  const apiKey = "8aabf877b0ec41bd87662871378e0ef4";
-  const joined = symbols.join(",");
-
-  const url = `https://api.twelvedata.com/quote?symbol=${joined}&apikey=${apiKey}`;
-
-  try {
-    const res = await fetch(url);
-    const data = await res.json();
-
-    // ✅ Debug print raw response
-    console.log("🧪 Raw response:", data);
-
-    if (data.status === "error") {
-      console.error("❌ API error:", data.message);
-      return;
-    }
-
-    // ✅ Convert object to array
-    state.stocks = [];
-    for (let sym of symbols) {
-      const quote = data[sym];
-      if (quote && quote.price) {
-        state.stocks.push({
-          symbol: sym.replace(".NS", ""),
-          name: quote.name || sym,
-          price: parseFloat(quote.price)
-        });
-      } else {
-        console.warn(`⚠️ Skipped ${sym}`, quote);
-      }
-    }
-
-    console.log("✅ Stocks loaded:", state.stocks);
-  } catch (err) {
-    console.error("❌ Fetch error:", err);
-  }
+  state.stocks = [
+    { symbol: "INFY", name: "Infosys", price: 1585 },
+    { symbol: "TCS", name: "TCS", price: 3480 },
+    { symbol: "RELIANCE", name: "Reliance", price: 2865 },
+    { symbol: "HDFCBANK", name: "HDFC Bank", price: 1712 },
+    { symbol: "ICICIBANK", name: "ICICI Bank", price: 1240 }
+  ];
+  console.log("✅ Using offline mock stock data.");
 }
 
 // 🔐 Login Setup
