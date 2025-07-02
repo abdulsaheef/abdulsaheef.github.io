@@ -12,29 +12,29 @@ let state = {
 async function loadStocks() {
   const symbols = ["INFY.NS", "TCS.NS", "RELIANCE.NS", "HDFCBANK.NS", "ICICIBANK.NS"];
   const apiKey = "8aabf877b0ec41bd87662871378e0ef4";
+  const joined = symbols.join(",");
 
-  const requests = symbols.map(sym =>
-    fetch(`https://api.twelvedata.com/price?symbol=${sym}&apikey=${apiKey}`)
-      .then(res => res.json())
-      .then(data => {
-        if (data && data.price) {
-          return {
-            symbol: sym.replace(".NS", ""),
-            name: sym,
-            price: parseFloat(data.price)
-          };
-        } else {
-          console.warn(`❌ Failed for ${sym}`, data);
-          return null;
-        }
-      }).catch(err => {
-        console.error(`⚠️ Error fetching ${sym}:`, err);
-        return null;
-      })
-  );
+  const url = `https://api.twelvedata.com/quote?symbol=${joined}&apikey=${apiKey}`;
 
-  const results = await Promise.all(requests);
-  state.stocks = results.filter(item => item !== null);
+  try {
+    const res = await fetch(url);
+    const data = await res.json();
+
+    // Convert object to array
+    state.stocks = symbols.map(sym => {
+      const quote = data[sym];
+      return {
+        symbol: sym.replace(".NS", ""),
+        name: quote.name || sym,
+        price: parseFloat(quote.price)
+      };
+    });
+
+    console.log("✅ Live stocks loaded:", state.stocks);
+  } catch (err) {
+    console.error("❌ Failed to fetch stock data", err);
+    state.stocks = []; // fallback to empty
+  }
 }
 
 // 🔐 Login Setup
