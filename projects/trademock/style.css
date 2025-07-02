@@ -1,54 +1,165 @@
-/* Reset & Base */
-* { margin:0; padding:0; box-sizing:border-box; }
-body, html { height:100%; font-family: sans-serif; }
+/* RESET & BASE */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: #f2f2f2;
+  color: #222;
+}
+ul {
+  list-style: none;
+  padding: 0;
+}
 
-/* Hidden/Login */
-.hidden { display:none; }
+/* LOGIN OVERLAY */
 .overlay {
-  position:fixed; top:0; left:0; width:100%; height:100%;
-  background:rgba(0,0,0,0.5); display:flex; align-items:center; justify-content:center;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .login-box {
-  background:#fff; padding:2rem; border-radius:8px; text-align:center;
+  background: #fff;
+  padding: 2em;
+  border-radius: 8px;
+  text-align: center;
+  width: 90%;
+  max-width: 400px;
 }
-.login-box input { width:100%; padding:0.5rem; margin:1rem 0; }
-.login-box button { padding:0.5rem 1rem; }
+.login-box input {
+  width: 100%;
+  padding: 0.75em;
+  margin: 1em 0;
+  font-size: 1em;
+}
+.login-box button {
+  padding: 0.7em 1.5em;
+  font-size: 1em;
+  background: #0077cc;
+  color: white;
+  border: none;
+  border-radius: 4px;
+}
 
+/* HIDE BY DEFAULT */
 .hidden {
   display: none !important;
 }
 
-/* App Layout */
-#app { padding-bottom:60px; /* space for nav */ }
-.page { display:none; padding:1rem; }
-.page.active { display:block; }
-h1 { margin-bottom:1rem; }
-
-/* Cards */
-.card {
-  background:#f5f5f5; padding:1rem; border-radius:6px; margin-bottom:1rem;
+/* HEADER */
+header {
+  background: #0077cc;
+  color: white;
+  padding: 1em;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+header h1 {
+  font-size: 1.5em;
+}
+.account-info {
+  font-size: 0.9em;
 }
 
-/* Lists */
-ul { list-style:none; }
+/* MAIN CONTENT */
+main {
+  padding: 1em;
+}
+.page {
+  display: none;
+}
+.page.active {
+  display: block;
+}
+.page h2 {
+  margin-bottom: 0.5em;
+}
+
+/* LIST ITEM */
 ul li {
-  padding:0.75rem; border-bottom:1px solid #ddd;
-  display:flex; justify-content:space-between;
+  background: white;
+  margin-bottom: 0.7em;
+  padding: 0.75em;
+  border-radius: 6px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+ul li button {
+  background: #0077cc;
+  color: white;
+  border: none;
+  padding: 0.4em 1em;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.stock-item {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  align-items: center;
 }
 
-/* Bottom Navigation */
+/* NAVIGATION */
 .bottom-nav {
-  position:fixed; bottom:0; left:0; width:100%; height:60px;
-  background:#fff; border-top:1px solid #ccc; display:flex;
+  display: flex;
+  justify-content: space-around;
+  background: #fff;
+  border-top: 1px solid #ccc;
+  padding: 0.5em 0;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
 }
 .bottom-nav button {
-  flex:1; border:none; background:none; font-size:1.5rem;
+  flex: 1;
+  background: none;
+  border: none;
+  font-size: 1em;
+  padding: 0.5em;
 }
-.bottom-nav button:focus { background:#eee; outline:none; }
 
-/* Responsive */
-@media(min-width:600px) {
-  .bottom-nav { display:none; }
-  nav.sidebar { display:block; width:200px; position:fixed; height:100%; }
-  #app { margin-left:200px; }
+/* DESKTOP LAYOUT */
+@media screen and (min-width: 768px) {
+  body {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+  }
+
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  main {
+    flex: 1;
+    overflow-y: auto;
+    padding-bottom: 2em;
+  }
+
+  .bottom-nav {
+    position: static;
+    justify-content: center;
+    gap: 1em;
+    border-top: none;
+  }
+
+  .bottom-nav button {
+    font-size: 1em;
+    padding: 0.7em 1em;
+  }
+
+  ul li {
+    font-size: 1.05em;
+  }
 }
