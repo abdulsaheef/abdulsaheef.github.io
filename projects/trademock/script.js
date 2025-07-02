@@ -20,20 +20,32 @@ async function loadStocks() {
     const res = await fetch(url);
     const data = await res.json();
 
-    // Convert object to array
-    state.stocks = symbols.map(sym => {
-      const quote = data[sym];
-      return {
-        symbol: sym.replace(".NS", ""),
-        name: quote.name || sym,
-        price: parseFloat(quote.price)
-      };
-    });
+    // ✅ Debug print raw response
+    console.log("🧪 Raw response:", data);
 
-    console.log("✅ Live stocks loaded:", state.stocks);
+    if (data.status === "error") {
+      console.error("❌ API error:", data.message);
+      return;
+    }
+
+    // ✅ Convert object to array
+    state.stocks = [];
+    for (let sym of symbols) {
+      const quote = data[sym];
+      if (quote && quote.price) {
+        state.stocks.push({
+          symbol: sym.replace(".NS", ""),
+          name: quote.name || sym,
+          price: parseFloat(quote.price)
+        });
+      } else {
+        console.warn(`⚠️ Skipped ${sym}`, quote);
+      }
+    }
+
+    console.log("✅ Stocks loaded:", state.stocks);
   } catch (err) {
-    console.error("❌ Failed to fetch stock data", err);
-    state.stocks = []; // fallback to empty
+    console.error("❌ Fetch error:", err);
   }
 }
 
