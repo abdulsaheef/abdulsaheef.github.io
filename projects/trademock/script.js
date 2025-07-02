@@ -1,208 +1,202 @@
-const defaultBalance = 100000;
-let state = {
-  user: null,
-  balance: 0,
-  holdings: {},
-  dematQueue: [],
-  trades: [],
-  stocks: []
-};
+// Add these to your existing script.js
 
-// ✅ LIVE: Fetch NSE stocks from TwelveData (batch endpoint)
-async function loadStocks() {
-  const symbols = ["INFY.NS", "TCS.NS", "RELIANCE.NS", "HDFCBANK.NS", "ICICIBANK.NS"];
-  const apiKey = "8aabf877b0ec41bd87662871378e0ef4";
-  const url = `https://api.twelvedata.com/quote?symbol=${symbols.join(",")}&apikey=${apiKey}`;
+// Mobile navigation toggle
+function toggleMobileNav() {
+    document.querySelector('.sidebar').classList.toggle('open');
+}
 
-  try {
-    const res = await fetch(url);
-    const data = await res.json();
-    state.stocks = symbols.map(sym => {
-      const quote = data[sym];
-      return {
-        symbol: sym.replace(".NS", ""),
-        name: quote.name || sym,
-        price: parseFloat(quote.price)
-      };
+// Navigation between sections
+function setupNavigation() {
+    // Desktop sidebar nav
+    const navItems = document.querySelectorAll('.nav-item');
+    navItems.forEach(item => {
+        item.addEventListener('click', function() {
+            // Remove active class from all items
+            navItems.forEach(navItem => navItem.classList.remove('active'));
+            // Add active class to clicked item
+            this.classList.add('active');
+            
+            const section = this.getAttribute('data-section');
+            showSection(section);
+            
+            // Also update mobile nav if visible
+            updateMobileNavActiveState(section);
+        });
     });
-    console.log("✅ Live stock data loaded:", state.stocks);
-  } catch (err) {
-    console.error("❌ Error fetching stock data:", err);
-    alert("Stock fetch failed. Try again later.");
-  }
-}
-
-// 🔐 LOGIN SYSTEM
-function setupLogin() {
-  const loginScreen = document.getElementById('login-screen');
-  const app = document.getElementById('app');
-
-  document.getElementById('login-btn').onclick = () => {
-    const uname = document.getElementById('login-username').value.trim();
-    if (!uname) return alert("Enter username");
-    state.user = uname;
-    loadSession();
-    loginScreen.style.display = "none";
-    app.classList.remove("hidden");
-    updateUI();
-  };
-}
-
-function loadSession() {
-  const key = `trademock_${state.user}`;
-  const saved = localStorage.getItem(key);
-  if (saved) {
-    Object.assign(state, JSON.parse(saved));
-  } else {
-    state.balance = defaultBalance;
-    state.holdings = {};
-    state.dematQueue = [];
-    state.trades = [];
-    saveSession();
-  }
-}
-
-function saveSession() {
-  const key = `trademock_${state.user}`;
-  localStorage.setItem(key, JSON.stringify(state));
-}
-
-// 🔁 NAVIGATION HANDLING
-function setupNav() {
-  const buttons = document.querySelectorAll('.bottom-nav button');
-  const pages = document.querySelectorAll('.page');
-
-  buttons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      pages.forEach(p => p.classList.remove('active'));
-      document.getElementById(btn.dataset.target).classList.add('active');
-      updateUI();
+    
+    // Mobile bottom nav
+    const mobileNavBtns = document.querySelectorAll('.mobile-nav-btn');
+    mobileNavBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const section = this.getAttribute('data-section');
+            showSection(section);
+            
+            // Update active states
+            mobileNavBtns.forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            updateDesktopNavActiveState(section);
+        });
     });
-  });
+    
+    // Demat tabs
+    const dematTabs = document.querySelectorAll('.demat-tab');
+    dematTabs.forEach(tab => {
+        tab.addEventListener('click', function() {
+            const tabName = this.getAttribute('data-tab');
+            
+            // Update active tab
+            dematTabs.forEach(t => t.classList.remove('active'));
+            this.classList.add('active');
+            
+            // Show correct content
+            document.querySelectorAll('.demat-content').forEach(content => {
+                content.classList.add('hidden');
+            });
+            document.getElementById(`demat-${tabName}`).classList.remove('hidden');
+        });
+    });
 }
 
-// 📈 MARKET RENDER
-function renderMarket() {
-  const ul = document.getElementById('market-list');
-  ul.innerHTML = '';
-  state.stocks.forEach(s => {
-    const li = document.createElement('li');
-    li.innerHTML = `
-      <div class="stock-item">
-        <strong>${s.symbol}</strong> - ₹${s.price}
-        <button onclick="openTrade('${s.symbol}')">Trade</button>
-      </div>
+function showSection(section) {
+    // Hide all sections
+    document.querySelectorAll('.content-section').forEach(sec => {
+        sec.classList.add('hidden');
+    });
+    
+    // Show selected section
+    document.getElementById(`${section}-section`).classList.remove('hidden');
+    
+    // Update section title
+    document.getElementById('section-title').textContent = 
+        section.charAt(0).toUpperCase() + section.slice(1);
+}
+
+function updateMobileNavActiveState(section) {
+    const mobileNavBtns = document.querySelectorAll('.mobile-nav-btn');
+    mobileNavBtns.forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.getAttribute('data-section') === section) {
+            btn.classList.add('active');
+        }
+    });
+}
+
+function updateDesktopNavActiveState(section) {
+    const navItems = document.querySelectorAll('.nav-item');
+    navItems.forEach(item => {
+        item.classList.remove('active');
+        if (item.getAttribute('data-section') === section) {
+            item.classList.add('active');
+        }
+    });
+}
+
+// Trade modal functions
+function openTradeModal(stockSymbol, stockName, stockPrice, action = 'buy') {
+    document.getElementById('trade-stock-symbol').textContent = stockSymbol;
+    document.getElementById('trade-stock-name').textContent = stockName;
+    document.getElementById('trade-stock-price').textContent = `₹${stockPrice.toFixed(2)}`;
+    document.getElementById('trade-price').value = stockPrice.toFixed(2);
+    
+    // Set trade type
+    const tradeTypeBtns = document.querySelectorAll('.trade-type-btn');
+    tradeTypeBtns.forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.getAttribute('data-type') === action) {
+            btn.classList.add('active');
+        }
+    });
+    
+    // Update total amount when quantity or price changes
+    document.getElementById('trade-qty').addEventListener('input', updateTradeTotal);
+    document.getElementById('trade-price').addEventListener('input', updateTradeTotal);
+    
+    // Show modal
+    document.getElementById('trade-modal').classList.add('show');
+}
+
+function closeTradeModal() {
+    document.getElementById('trade-modal').classList.remove('show');
+}
+
+function updateTradeTotal() {
+    const qty = parseInt(document.getElementById('trade-qty').value) || 0;
+    const price = parseFloat(document.getElementById('trade-price').value) || 0;
+    const total = qty * price;
+    
+    document.getElementById('trade-total').textContent = `₹${total.toFixed(2)}`;
+    
+    // Calculate brokerage (example: 0.1% or min ₹20)
+    const brokerage = Math.max(total * 0.001, 20);
+    document.getElementById('trade-brokerage').textContent = `₹${brokerage.toFixed(2)}`;
+    
+    // Calculate net amount
+    const netAmount = total + brokerage;
+    document.getElementById('trade-net').textContent = `₹${netAmount.toFixed(2)}`;
+}
+
+// Initialize event listeners when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    // Setup navigation
+    setupNavigation();
+    
+    // Trade modal close button
+    document.querySelector('.modal-close').addEventListener('click', closeTradeModal);
+    
+    // Trade type buttons
+    const tradeTypeBtns = document.querySelectorAll('.trade-type-btn');
+    tradeTypeBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            tradeTypeBtns.forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+        });
+    });
+    
+    // Trade submit button
+    document.getElementById('trade-submit').addEventListener('click', function() {
+        // Your existing trade submission logic here
+        closeTradeModal();
+    });
+    
+    // Login form submission
+    document.getElementById('login-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        // Your existing login logic here
+        
+        // For demo, just show the app
+        document.getElementById('auth-screen').style.display = 'none';
+        document.getElementById('app-container').style.display = 'block';
+    });
+    
+    // Logout button
+    document.getElementById('logout-btn').addEventListener('click', function() {
+        document.getElementById('auth-screen').style.display = 'flex';
+        document.getElementById('app-container').style.display = 'none';
+    });
+});
+
+// Update your existing stock card generation to use the new HTML structure
+function generateStockCard(stock) {
+    return `
+        <div class="stock-card" data-symbol="${stock.symbol}">
+            <div class="stock-header">
+                <div>
+                    <div class="stock-name">${stock.name}</div>
+                    <div class="stock-symbol">${stock.symbol}</div>
+                </div>
+                <div class="stock-price">₹${stock.price.toFixed(2)}</div>
+            </div>
+            <div class="stock-change ${stock.change >= 0 ? 'positive' : 'negative'}">
+                ${stock.change >= 0 ? '+' : ''}${stock.change.toFixed(2)} (${stock.changePercent.toFixed(2)}%)
+            </div>
+            <div class="stock-actions">
+                <button class="stock-btn buy" onclick="openTradeModal('${stock.symbol}', '${stock.name}', ${stock.price}, 'buy')">
+                    Buy
+                </button>
+                <button class="stock-btn sell" onclick="openTradeModal('${stock.symbol}', '${stock.name}', ${stock.price}, 'sell')">
+                    Sell
+                </button>
+            </div>
+        </div>
     `;
-    ul.appendChild(li);
-  });
 }
-
-// 💰 PORTFOLIO RENDER
-function renderPortfolio() {
-  const ul = document.getElementById('portfolio-list');
-  ul.innerHTML = '';
-  for (let sym in state.holdings) {
-    const h = state.holdings[sym];
-    const cur = state.stocks.find(s => s.symbol === sym)?.price || 0;
-    const pnl = ((cur - h.avgPrice) * h.qty).toFixed(2);
-    const li = document.createElement('li');
-    li.innerHTML = `<strong>${sym}</strong>: ${h.qty} @ ₹${h.avgPrice.toFixed(2)} → ₹${cur} (P&L ₹${pnl})`;
-    ul.appendChild(li);
-  }
-}
-
-// 🧾 TRADE HISTORY
-function renderHistory() {
-  const ul = document.getElementById('trade-history');
-  ul.innerHTML = '';
-  state.trades.slice().reverse().forEach(t => {
-    const li = document.createElement('li');
-    li.textContent = `${new Date(t.time).toLocaleString()}: ${t.qty > 0 ? 'BUY' : 'SELL'} ${t.symbol} @ ₹${t.price}`;
-    ul.appendChild(li);
-  });
-}
-
-// 📦 DEMAT STATEMENT
-function renderDemat() {
-  const ul = document.getElementById('demat-statement');
-  ul.innerHTML = '';
-  state.dematQueue.forEach(d => {
-    const li = document.createElement('li');
-    li.textContent = `${d.symbol}: +${d.qty} shares (T+2: ${d.settleDate})`;
-    ul.appendChild(li);
-  });
-}
-
-// 🎯 MAIN UI REFRESH
-function updateUI() {
-  document.getElementById('balance').innerText = state.balance.toFixed(2);
-  document.getElementById('invested').innerText =
-    Object.values(state.holdings).reduce((sum, h) => sum + h.qty * h.avgPrice, 0).toFixed(2);
-
-  renderMarket();
-  renderPortfolio();
-  renderHistory();
-  renderDemat();
-}
-
-// 🔁 T+2 DEMAT SETTLEMENT
-function processSettlement() {
-  const today = new Date().toISOString().split('T')[0];
-  state.dematQueue = state.dematQueue.filter(d => d.settleDate > today);
-  saveSession();
-}
-
-// 🛒 TRADE EXECUTION
-function openTrade(symbol) {
-  const price = state.stocks.find(s => s.symbol === symbol).price;
-  const qty = parseInt(prompt(`Enter qty to BUY (+) or SELL (-)\nPrice: ₹${price}`));
-  if (!qty) return;
-
-  const cost = qty * price;
-  const holding = state.holdings[symbol] || { qty: 0, avgPrice: 0 };
-
-  if (qty < 0 && holding.qty + qty < 0) return alert("Not enough shares to sell");
-  if (qty > 0 && cost > state.balance) return alert("Not enough balance");
-
-  // Update balance and holdings
-  state.balance -= cost;
-  const newQty = holding.qty + qty;
-  const newAvg = qty > 0 ? ((holding.avgPrice * holding.qty + price * qty) / newQty) : holding.avgPrice;
-
-  if (newQty <= 0) delete state.holdings[symbol];
-  else state.holdings[symbol] = { qty: newQty, avgPrice: newAvg };
-
-  // Add to demat queue if buy
-  if (qty > 0) {
-    state.dematQueue.push({
-      symbol, qty, price,
-      buyDate: new Date().toISOString().split('T')[0],
-      settleDate: getTplus2()
-    });
-  }
-
-  state.trades.push({ symbol, price, qty, time: new Date().toISOString() });
-  saveSession();
-  updateUI();
-}
-
-function getTplus2() {
-  const d = new Date();
-  d.setDate(d.getDate() + 2);
-  return d.toISOString().split('T')[0];
-}
-
-// 🚀 INIT
-window.onload = async () => {
-  await loadStocks();
-  setupLogin();
-  setupNav();
-  processSettlement();
-  updateUI();
-
-  // 🔁 Refresh live prices every minute
-  setInterval(async () => {
-    await loadStocks();
-    updateUI();
-  }, 60000);
-};
