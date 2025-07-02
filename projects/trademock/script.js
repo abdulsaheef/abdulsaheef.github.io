@@ -8,36 +8,42 @@ let state = {
   stocks: []
 };
 
-// ✅ Load Live Stocks via TwelveData API
+// ✅ LIVE: Fetch NSE stocks from TwelveData (batch endpoint)
 async function loadStocks() {
-  state.stocks = [
-    { symbol: "INFY", name: "Infosys", price: 1585 },
-    { symbol: "TCS", name: "TCS", price: 3480 },
-    { symbol: "RELIANCE", name: "Reliance", price: 2865 },
-    { symbol: "HDFCBANK", name: "HDFC Bank", price: 1712 },
-    { symbol: "ICICIBANK", name: "ICICI Bank", price: 1240 }
-  ];
-  console.log("✅ Using offline mock stock data.");
+  const symbols = ["INFY.NS", "TCS.NS", "RELIANCE.NS", "HDFCBANK.NS", "ICICIBANK.NS"];
+  const apiKey = "8aabf877b0ec41bd87662871378e0ef4";
+  const url = `https://api.twelvedata.com/quote?symbol=${symbols.join(",")}&apikey=${apiKey}`;
+
+  try {
+    const res = await fetch(url);
+    const data = await res.json();
+    state.stocks = symbols.map(sym => {
+      const quote = data[sym];
+      return {
+        symbol: sym.replace(".NS", ""),
+        name: quote.name || sym,
+        price: parseFloat(quote.price)
+      };
+    });
+    console.log("✅ Live stock data loaded:", state.stocks);
+  } catch (err) {
+    console.error("❌ Error fetching stock data:", err);
+    alert("Stock fetch failed. Try again later.");
+  }
 }
 
-// 🔐 Login Setup
+// 🔐 LOGIN SYSTEM
 function setupLogin() {
   const loginScreen = document.getElementById('login-screen');
   const app = document.getElementById('app');
 
   document.getElementById('login-btn').onclick = () => {
     const uname = document.getElementById('login-username').value.trim();
-    if (!uname) return alert('Enter username');
-
+    if (!uname) return alert("Enter username");
     state.user = uname;
     loadSession();
-
-    // ✅ HIDE LOGIN SCREEN
-    loginScreen.style.display = 'none';
-
-    // ✅ SHOW MAIN APP
-    app.classList.remove('hidden');
-
+    loginScreen.style.display = "none";
+    app.classList.remove("hidden");
     updateUI();
   };
 }
@@ -61,154 +67,142 @@ function saveSession() {
   localStorage.setItem(key, JSON.stringify(state));
 }
 
-// 📱 Bottom Navigation SPA
+// 🔁 NAVIGATION HANDLING
 function setupNav() {
-  document.querySelectorAll('.bottom-nav button').forEach(btn => {
+  const buttons = document.querySelectorAll('.bottom-nav button');
+  const pages = document.querySelectorAll('.page');
+
+  buttons.forEach(btn => {
     btn.addEventListener('click', () => {
-      const tgt = btn.dataset.target;
-      document.querySelectorAll('.page').forEach(p => {
-        p.classList.toggle('active', p.id === tgt);
-      });
-      if (tgt === 'market') renderMarket();
-      if (tgt === 'portfolio') renderPortfolio();
-      if (tgt === 'demat') renderDemat();
-      if (tgt === 'history') renderHistory();
+      pages.forEach(p => p.classList.remove('active'));
+      document.getElementById(btn.dataset.target).classList.add('active');
+      updateUI();
     });
   });
 }
 
-// 📊 Update All Views
-function updateUI() {
-  document.getElementById('balance').innerText = state.balance.toFixed(2);
-  document.getElementById('invested').innerText =
-    Object.values(state.holdings)
-      .reduce((sum,h)=> sum + h.qty * h.avgPrice, 0).toFixed(2);
-  renderMarket();
-  renderPortfolio();
-  renderDemat();
-  renderHistory();
-}
-
-// 📈 Market View
+// 📈 MARKET RENDER
 function renderMarket() {
   const ul = document.getElementById('market-list');
   ul.innerHTML = '';
-
-  if (!state.stocks.length) {
-    ul.innerHTML = '<li>📉 No stock data loaded.</li>';
-    return;
-  }
-
   state.stocks.forEach(s => {
     const li = document.createElement('li');
     li.innerHTML = `
-      <span>${s.symbol} - ₹${s.price}</span>
-      <button onclick="openTrade('${s.symbol}')">Trade</button>
+      <div class="stock-item">
+        <strong>${s.symbol}</strong> - ₹${s.price}
+        <button onclick="openTrade('${s.symbol}')">Trade</button>
+      </div>
     `;
     ul.appendChild(li);
   });
 }
 
-// 🔁 Trade Execution Panel
-function openTrade(symbol) {
-  const price = state.stocks.find(s=>s.symbol===symbol).price;
-  const qty = prompt(`Price ₹${price}\nEnter qty to BUY (positive) or SELL (negative):`);
-  const q = parseInt(qty);
-  if (!q) return;
-  executeTrade(symbol, price, q);
-}
-
-function executeTrade(symbol, price, qty) {
-  const cost = price * qty;
-  if (qty < 0) {
-    const holding = state.holdings[symbol] || { qty:0, avgPrice:0 };
-    if (holding.qty + qty < 0) return alert('Not enough shares');
-  }
-  if (qty > 0 && cost > state.balance) return alert('Insufficient cash');
-  state.balance -= cost;
-  const h = state.holdings[symbol] || { qty:0, avgPrice:0 };
-  const newQty = h.qty + qty;
-  const newAvg = qty>0
-    ? ((h.avgPrice*h.qty + price*qty)/(h.qty+qty))
-    : h.avgPrice;
-  if (newQty===0) delete state.holdings[symbol];
-  else state.holdings[symbol] = { qty: newQty, avgPrice: newAvg };
-  if (qty>0) {
-    state.dematQueue.push({
-      symbol, qty, price,
-      buyDate: new Date().toISOString().split('T')[0],
-      settleDate: settlementDate(2)
-    });
-  }
-  state.trades.push({ symbol, price, qty, time: new Date().toISOString() });
-  saveSession();
-  updateUI();
-}
-
-function settlementDate(days) {
-  const d = new Date();
-  d.setDate(d.getDate() + days);
-  return d.toISOString().split('T')[0];
-}
-
-function processSettlement() {
-  const today = new Date().toISOString().split('T')[0];
-  state.dematQueue = state.dematQueue.filter(item => {
-    if (item.settleDate <= today) return false;
-    return true;
-  });
-  saveSession();
-}
-
-// 💼 Portfolio View
+// 💰 PORTFOLIO RENDER
 function renderPortfolio() {
   const ul = document.getElementById('portfolio-list');
   ul.innerHTML = '';
   for (let sym in state.holdings) {
     const h = state.holdings[sym];
-    const cur = state.stocks.find(s=>s.symbol===sym)?.price || 0;
+    const cur = state.stocks.find(s => s.symbol === sym)?.price || 0;
     const pnl = ((cur - h.avgPrice) * h.qty).toFixed(2);
     const li = document.createElement('li');
-    li.textContent = `${sym}: ${h.qty} @ ₹${h.avgPrice.toFixed(2)} → ₹${cur} (P&L: ₹${pnl})`;
-    ul.append(li);
+    li.innerHTML = `<strong>${sym}</strong>: ${h.qty} @ ₹${h.avgPrice.toFixed(2)} → ₹${cur} (P&L ₹${pnl})`;
+    ul.appendChild(li);
   }
 }
 
-// 📃 Demat T+2 View
-function renderDemat() {
-  const ul = document.getElementById('demat-statement');
-  ul.innerHTML = '';
-  state.dematQueue.forEach(it => {
-    const li = document.createElement('li');
-    li.textContent = `${it.symbol}: +${it.qty} shares (T+2 → ${it.settleDate})`;
-    ul.append(li);
-  });
-}
-
-// 🧾 History View
+// 🧾 TRADE HISTORY
 function renderHistory() {
   const ul = document.getElementById('trade-history');
   ul.innerHTML = '';
   state.trades.slice().reverse().forEach(t => {
     const li = document.createElement('li');
-    li.textContent = `${new Date(t.time).toLocaleString()}: ${t.qty>0?'BUY':'SELL'} ${t.symbol} @ ₹${t.price} × ${Math.abs(t.qty)}`;
-    ul.append(li);
+    li.textContent = `${new Date(t.time).toLocaleString()}: ${t.qty > 0 ? 'BUY' : 'SELL'} ${t.symbol} @ ₹${t.price}`;
+    ul.appendChild(li);
   });
 }
 
-// 🟢 Init App
+// 📦 DEMAT STATEMENT
+function renderDemat() {
+  const ul = document.getElementById('demat-statement');
+  ul.innerHTML = '';
+  state.dematQueue.forEach(d => {
+    const li = document.createElement('li');
+    li.textContent = `${d.symbol}: +${d.qty} shares (T+2: ${d.settleDate})`;
+    ul.appendChild(li);
+  });
+}
+
+// 🎯 MAIN UI REFRESH
+function updateUI() {
+  document.getElementById('balance').innerText = state.balance.toFixed(2);
+  document.getElementById('invested').innerText =
+    Object.values(state.holdings).reduce((sum, h) => sum + h.qty * h.avgPrice, 0).toFixed(2);
+
+  renderMarket();
+  renderPortfolio();
+  renderHistory();
+  renderDemat();
+}
+
+// 🔁 T+2 DEMAT SETTLEMENT
+function processSettlement() {
+  const today = new Date().toISOString().split('T')[0];
+  state.dematQueue = state.dematQueue.filter(d => d.settleDate > today);
+  saveSession();
+}
+
+// 🛒 TRADE EXECUTION
+function openTrade(symbol) {
+  const price = state.stocks.find(s => s.symbol === symbol).price;
+  const qty = parseInt(prompt(`Enter qty to BUY (+) or SELL (-)\nPrice: ₹${price}`));
+  if (!qty) return;
+
+  const cost = qty * price;
+  const holding = state.holdings[symbol] || { qty: 0, avgPrice: 0 };
+
+  if (qty < 0 && holding.qty + qty < 0) return alert("Not enough shares to sell");
+  if (qty > 0 && cost > state.balance) return alert("Not enough balance");
+
+  // Update balance and holdings
+  state.balance -= cost;
+  const newQty = holding.qty + qty;
+  const newAvg = qty > 0 ? ((holding.avgPrice * holding.qty + price * qty) / newQty) : holding.avgPrice;
+
+  if (newQty <= 0) delete state.holdings[symbol];
+  else state.holdings[symbol] = { qty: newQty, avgPrice: newAvg };
+
+  // Add to demat queue if buy
+  if (qty > 0) {
+    state.dematQueue.push({
+      symbol, qty, price,
+      buyDate: new Date().toISOString().split('T')[0],
+      settleDate: getTplus2()
+    });
+  }
+
+  state.trades.push({ symbol, price, qty, time: new Date().toISOString() });
+  saveSession();
+  updateUI();
+}
+
+function getTplus2() {
+  const d = new Date();
+  d.setDate(d.getDate() + 2);
+  return d.toISOString().split('T')[0];
+}
+
+// 🚀 INIT
 window.onload = async () => {
   await loadStocks();
   setupLogin();
   setupNav();
-  updateUI();
   processSettlement();
+  updateUI();
 
-  // 🔁 Auto-refresh market every 60 seconds
+  // 🔁 Refresh live prices every minute
   setInterval(async () => {
     await loadStocks();
     updateUI();
-    console.log("📈 Market prices updated.");
   }, 60000);
 };
-
