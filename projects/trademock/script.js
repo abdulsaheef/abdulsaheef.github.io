@@ -1,313 +1,193 @@
-// ========== CONFIGURATION ==========
+// API & CONFIG
 const API_KEY = '8aabf877b0ec41bd87662871378e0ef4';
 const BASE_URL = 'https://api.twelvedata.com';
-const DEFAULT_SYMBOLS = ['RELIANCE.NS', 'TCS.NS', 'INFY.NS', 'HDFCBANK.NS', 'ICICIBANK.NS'];
+const DEFAULT_SYMBOLS = ['RELIANCE.NS','TCS.NS','INFY.NS','HDFCBANK.NS','ICICIBANK.NS'];
 
-// ========== APP STATE ==========
-let state = {
-  user: null,
-  balance: 100000,
-  holdings: {},
-  dematQueue: [],
-  trades: [],
-  stocks: []
-};
+// App State
+let state = { user:null, balance:100000, holdings:{}, dematQueue:[], trades:[], stocks:[] };
 
-// ========== DOM REFERENCES ==========
+// DOM
 const loginForm = document.getElementById('login-form');
+const authScreen = document.getElementById('auth-screen');
 const appContainer = document.getElementById('app-container');
 const profileUsername = document.getElementById('profile-username');
 const profileBalance = document.getElementById('profile-balance');
 const availableBalance = document.getElementById('available-balance');
 const logoutBtn = document.getElementById('logout-btn');
+const stocksContainer = document.getElementById('market-section');
+const portfolioSection = document.getElementById('portfolio-section');
+const dematSection = document.getElementById('demat-section');
+const historySection = document.getElementById('history-section');
+const portfolioTable = portfolioSection;
+const pendingSettlements = dematSection;
+const historyTable = historySection;
 
-// ========== INITIALIZE ==========
+// Trade Modal DOM
+const tradeModal = document.getElementById('trade-modal');
+const modalClose = tradeModal.querySelector('.modal-close');
+const tradeQty = document.getElementById('trade-qty');
+const tradePrice = document.getElementById('trade-price');
+const tradeTotal = document.getElementById('trade-total');
+const tradeBrokerage = document.getElementById('trade-brokerage');
+const tradeNet = document.getElementById('trade-net');
+const tradeSubmit = document.getElementById('trade-submit');
+const typeButtons = document.querySelectorAll('.trade-type-btn');
+
+let currentTrade = { symbol:'', action:'buy' };
+
+// Initialize
 document.addEventListener('DOMContentLoaded', () => {
   setupLogin();
-  setupNavigation();
-  setupTradeModal();
+  setupNav();
+  setupModal();
   loadStocks();
-  setInterval(loadStocks, 60000); // refresh every minute
+  setInterval(loadStocks,60000);
 });
 
-// ========== LOGIN ==========
-function setupLogin() {
-  loginForm.addEventListener('submit', e => {
+// Login & Session
+function setupLogin(){
+  loginForm.onsubmit = e => {
     e.preventDefault();
-    const username = document.getElementById('username').value.trim();
-    if (!username) return;
+    const u = document.getElementById('username').value.trim();
+    if(!u) return;
+    state.user=u; loadSession();
+    profileUsername.textContent=u;
+    profileBalance.textContent=state.balance.toFixed(2);
+    availableBalance.textContent=state.balance.toFixed(2);
+    authScreen.style.display='none'; appContainer.style.display='flex';
+    refreshAll();
+  };
+  logoutBtn.onclick = ()=>location.reload();
+}
+function loadSession(){
+  const data = localStorage.getItem(`tm_${state.user}`);
+  if(data) state = Object.assign(state, JSON.parse(data));
+}
+function saveSession(){
+  localStorage.setItem(`tm_${state.user}`, JSON.stringify(state));
+}
 
-    state.user = username;
-    loadSession();
-
-    profileUsername.textContent = username;
-    profileBalance.textContent = state.balance.toFixed(2);
-    availableBalance.textContent = state.balance.toFixed(2);
-
-    document.getElementById('auth-screen').style.display = 'none';
-    appContainer.style.display = 'block';
+// Navigation
+function setupNav(){
+  document.querySelectorAll('.nav-item, .mobile-nav-btn').forEach(btn => {
+    btn.onclick = ()=> {
+      const section = btn.dataset.section;
+      document.querySelectorAll('.content-section').forEach(s=>s.classList.add('hidden'));
+      document.getElementById(section+'-section').classList.remove('hidden');
+      document.getElementById('section-title').textContent = section.charAt(0).toUpperCase()+section.slice(1);
+      document.querySelectorAll('.nav-item, .mobile-nav-btn').forEach(x=>x.classList.remove('active'));
+      document.querySelectorAll(`[data-section="${section}"]`).forEach(x=>x.classList.add('active'));
+      refreshAll();
+    };
   });
 }
 
-function loadSession() {
-  const data = localStorage.getItem(`trademock_${state.user}`);
-  if (data) {
-    const parsed = JSON.parse(data);
-    state.balance = parsed.balance || 100000;
-    state.holdings = parsed.holdings || {};
-    state.dematQueue = parsed.dematQueue || [];
-    state.trades = parsed.trades || [];
-  }
-}
-
-function saveSession() {
-  localStorage.setItem(
-    `trademock_${state.user}`,
-    JSON.stringify({
-      balance: state.balance,
-      holdings: state.holdings,
-      dematQueue: state.dematQueue,
-      trades: state.trades
-    })
-  );
-}
-
-// ========== NAVIGATION ==========
-function setupNavigation() {
-  const navItems = document.querySelectorAll('.nav-item');
-  const mobileNavBtns = document.querySelectorAll('.mobile-nav-btn');
-  const dematTabs = document.querySelectorAll('.demat-tab');
-
-  navItems.forEach(item => {
-    item.addEventListener('click', () => {
-      navItems.forEach(i => i.classList.remove('active'));
-      item.classList.add('active');
-      showSection(item.dataset.section);
-      updateMobileNav(item.dataset.section);
-    });
-  });
-
-  mobileNavBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      mobileNavBtns.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      showSection(btn.dataset.section);
-      updateDesktopNav(btn.dataset.section);
-    });
-  });
-
-  dematTabs.forEach(tab => {
-    tab.addEventListener('click', () => {
-      dematTabs.forEach(t => t.classList.remove('active'));
-      tab.classList.add('active');
-      document.querySelectorAll('.demat-content').forEach(c => c.classList.add('hidden'));
-      document.getElementById(`demat-${tab.dataset.tab}`).classList.remove('hidden');
-    });
-  });
-
-  logoutBtn.addEventListener('click', () => {
-    document.getElementById('auth-screen').style.display = 'flex';
-    appContainer.style.display = 'none';
-  });
-}
-
-function showSection(section) {
-  document.querySelectorAll('.content-section').forEach(sec => {
-    sec.classList.add('hidden');
-  });
-  document.getElementById(`${section}-section`).classList.remove('hidden');
-  document.getElementById('section-title').textContent = 
-    section.charAt(0).toUpperCase() + section.slice(1);
-}
-
-function updateMobileNav(section) {
-  document.querySelectorAll('.mobile-nav-btn').forEach(btn => {
-    btn.classList.toggle('active', btn.dataset.section === section);
-  });
-}
-
-function updateDesktopNav(section) {
-  document.querySelectorAll('.nav-item').forEach(item => {
-    item.classList.toggle('active', item.dataset.section === section);
-  });
-}
-
-// ========== STOCK LOADING ==========
-async function loadStocks() {
+// Fetch Stocks
+async function loadStocks(){
   try {
-    const symbols = DEFAULT_SYMBOLS.join(',');
-    const priceRes = await fetch(`${BASE_URL}/price?symbol=${symbols}&apikey=${API_KEY}`);
-    const quoteRes = await fetch(`${BASE_URL}/quote?symbol=${symbols}&apikey=${API_KEY}`);
-
-    const priceData = await priceRes.json();
-    const quoteData = await quoteRes.json();
-
-    state.stocks = DEFAULT_SYMBOLS.map(symbol => {
-      const base = symbol.replace('.NS', '');
-      const quote = quoteData[symbol] || {};
-      return {
-        symbol: base,
-        name: quote.name || base,
-        price: parseFloat(priceData[symbol]?.price || 0),
-        change: parseFloat(quote.change || 0),
-        changePercent: parseFloat(quote.percent_change || 0)
-      };
+    const syms = DEFAULT_SYMBOLS.join(',');
+    const res = await fetch(`${BASE_URL}/quote?symbol=${syms}&apikey=${API_KEY}`);
+    const data = await res.json();
+    state.stocks = DEFAULT_SYMBOLS.map(sym=>{
+      const base = sym.replace('.NS','');
+      const q=data[sym]||{};
+      return { symbol:base, name:q.name||base, price:+q.price||0, change:+q.change||0, changePercent:+q.percent_change||0 };
     });
-
-    updateMarket();
-    updatePortfolioValues();
-  } catch (err) {
-    console.error('Stock fetch failed:', err);
-  }
+    refreshAll();
+  } catch(e){ console.error(e); }
 }
 
-function updateMarket() {
-  const container = document.getElementById('stocks-container');
-  container.innerHTML = '';
+// Render Functions
+function refreshAll(){
+  renderMarket();
+  renderPortfolio();
+  renderDemat();
+  renderHistory();
+  profileBalance.textContent=state.balance.toFixed(2);
+  availableBalance.textContent=state.balance.toFixed(2);
+  saveSession();
+}
 
-  state.stocks.forEach(stock => {
-    const card = document.createElement('div');
-    card.className = 'stock-card';
-    card.innerHTML = `
+// Market UI
+function renderMarket(){
+  stocksContainer.innerHTML='';
+  const div = document.createElement('div');
+  div.className='stocks-grid';
+  state.stocks.forEach(s=>{
+    const card=document.createElement('div');
+    card.className='stock-card';
+    card.innerHTML=`
       <div class="stock-header">
-        <div>
-          <div class="stock-name">${stock.name}</div>
-          <div class="stock-symbol">${stock.symbol}</div>
-        </div>
-        <div class="stock-price">₹${stock.price.toFixed(2)}</div>
+        <div><strong>${s.symbol}</strong><span class="stock-symbol">${s.name}</span></div>
+        <div class="stock-price">₹${s.price.toFixed(2)}</div>
       </div>
-      <div class="stock-change ${stock.change >= 0 ? 'positive' : 'negative'}">
-        ${stock.change >= 0 ? '+' : ''}${stock.change.toFixed(2)} 
-        (${stock.changePercent.toFixed(2)}%)
+      <div class="stock-change ${s.change>=0?'positive':'negative'}">
+        ${(s.change>=0?'+':'') + s.change.toFixed(2)} (${s.changePercent.toFixed(2)}%)
       </div>
       <div class="stock-actions">
-        <button class="stock-btn buy" onclick="openTradeModal('${stock.symbol}', 'buy')">Buy</button>
-        <button class="stock-btn sell" onclick="openTradeModal('${stock.symbol}', 'sell')">Sell</button>
-      </div>
-    `;
-    container.appendChild(card);
+        <button class="stock-btn buy">Buy</button>
+        <button class="stock-btn sell">Sell</button>
+      </div>`;
+    div.appendChild(card);
+    card.querySelector('.buy').onclick = ()=> openTrade(s,'buy');
+    card.querySelector('.sell').onclick = ()=> openTrade(s,'sell');
   });
+  stocksContainer.appendChild(div);
 }
 
-// ========== TRADE MODAL ==========
-function setupTradeModal() {
-  const modal = document.getElementById('trade-modal');
-  const closeBtn = modal.querySelector('.modal-close');
-  closeBtn.addEventListener('click', () => modal.classList.add('hidden'));
-
-  document.getElementById('trade-submit').addEventListener('click', handleTradeSubmit);
-
-  const typeBtns = document.querySelectorAll('.trade-type-btn');
-  typeBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      typeBtns.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-    });
+// Trade Modal Setup
+function setupModal(){
+  modalClose.onclick = ()=>tradeModal.classList.add('hidden');
+  typeButtons.forEach(btn=>btn.onclick=() => {
+    typeButtons.forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    currentTrade.action = btn.dataset.type;
+    updateSummary();
   });
-
-  document.getElementById('trade-qty').addEventListener('input', updateTradeSummary);
-  document.getElementById('trade-price').addEventListener('input', updateTradeSummary);
+  [tradeQty, tradePrice].forEach(el=>el.oninput=updateSummary);
+  tradeSubmit.onclick = submitTrade;
 }
 
-let currentTrade = { symbol: '', action: 'buy', price: 0 };
-
-function openTradeModal(symbol, action) {
-  const stock = state.stocks.find(s => s.symbol === symbol);
-  if (!stock) return;
-
-  currentTrade = { symbol, action, price: stock.price };
+// Open trade modal
+function openTrade(stock, action){
+  currentTrade = { symbol:stock.symbol, action };
   document.getElementById('trade-stock-symbol').textContent = stock.symbol;
   document.getElementById('trade-stock-name').textContent = stock.name;
-  document.getElementById('trade-stock-price').textContent = `₹${stock.price.toFixed(2)}`;
-  document.getElementById('trade-qty').value = 1;
-  document.getElementById('trade-price').value = stock.price.toFixed(2);
-
-  updateTradeSummary();
-  document.getElementById('trade-modal').classList.remove('hidden');
-
-  document.querySelectorAll('.trade-type-btn').forEach(btn => {
-    btn.classList.toggle('active', btn.dataset.type === action);
-  });
+  tradeQty.value = 1; tradePrice.value = stock.price.toFixed(2);
+  updateSummary();
+  typeButtons.forEach(b=> b.classList.toggle('active', b.dataset.type===action));
+  tradeModal.classList.remove('hidden');
 }
 
-function updateTradeSummary() {
-  const qty = parseInt(document.getElementById('trade-qty').value || 1);
-  const price = parseFloat(document.getElementById('trade-price').value || 0);
-  const amount = qty * price;
-  const brokerage = amount * 0.001;
-  const net = amount + brokerage;
-
-  document.getElementById('trade-total').textContent = `₹${amount.toFixed(2)}`;
-  document.getElementById('trade-brokerage').textContent = `₹${brokerage.toFixed(2)}`;
-  document.getElementById('trade-net').textContent = `₹${net.toFixed(2)}`;
+// Update cost summary
+function updateSummary(){
+  const qty=+tradeQty.value || 0, price=+tradePrice.value || 0, amt=qty*price;
+  const brokerage=amt*0.001, net = currentTrade.action==='buy'? amt+brokerage : amt-brokerage;
+  tradeTotal.textContent=`₹${amt.toFixed(2)}`;
+  tradeBrokerage.textContent=`₹${brokerage.toFixed(2)}`;
+  tradeNet.textContent=`₹${net.toFixed(2)}`;
 }
 
-function handleTradeSubmit() {
-  const qty = parseInt(document.getElementById('trade-qty').value);
-  const price = parseFloat(document.getElementById('trade-price').value);
-  const total = qty * price;
-  const action = document.querySelector('.trade-type-btn.active').dataset.type;
+// Execute trade
+function submitTrade(){
+  const qty = +tradeQty.value, price = +tradePrice.value;
+  if(!qty || !price) return alert('Enter valid qty & price');
+  if(currentTrade.action==='buy' && price*qty>state.balance) return alert('Insufficient funds');
+  if(currentTrade.action==='sell' && (state.holdings[currentTrade.symbol]||0)<qty) return alert('Insufficient shares');
 
-  if (action === 'buy') {
-    if (state.balance < total) return alert("Insufficient funds");
-    state.balance -= total;
-    state.holdings[currentTrade.symbol] = (state.holdings[currentTrade.symbol] || 0) + qty;
-  } else {
-    if ((state.holdings[currentTrade.symbol] || 0) < qty) return alert("Insufficient shares");
-    state.balance += total;
-    state.holdings[currentTrade.symbol] -= qty;
-  }
+  if(currentTrade.action==='buy') state.balance -= qty*price;
+  else state.balance += qty*price;
+
+  state.holdings[currentTrade.symbol] = (state.holdings[currentTrade.symbol]||0) + (currentTrade.action==='buy'?qty:-qty);
+  if(state.holdings[currentTrade.symbol]<=0) delete state.holdings[currentTrade.symbol];
 
   state.trades.push({
     symbol: currentTrade.symbol,
-    qty,
-    price,
-    type: action,
-    date: new Date().toISOString(),
-    amount: total,
-    status: 'completed'
+    type: currentTrade.action,
+    qty, price,
+    date: new Date().toISOString()
   });
 
-  saveSession();
-  updateMarket();
-  updatePortfolioValues();
-  document.getElementById('trade-modal').classList.add('hidden');
-}
-
-// ========== PORTFOLIO UI ==========
-function updatePortfolioValues() {
-  const table = document.getElementById('portfolio-stocks');
-  table.innerHTML = '';
-  let investment = 0;
-  let currentValue = 0;
-
-  Object.keys(state.holdings).forEach(symbol => {
-    const qty = state.holdings[symbol];
-    const stock = state.stocks.find(s => s.symbol === symbol);
-    if (!stock || qty === 0) return;
-
-    const avgPrice = stock.price;
-    const value = qty * stock.price;
-    investment += qty * avgPrice;
-    currentValue += value;
-
-    const row = document.createElement('tr');
-    row.innerHTML = `
-      <td>${symbol}</td>
-      <td>${qty}</td>
-      <td>₹${avgPrice.toFixed(2)}</td>
-      <td>₹${stock.price.toFixed(2)}</td>
-      <td class="${value >= investment ? 'positive' : 'negative'}">₹${(value - investment).toFixed(2)}</td>
-      <td>
-        <button class="action-btn sell" onclick="openTradeModal('${symbol}', 'sell')">Sell</button>
-      </td>
-    `;
-    table.appendChild(row);
-  });
-
-  document.getElementById('total-investment').textContent = `₹${investment.toFixed(2)}`;
-  document.getElementById('current-value').textContent = `₹${currentValue.toFixed(2)}`;
-  const profit = currentValue - investment;
-  document.getElementById('profit-loss').textContent = `₹${profit.toFixed(2)}`;
-  document.getElementById('profit-loss-percent').textContent = `${((profit / investment) * 100).toFixed(2)}%`;
+  tradeModal.classList.add('hidden');
+  refreshAll();
 }
