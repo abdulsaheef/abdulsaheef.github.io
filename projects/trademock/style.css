@@ -14,6 +14,10 @@ body, html { height:100%; font-family: sans-serif; }
 .login-box input { width:100%; padding:0.5rem; margin:1rem 0; }
 .login-box button { padding:0.5rem 1rem; }
 
+.hidden {
+  display: none !important;
+}
+
 /* App Layout */
 #app { padding-bottom:60px; /* space for nav */ }
 .page { display:none; padding:1rem; }
