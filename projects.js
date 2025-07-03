@@ -29,7 +29,7 @@ const customProjects = [
     title: "Solar System Explorer",
     description: "An immersive 3D space exploration demo built with Three.js.",
     link: "/projects/solar-explorer/index.html",
-  
+    link: "https://abdulsaheef.github.io/posts/solar-explorer.html"
   },
   {
     title: "Digital Compass APP",
