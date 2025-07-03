@@ -29,13 +29,13 @@ const customProjects = [
     title: "Solar System Explorer",
     description: "An immersive 3D space exploration demo built with Three.js.",
     link: "/projects/solar-explorer/index.html",
-    link: "https://abdulsaheef.github.io/posts/solar-explorer.html"
+    read: "https://abdulsaheef.github.io/posts/solar-explorer.html"
   },
   {
     title: "Digital Compass APP",
     description: "Analog-style web compass using device orientation",
     link: "projects/digital-compass/index.html",
-    link: "https://abdulsaheef.github.io/posts/meet-on-time.html"
+    read: "https://abdulsaheef.github.io/posts/meet-on-time.html"
   },
   {
     title: "Meet on Time",
@@ -59,7 +59,7 @@ customProjects.forEach(project => {
     <p>${project.description}</p>
     <div class="button-group">
     <a href="${project.link}" target="_blank" class="btn">Launch</a>
-    <a href="${project.link}" target="_blank" class="btn read-btn">Read</a>
+    <a href="${project.read}" target="_blank" class="btn read-btn">Read</a>
   `;
   container.appendChild(card);
 });
