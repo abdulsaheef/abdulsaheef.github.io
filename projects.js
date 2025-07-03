@@ -35,6 +35,7 @@ const customProjects = [
     title: "Digital Compass APP",
     description: "Analog-style web compass using device orientation",
     link: "projects/digital-compass/index.html"
+    link: "https://abdulsaheef.github.io/posts/meet-on-time.html"
   },
   {
     title: "Meet on Time",
@@ -57,6 +58,7 @@ customProjects.forEach(project => {
     <h3>${project.title}</h3>
     <p>${project.description}</p>
     <a href="${project.link}" target="_blank" class="btn">Launch</a>
+    <a href="${project.link}" target="_blank" class="btn read-btn">Read</a>
   `;
   container.appendChild(card);
 });
