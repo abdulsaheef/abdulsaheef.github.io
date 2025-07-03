@@ -34,7 +34,7 @@ const customProjects = [
   {
     title: "Digital Compass APP",
     description: "Analog-style web compass using device orientation",
-    link: "projects/digital-compass/index.html"
+    link: "projects/digital-compass/index.html",
     link: "https://abdulsaheef.github.io/posts/meet-on-time.html"
   },
   {
