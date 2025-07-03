@@ -57,6 +57,7 @@ customProjects.forEach(project => {
   card.innerHTML = `
     <h3>${project.title}</h3>
     <p>${project.description}</p>
+    <div class="button-group">
     <a href="${project.link}" target="_blank" class="btn">Launch</a>
     <a href="${project.link}" target="_blank" class="btn read-btn">Read</a>
   `;
