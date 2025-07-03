@@ -40,6 +40,11 @@ const customProjects = [
     title: "Meet on Time",
     description: "A smart time zone meeting scheduler that helps find overlapping working hours across cities worldwide",
     link: "projects/meet-on-time/index.html"
+  },
+  {
+    title: "DueBook",
+    description: "A smart vendor payment scheduler and cash flow calendar. Allows you to input vendor details, auto-calculate due dates, AI-based overload alerts"
+    link: "projects/duebook/index.html"
   }
 ];
 
