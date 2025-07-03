@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Solar Explorer | Saheef</title>
+  <meta name="description" content="Behind the scenes of how I built an interactive 3D Solar System viewer for my portfolio.">
+  <link href="/style.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="toggle-theme">
+      <input type="checkbox" id="themeToggle" />
+      <label for="themeToggle" class="switch"></label>
+    </div>
+    <div class="container">
+      <a href="/" class="brand">Saheef</a>
+      <ul class="nav-links">
+        <li><a href="/#about">About</a></li>
+        <li><a href="/#projects">Projects</a></li>
+        <li><a href="/#contact">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="post-content">
+      <h1>How I Built the Solar Explorer</h1>
+      <div class="post-meta">
+        <i class="fas fa-calendar-alt"></i> <span>July 4, 2025</span>
+        <span class="dot">•</span>
+        <i class="fas fa-feather-alt"></i> <span>Saheef</span>
+      </div>
+
+      <p>The <strong>Solar Explorer</strong> is a 3D interactive space project I designed to let users explore planets in a simplified but visually rich environment. It’s more than just a visual — it’s an educational interface that blends science and design.</p>
+
+      <img src="/images/solar-explorer-preview.jpg" alt="Solar Explorer Screenshot" />
+
+      <h2>🚀 What Inspired It?</h2>
+      <p>I’ve always been fascinated by space and planetary motion. I wanted to make a project that was both <strong>interactive</strong> and <strong>informative</strong>. The idea was to simplify exploration by letting users click on planets and view facts in a minimal, beautiful interface.</p>
+
+      <h2>🔧 Tech Stack Used</h2>
+      <ul>
+        <li><strong>Three.js</strong> — to render the 3D planets and camera controls</li>
+        <li><strong>JavaScript</strong> — for handling planet selection, rotation, and data overlays</li>
+        <li><strong>HTML + CSS</strong> — for layout, responsiveness, and styling</li>
+      </ul>
+
+      <h2>🪐 How It Works</h2>
+      <p>The home interface displays all planets in a grid. When you select one, the view transitions to a focused 3D orbiting model of that planet with interesting facts. The rotation uses the `requestAnimationFrame` loop for smooth animation, and textures are mapped using real NASA images.</p>
+
+      <h2>📱 Mobile Friendly</h2>
+      <p>One of my main goals was ensuring it worked across all devices. The viewer automatically resizes, and tap events replace mouse events on small screens.</p>
+
+      <h2>🌑 Dark Mode Support</h2>
+      <p>Solar Explorer respects your system theme, and dark mode enhances the space feel — making the planets pop with contrast.</p>
+
+      <blockquote>"Space is the boundless playground for curiosity. With Solar Explorer, I just made it a bit more touchable." – Saheef</blockquote>
+
+      <h2>📁 What's Next?</h2>
+      <p>I plan to add:</p>
+      <ul>
+        <li>Planetary moons with zoom options</li>
+        <li>Distance indicators and orbit paths</li>
+        <li>A narration option to hear facts about each planet</li>
+      </ul>
+
+      <div class="share-buttons-icon" id="shareButtons"></div>
+
+      <script>
+        const shareURL = window.location.href;
+        const shareHTML = `
+          <a href="https://twitter.com/intent/tweet?url=${encodeURIComponent(shareURL)}" class="btn-icon twitter" target="_blank" title="Share on Twitter"><i class="fab fa-twitter"></i></a>
+          <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareURL)}" class="btn-icon facebook" target="_blank" title="Share on Facebook"><i class="fab fa-facebook-f"></i></a>
+          <a href="https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(shareURL)}" class="btn-icon linkedin" target="_blank" title="Share on LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+          <a href="https://api.whatsapp.com/send?text=${encodeURIComponent(shareURL)}" class="btn-icon whatsapp" target="_blank" title="Share on WhatsApp"><i class="fab fa-whatsapp"></i></a>
+          <a href="mailto:?subject=Check%20this%20post&body=${encodeURIComponent(shareURL)}" class="btn-icon email" title="Share via Email"><i class="fas fa-envelope"></i></a>
+        `;
+        document.getElementById('shareButtons').innerHTML = shareHTML;
+      </script>
+
+    </div>
+  </div>
+
+  <footer>
+    © <span id="year"></span> Saheef. All rights reserved.
+  </footer>
+
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+    const toggle = document.getElementById('themeToggle');
+    const body = document.body;
+
+    if (localStorage.getItem('theme') === 'dark') {
+      body.classList.add('dark-mode');
+      toggle.checked = true;
+    }
+
+    toggle.addEventListener('change', () => {
+      if (toggle.checked) {
+        body.classList.add('dark-mode');
+        localStorage.setItem('theme', 'dark');
+      } else {
+        body.classList.remove('dark-mode');
+        localStorage.setItem('theme', 'light');
+      }
+    });
+  </script>
+
+</body>
+</html>
