@@ -39,12 +39,11 @@ const logoutBtn = document.getElementById('logout-btn');
 const stocksContainer = document.getElementById('stocks-container');
 
 // --- Init ---
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', function() {
   setupLogin();
   setupNavigation();
   setupTradeModal();
   loadStocks();
-  setInterval(loadStocks, 60000);
 });
 
 // --- Login ---
