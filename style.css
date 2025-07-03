@@ -479,3 +479,16 @@ animation: scroll-left 40s linear infinite;
 }
 
 
+.button-group {
+  display: flex;
+  gap: 10px;         /* space between buttons */
+  margin-top: 10px;  /* space above buttons group */
+}
+
+.button-group .btn {
+  margin-top: 0;     /* remove top margin on each button */
+  flex: 1;           /* make both buttons same width */
+  text-align: center;
+}
+
+
