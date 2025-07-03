@@ -17,6 +17,20 @@ let state = {
 const authScreen = document.getElementById('auth-screen');
 const appContainer = document.getElementById('app-container');
 const loginForm = document.getElementById('login-form');
+
+loginForm.addEventListener('submit', function(e) {
+  e.preventDefault();
+  const username = document.getElementById('username').value.trim();
+  if (!username) return;
+
+  state.user = username;
+  loadSession();
+  updateProfileUI();
+
+  // Show app
+  document.getElementById('auth-screen').style.display = 'none';
+  document.getElementById('app-container').style.display = 'block';
+});
 const usernameInput = document.getElementById('username');
 const profileUsername = document.getElementById('profile-username');
 const profileBalance = document.getElementById('profile-balance');
