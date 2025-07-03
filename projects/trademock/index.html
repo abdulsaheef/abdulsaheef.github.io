@@ -2,185 +2,90 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TradeMock</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TradeMock | Simulated Trading</title>
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 </head>
 <body>
 
   <!-- Login Screen -->
-  <div id="auth-screen" class="auth-container">
+  <div id="auth-screen">
     <div class="auth-card">
-      <div class="app-logo">
-        <i class="fas fa-chart-line"></i>
-        <h1>TradeMock</h1>
-      </div>
-      <p class="app-tagline">Mock Trade. Real Learn.</p>
-      <form id="login-form" class="auth-form">
-        <div class="input-group">
-          <label for="username">Enter Username</label>
-          <input type="text" id="username" required />
-        </div>
-        <button type="submit" class="auth-button">
-          <i class="fas fa-play"></i> Start Trading
-        </button>
+      <h1>TradeMock</h1>
+      <p>Mock trade your way like a pro</p>
+      <form id="login-form">
+        <input type="text" id="username" placeholder="Enter username" required />
+        <button type="submit">Start Trading</button>
       </form>
     </div>
   </div>
 
-  <!-- App Main UI -->
-  <div id="app-container" class="app-container">
+  <!-- Main App -->
+  <div id="app-container">
 
-    <!-- Sidebar -->
-    <aside class="sidebar">
-      <div class="sidebar-header">
-        <i class="fas fa-chart-line"></i>
-        <h2>TradeMock</h2>
-      </div>
-      <nav class="sidebar-nav">
-        <ul>
-          <li class="nav-item active" data-section="market"><i class="fas fa-store"></i><span>Market</span></li>
-          <li class="nav-item" data-section="portfolio"><i class="fas fa-briefcase"></i><span>Portfolio</span></li>
-          <li class="nav-item" data-section="demat"><i class="fas fa-file-invoice"></i><span>Demat</span></li>
-          <li class="nav-item" data-section="history"><i class="fas fa-history"></i><span>History</span></li>
-        </ul>
-      </nav>
-      <div class="user-profile">
-        <div class="profile-avatar"><i class="fas fa-user"></i></div>
-        <div class="profile-info">
-          <span class="profile-name" id="profile-username">User</span>
-          <span class="profile-balance">₹<span id="profile-balance">0</span></span>
-        </div>
-        <button id="logout-btn" class="logout-btn"><i class="fas fa-sign-out-alt"></i></button>
-      </div>
-    </aside>
+    <!-- Sidebar (Desktop) -->
+    <div class="sidebar">
+      <h2>TradeMock</h2>
+      <div class="nav-item active" data-section="home"><i class="fas fa-home"></i>Home</div>
+      <div class="nav-item" data-section="portfolio"><i class="fas fa-chart-line"></i>Portfolio</div>
+      <div class="nav-item" data-section="demat"><i class="fas fa-warehouse"></i>Demat</div>
+      <div class="nav-item" data-section="history"><i class="fas fa-history"></i>History</div>
+      <div class="nav-item" data-section="profile"><i class="fas fa-user"></i>Profile</div>
+      <div class="nav-item" id="logout-btn"><i class="fas fa-sign-out-alt"></i>Logout</div>
+    </div>
 
     <!-- Main Content -->
-    <main class="main-content">
-      <div class="content-header">
-        <h1 id="section-title">Market</h1>
-        <div class="balance-display">
-          <span>Balance: ₹<span id="available-balance">0</span></span>
-        </div>
+    <div class="main-content">
+      <h1 id="section-title">Home</h1>
+
+      <!-- Sections -->
+      <div id="home-section" class="content-section">
+        <div id="stocks-container"></div>
       </div>
 
-      <!-- Market Section -->
-      <section id="market-section" class="content-section">
-        <div class="market-header">
-          <div class="search-bar">
-            <i class="fas fa-search"></i>
-            <input type="text" placeholder="Search stocks..." />
-          </div>
-        </div>
-        <div id="stocks-container" class="stocks-grid"></div>
-      </section>
+      <div id="portfolio-section" class="content-section hidden">
+        <div class="card"><h3>Your Holdings</h3><div id="holdings-list">No holdings yet.</div></div>
+      </div>
 
-      <!-- Portfolio Section -->
-      <section id="portfolio-section" class="content-section hidden">
-        <div class="portfolio-summary" id="portfolio-summary"></div>
-        <div class="portfolio-table">
-          <table>
-            <thead>
-              <tr>
-                <th>Symbol</th>
-                <th>Quantity</th>
-                <th>Avg Price</th>
-                <th>LTP</th>
-                <th>P/L</th>
-              </tr>
-            </thead>
-            <tbody id="portfolio-table-body"></tbody>
-          </table>
-        </div>
-      </section>
+      <div id="demat-section" class="content-section hidden">
+        <div class="card"><h3>Demat Queue</h3><div id="demat-queue">No stocks in demat.</div></div>
+      </div>
 
-      <!-- Demat Section -->
-      <section id="demat-section" class="content-section hidden">
-        <div class="demat-header">
-          <h2>Demat Transactions</h2>
-          <div class="demat-tabs">
-            <button class="demat-tab active" data-tab="buy">Buy Queue</button>
-            <button class="demat-tab" data-tab="sell">Sell Queue</button>
-          </div>
-        </div>
-        <div id="demat-buy" class="demat-content">
-          <table>
-            <thead>
-              <tr><th>Symbol</th><th>Qty</th><th>Status</th></tr>
-            </thead>
-            <tbody id="demat-buy-body"></tbody>
-          </table>
-        </div>
-        <div id="demat-sell" class="demat-content hidden">
-          <table>
-            <thead>
-              <tr><th>Symbol</th><th>Qty</th><th>Status</th></tr>
-            </thead>
-            <tbody id="demat-sell-body"></tbody>
-          </table>
-        </div>
-      </section>
+      <div id="history-section" class="content-section hidden">
+        <div class="card"><h3>Trade History</h3><div id="trade-history">No trades yet.</div></div>
+      </div>
 
-      <!-- History Section -->
-      <section id="history-section" class="content-section hidden">
-        <div class="history-filters">
-          <div class="filter-group">
-            <label for="filter-type">Type</label>
-            <select id="filter-type">
-              <option value="all">All</option>
-              <option value="buy">Buy</option>
-              <option value="sell">Sell</option>
-            </select>
-          </div>
+      <div id="profile-section" class="content-section hidden">
+        <div class="card">
+          <h3>User Info</h3>
+          <p>Username: <span id="profile-username"></span></p>
+          <p>Balance: ₹<span id="profile-balance"></span></p>
         </div>
-        <div class="history-table">
-          <table>
-            <thead>
-              <tr><th>Date</th><th>Symbol</th><th>Type</th><th>Qty</th><th>Price</th><th>Status</th></tr>
-            </thead>
-            <tbody id="history-table-body"></tbody>
-          </table>
-        </div>
-      </section>
-    </main>
-
-    <!-- Mobile Navigation -->
-    <nav class="mobile-nav">
-      <button class="mobile-nav-btn active" data-section="market"><i class="fas fa-store"></i>Market</button>
-      <button class="mobile-nav-btn" data-section="portfolio"><i class="fas fa-briefcase"></i>Portfolio</button>
-      <button class="mobile-nav-btn" data-section="demat"><i class="fas fa-file-invoice"></i>Demat</button>
-      <button class="mobile-nav-btn" data-section="history"><i class="fas fa-history"></i>History</button>
-    </nav>
+      </div>
+    </div>
   </div>
 
   <!-- Trade Modal -->
-  <div id="trade-modal" class="modal">
+  <div class="modal" id="trade-modal">
     <div class="modal-content">
-      <button class="modal-close" id="trade-close">&times;</button>
-      <h2>Execute Trade</h2>
-      <div class="trade-info">
-        <div class="trade-stock">
-          <span class="trade-stock-symbol" id="trade-symbol">TCS</span>
-          <span class="trade-stock-name" id="trade-name">Tata Consultancy</span>
-        </div>
-        <div class="trade-price">
-          <span>Price:</span><span id="trade-price">₹0</span>
-        </div>
-      </div>
-      <div class="trade-type">
-        <button class="trade-type-btn active" data-type="buy">Buy</button>
-        <button class="trade-type-btn" data-type="sell">Sell</button>
-      </div>
-      <div class="form-group">
-        <label for="trade-quantity">Quantity</label>
-        <input type="number" id="trade-quantity" min="1" required />
-      </div>
-      <div class="trade-summary">
-        <div class="summary-row"><span>Total</span><span id="trade-total">₹0</span></div>
-      </div>
-      <button class="trade-submit-btn" id="trade-submit">Place Order</button>
+      <button class="modal-close" id="close-modal">&times;</button>
+      <h2>Place Trade</h2>
+      <label for="trade-symbol">Stock</label>
+      <input type="text" id="trade-symbol" readonly />
+      <label for="trade-quantity">Quantity</label>
+      <input type="number" id="trade-quantity" min="1" />
+      <button class="btn" id="trade-confirm-btn">Buy</button>
     </div>
+  </div>
+
+  <!-- Mobile Nav -->
+  <div class="mobile-nav">
+    <div class="mobile-nav-btn active" data-section="home"><i class="fas fa-home"></i>Home</div>
+    <div class="mobile-nav-btn" data-section="portfolio"><i class="fas fa-chart-line"></i>Portfolio</div>
+    <div class="mobile-nav-btn" data-section="demat"><i class="fas fa-warehouse"></i>Demat</div>
+    <div class="mobile-nav-btn" data-section="history"><i class="fas fa-history"></i>History</div>
+    <div class="mobile-nav-btn" data-section="profile"><i class="fas fa-user"></i>Profile</div>
   </div>
 
   <!-- Script -->
