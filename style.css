@@ -492,3 +492,24 @@ animation: scroll-left 40s linear infinite;
 }
 
 
+.try-button-container {
+  margin: 2rem 0;
+  text-align: center;
+}
+
+.try-button {
+  display: inline-block;
+  background: #3D52A0;
+  color: white;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background 0.3s ease;
+}
+
+.try-button:hover {
+  background: #2c3a77;
+}
+
