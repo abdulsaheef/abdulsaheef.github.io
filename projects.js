@@ -29,23 +29,25 @@ const customProjects = [
     title: "Solar System Explorer",
     description: "An immersive 3D space exploration demo built with Three.js.",
     link: "/projects/solar-explorer/index.html",
-    read: "https://abdulsaheef.github.io/posts/solar-explorer.html"
+    read: "/posts/solar-explorer.html"
   },
   {
     title: "Digital Compass APP",
     description: "Analog-style web compass using device orientation",
     link: "projects/digital-compass/index.html",
-    read: "https://abdulsaheef.github.io/posts/meet-on-time.html"
+    read: "/posts/digital-compass.html"
   },
   {
     title: "Meet on Time",
     description: "A smart time zone meeting scheduler that helps find overlapping working hours across cities worldwide",
-    link: "projects/meet-on-time/index.html"
+    link: "projects/meet-on-time/index.html",
+    read: "/posts/meet-on-time.html"
   },
   {
     title: "DueBook",
     description: "A smart vendor payment scheduler and cash flow calendar. Allows you to input vendor details, auto-calculate due dates, AI-based overload alerts",
-    link: "projects/duebook/index.html"
+    link: "projects/duebook/index.html",
+    read: "/posts/duebook.html"
   }
 ];
 
