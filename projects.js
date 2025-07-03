@@ -43,7 +43,7 @@ const customProjects = [
   },
   {
     title: "DueBook",
-    description: "A smart vendor payment scheduler and cash flow calendar. Allows you to input vendor details, auto-calculate due dates, AI-based overload alerts"
+    description: "A smart vendor payment scheduler and cash flow calendar. Allows you to input vendor details, auto-calculate due dates, AI-based overload alerts",
     link: "projects/duebook/index.html"
   }
 ];
