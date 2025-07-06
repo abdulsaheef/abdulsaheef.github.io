@@ -5,13 +5,35 @@
     <lastmod>2025-07-05</lastmod>
     <priority>1.00</priority>
   </url>
+   <!-- Individual project pages -->
   <url>
-    <loc>https://saheef.in/projects</loc>
+    <loc>https://saheef.in/projects/solar-explorer</loc>
     <lastmod>2025-07-05</lastmod>
     <priority>0.80</priority>
   </url>
   <url>
-    <loc>https://saheef.in/posts</loc>
+    <loc>https://saheef.in/projects/digital-compass</loc>
+    <lastmod>2025-07-05</lastmod>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://saheef.in/projects/meet-on-time</loc>
+    <lastmod>2025-07-05</lastmod>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://saheef.in/projects/trademock</loc>
+    <lastmod>2025-07-05</lastmod>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://saheef.in/projects/duebook</loc>
+    <lastmod>2025-07-05</lastmod>
+    <priority>0.80</priority>
+  </url>
+<!-- Individual posts pages -->
+  <url>
+    <loc>https://saheef.in/posts/solar-explorer</loc>
     <lastmod>2025-07-05</lastmod>
     <priority>0.70</priority>
   </url>
