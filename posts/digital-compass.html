@@ -10,6 +10,18 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+  <style>
+    .code-block {
+      background: #1e1e1e;
+      color: #eee;
+      padding: 1em;
+      margin: 1.5em 0;
+      border-radius: 6px;
+      font-family: 'Courier New', monospace;
+      overflow-x: auto;
+      font-size: 0.9em;
+    }
+  </style>
 </head>
 <body>
 
@@ -46,14 +58,15 @@
 
       <h2>🧠 How It Works</h2>
       <p>The project uses the <code>DeviceOrientationEvent</code> and <code>DeviceOrientationAbsoluteEvent</code> to read your device’s heading (alpha) in degrees. This value is then used to rotate the compass needle using a CSS transform.</p>
-      
-      <pre><code class="language-js">
-// Example of sensor binding
+
+      <div class="code-block">
+<pre><code>// Example of sensor binding
 window.addEventListener("deviceorientationabsolute", (e) => {
   const heading = e.alpha;
   compassNeedle.style.transform = `rotate(${-heading}deg)`;
 });
-      </code></pre>
+</code></pre>
+      </div>
 
       <p>The visual needle rotates against a circular background. I also calculate and display the nearest cardinal direction (N, NE, E, etc.) using basic math on the angle value.</p>
 
@@ -84,7 +97,7 @@ window.addEventListener("deviceorientationabsolute", (e) => {
       <blockquote>"Building this compass taught me how much modern browsers can do when you dig into their native capabilities." – Saheef</blockquote>
 
       <div class="try-button-container">
-        <a href="https://abdulsaheef.github.io/projects/digital-compass/" class="try-button" target="_blank">
+        <a href="https://abdulsaheef.github.io/projects/compass/" class="try-button" target="_blank">
           Try it now
         </a>
       </div>
