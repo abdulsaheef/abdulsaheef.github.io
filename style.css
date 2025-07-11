@@ -514,7 +514,7 @@ animation: scroll-left 40s linear infinite;
 }
 
 
-#Code snippet
+/* Code snippet */
 .code-block {
   background: var(--code-bg, #1e1e1e);
   color: #eee;
