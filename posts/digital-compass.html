@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Digital Compass | Saheef</title>
+  <meta name="description" content="A behind-the-scenes look at how I built a real-time, browser-based digital compass for mobile devices using DeviceOrientation APIs.">
+  <meta name="robots" content="index, follow">
+  <link href="/style.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="toggle-theme">
+      <input type="checkbox" id="themeToggle" />
+      <label for="themeToggle" class="switch"></label>
+    </div>
+    <div class="container">
+      <a href="/" class="brand">Saheef</a>
+      <ul class="nav-links">
+        <li><a href="/#about">About</a></li>
+        <li><a href="/#projects">Projects</a></li>
+        <li><a href="/#contact">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="post-content">
+      <h1>How I Built the Digital Compass</h1>
+      <div class="post-meta">
+        <i class="fas fa-calendar-alt"></i> <span>July 12, 2025</span>
+        <span class="dot">•</span>
+        <i class="fas fa-feather-alt"></i> <span>Saheef</span>
+      </div>
+
+      <p>The <strong>Digital Compass</strong> is a real-time, browser-based compass designed especially for mobile devices. It leverages device orientation sensors to display heading, direction, and rotation with visual clarity. Built using pure HTML, CSS, and JavaScript — no libraries, no dependencies.</p>
+
+      <img src="/projects/compass/preview.jpg" alt="Digital Compass preview" class="post-preview" />
+
+      <h2>📌 Why I Built It</h2>
+      <p>I wanted to create something practical, fast, and native to the browser — something that could serve as a quick utility without needing app installs. A compass was the perfect idea: it's useful, sensor-based, and lets me experiment with real-world data handling via the browser.</p>
+
+      <h2>🧠 How It Works</h2>
+      <p>The project uses the <code>DeviceOrientationEvent</code> and <code>DeviceOrientationAbsoluteEvent</code> to read your device’s heading (alpha) in degrees. This value is then used to rotate the compass needle using a CSS transform.</p>
+      
+      <pre><code class="language-js">
+// Example of sensor binding
+window.addEventListener("deviceorientationabsolute", (e) => {
+  const heading = e.alpha;
+  compassNeedle.style.transform = `rotate(${-heading}deg)`;
+});
+      </code></pre>
+
+      <p>The visual needle rotates against a circular background. I also calculate and display the nearest cardinal direction (N, NE, E, etc.) using basic math on the angle value.</p>
+
+      <h2>📱 Design Goals</h2>
+      <ul>
+        <li>Mobile-first, touch-friendly layout</li>
+        <li>Live heading display in degrees</li>
+        <li>Dynamic cardinal direction text</li>
+        <li>Dark mode support via toggle</li>
+        <li>Minimal battery and CPU usage</li>
+      </ul>
+
+      <h2>🎨 Tech Stack</h2>
+      <ul>
+        <li><strong>JavaScript</strong> – to handle device orientation and heading logic</li>
+        <li><strong>HTML/CSS</strong> – to render the UI and handle transformations</li>
+        <li><strong>DeviceOrientation API</strong> – for accessing sensor data in real-time</li>
+      </ul>
+
+      <h2>⚠️ Compatibility Notes</h2>
+      <ul>
+        <li>✅ Works best on modern mobile browsers (iOS Safari, Chrome Android)</li>
+        <li>❌ May not work on desktop or emulators due to sensor unavailability</li>
+        <li>🔒 Some devices require explicit permission to access motion data</li>
+        <li>🌐 HTTPS is required for sensor access in most browsers</li>
+      </ul>
+
+      <blockquote>"Building this compass taught me how much modern browsers can do when you dig into their native capabilities." – Saheef</blockquote>
+
+      <div class="try-button-container">
+        <a href="https://abdulsaheef.github.io/projects/digital-compass/" class="try-button" target="_blank">
+          Try it now
+        </a>
+      </div>
+
+      <h2>🔮 What's Next?</h2>
+      <p>I’m exploring the following future upgrades:</p>
+      <ul>
+        <li>📍 GPS-aware direction of travel</li>
+        <li>⏱️ Calibration screen for better accuracy</li>
+        <li>📲 Installable PWA with offline support</li>
+        <li>🧭 Magnetic declination adjustment</li>
+      </ul>
+
+      <div class="share-buttons-icon" id="shareButtons"></div>
+
+      <script>
+        const shareURL = window.location.href;
+        const shareHTML = `
+          <a href="https://twitter.com/intent/tweet?url=${encodeURIComponent(shareURL)}" class="btn-icon twitter" target="_blank" title="Share on Twitter"><i class="fab fa-twitter"></i></a>
+          <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareURL)}" class="btn-icon facebook" target="_blank" title="Share on Facebook"><i class="fab fa-facebook-f"></i></a>
+          <a href="https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(shareURL)}" class="btn-icon linkedin" target="_blank" title="Share on LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+          <a href="https://api.whatsapp.com/send?text=${encodeURIComponent(shareURL)}" class="btn-icon whatsapp" target="_blank" title="Share on WhatsApp"><i class="fab fa-whatsapp"></i></a>
+          <a href="mailto:?subject=Check%20this%20post&body=${encodeURIComponent(shareURL)}" class="btn-icon email" title="Share via Email"><i class="fas fa-envelope"></i></a>
+        `;
+        document.getElementById('shareButtons').innerHTML = shareHTML;
+      </script>
+
+    </div>
+  </div>
+
+  <footer>
+    © <span id="year"></span> Saheef. All rights reserved.
+  </footer>
+
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+    const toggle = document.getElementById('themeToggle');
+    const body = document.body;
+
+    if (localStorage.getItem('theme') === 'dark') {
+      body.classList.add('dark-mode');
+      toggle.checked = true;
+    }
+
+    toggle.addEventListener('change', () => {
+      if (toggle.checked) {
+        body.classList.add('dark-mode');
+        localStorage.setItem('theme', 'dark');
+      } else {
+        body.classList.remove('dark-mode');
+        localStorage.setItem('theme', 'light');
+      }
+    });
+  </script>
+
+</body>
+</html>
