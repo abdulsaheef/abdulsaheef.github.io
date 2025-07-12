@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DueBook | Saheef</title>
+  <meta name="description" content="An in-depth look at DueBook – a vendor payment planner with drag-and-drop scheduling, alerts, offline support, and AI-based payout balancing.">
+  <meta name="robots" content="index, follow">
+  <link href="/style.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+  <style>
+    .code-block {
+      background: #1e1e1e;
+      color: #eee;
+      padding: 1em;
+      margin: 1.5em 0;
+      border-radius: 6px;
+      font-family: 'Courier New', monospace;
+      overflow-x: auto;
+      font-size: 0.9em;
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="toggle-theme">
+      <input type="checkbox" id="themeToggle" />
+      <label for="themeToggle" class="switch"></label>
+    </div>
+    <div class="container">
+      <a href="/" class="brand">Saheef</a>
+      <ul class="nav-links">
+        <li><a href="/#about">About</a></li>
+        <li><a href="/#projects">Projects</a></li>
+        <li><a href="/#contact">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="post-content">
+      <h1>How I Built DueBook – A Vendor Payment Planner</h1>
+      <div class="post-meta">
+        <i class="fas fa-calendar-alt"></i> <span>July 12, 2025</span>
+        <span class="dot">•</span>
+        <i class="fas fa-feather-alt"></i> <span>Saheef</span>
+      </div>
+
+      <p><strong>DueBook</strong> is a smart financial planning tool designed to simplify vendor payments for small businesses. It helps you visualize upcoming dues, schedule payouts, and avoid payment stacking. With built-in logic for due dates and a flexible calendar interface, it turns manual ledger juggling into a smooth drag-and-drop experience. Everything works offline and feels like a native app.</p>
+
+      <h2>💡 Key Features</h2>
+      <ul>
+        <li>Auto-calculated due dates based on vendor payment terms</li>
+        <li>Drag-and-drop calendar for scheduling vendor payouts</li>
+        <li>Visual risk alerts for overlapping high-priority payments</li>
+        <li>Dashboard summary showing total payable amounts</li>
+        <li>Cash inflow tracker with stacking warnings</li>
+        <li>Exportable schedule in CSV or PDF format</li>
+        <li>Offline-first PWA with install button</li>
+        <li>Supports 100+ currencies with proper formatting</li>
+        <li>AI alerts to identify payout clusters and suggest rebalancing</li>
+      </ul>
+
+      <h2>🧠 How It Works</h2>
+      <p>DueBook allows you to add vendors along with a nickname, legal name, payment amount, terms (like Net 7, Net 15), and priority. Based on the input date and terms, it auto-generates a due date and drops it on the calendar. From there, you can drag and reschedule with full control.</p>
+
+      <div class="code-block">
+<pre><code>// Auto-calculate due date based on terms
+function calculateDueDate(startDate, termDays) {
+  const base = new Date(startDate);
+  base.setDate(base.getDate() + termDays);
+  return base.toISOString().split('T')[0];
+}
+</code></pre>
+      </div>
+
+      <p>The calendar is fully interactive. Payments are stacked by date and color-coded based on priority. You also get alerts if too many payments fall on the same day.</p>
+
+      <h2>📊 Dashboard & Alerts</h2>
+      <p>The dashboard shows a summary of upcoming payouts and total due amounts. A red dot warns when payment stacking occurs. AI logic will soon suggest alternative dates for balancing your cash flow without missing deadlines.</p>
+
+      <h2>📁 Export & Portability</h2>
+      <p>DueBook lets you export your vendor payment calendar as CSV or PDF. This means you can share it with finance teams or import it into external tools. All vendor data and schedule are stored in localStorage so they persist offline.</p>
+
+      <h2>📱 Progressive Web App</h2>
+      <p>DueBook is installable like an app and works fully offline using a service worker. You can use it on mobile or desktop and manage your payments on the go.</p>
+
+      <blockquote>"I wanted to build something that felt powerful yet personal. DueBook became a lightweight financial ally — not just another spreadsheet." – Saheef</blockquote>
+
+      <div class="try-button-container">
+        <a href="https://abdulsaheef.github.io/projects/duebook/" class="try-button" target="_blank">
+          Try it now
+        </a>
+      </div>
+
+      <h2>🔮 What's Next?</h2>
+      <ul>
+        <li>Smart calendar recommendations for best payout spacing</li>
+        <li>Bulk vendor import via CSV</li>
+        <li>Multi-user cloud sync (optional upgrade)</li>
+        <li>Daily digest email reminders</li>
+        <li>Payment success tracking with status tags</li>
+      </ul>
+
+      <div class="share-buttons-icon" id="shareButtons"></div>
+
+      <script>
+        const shareURL = window.location.href;
+        const shareHTML = `
+          <a href="https://twitter.com/intent/tweet?url=${encodeURIComponent(shareURL)}" class="btn-icon twitter" target="_blank" title="Share on Twitter"><i class="fab fa-twitter"></i></a>
+          <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareURL)}" class="btn-icon facebook" target="_blank" title="Share on Facebook"><i class="fab fa-facebook-f"></i></a>
+          <a href="https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(shareURL)}" class="btn-icon linkedin" target="_blank" title="Share on LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+          <a href="https://api.whatsapp.com/send?text=${encodeURIComponent(shareURL)}" class="btn-icon whatsapp" target="_blank" title="Share on WhatsApp"><i class="fab fa-whatsapp"></i></a>
+          <a href="mailto:?subject=Check%20this%20post&body=${encodeURIComponent(shareURL)}" class="btn-icon email" title="Share via Email"><i class="fas fa-envelope"></i></a>
+        `;
+        document.getElementById('shareButtons').innerHTML = shareHTML;
+      </script>
+
+    </div>
+  </div>
+
+  <footer>
+    © <span id="year"></span> Saheef. All rights reserved.
+  </footer>
+
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+    const toggle = document.getElementById('themeToggle');
+    const body = document.body;
+
+    if (localStorage.getItem('theme') === 'dark') {
+      body.classList.add('dark-mode');
+      toggle.checked = true;
+    }
+
+    toggle.addEventListener('change', () => {
+      if (toggle.checked) {
+        body.classList.add('dark-mode');
+        localStorage.setItem('theme', 'dark');
+      } else {
+        body.classList.remove('dark-mode');
+        localStorage.setItem('theme', 'light');
+      }
+    });
+  </script>
+
+</body>
+</html>
+
