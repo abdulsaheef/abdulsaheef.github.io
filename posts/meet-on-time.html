@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Meet on Time | Saheef</title>
+  <meta name="description" content="Inside Meet on Time – a timezone-friendly meeting planner that visually aligns working hours across global cities.">
+  <meta name="robots" content="index, follow">
+  <link href="/style.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    .code-block {
+      background: #1e1e1e;
+      color: #eee;
+      padding: 1em;
+      margin: 1.5em 0;
+      border-radius: 6px;
+      font-family: 'Courier New', monospace;
+      overflow-x: auto;
+      font-size: 0.9em;
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="toggle-theme">
+      <input type="checkbox" id="themeToggle" />
+      <label for="themeToggle" class="switch"></label>
+    </div>
+    <div class="container">
+      <a href="/" class="brand">Saheef</a>
+      <ul class="nav-links">
+        <li><a href="/#about">About</a></li>
+        <li><a href="/#projects">Projects</a></li>
+        <li><a href="/#contact">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="post-content">
+      <h1>How I Built Meet on Time – A Time Zone Meeting Planner</h1>
+      <div class="post-meta">
+        <i class="fas fa-calendar-alt"></i> <span>July 12, 2025</span>
+        <span class="dot">•</span>
+        <i class="fas fa-feather-alt"></i> <span>Saheef</span>
+      </div>
+
+      <p><strong>Meet on Time</strong> is a visual scheduling tool that helps plan meetings across different cities by comparing their working hours in a horizontal timeline. Unlike time converters, it shows the overlap directly, so you can instantly spot the best slot to meet. With support for multiple cities, dark mode, and mobile responsiveness, it brings clarity to remote collaboration. Whether for personal coordination or global teamwork, it saves time, effort, and confusion.</p>
+
+      <h2>🌍 What It Solves</h2>
+      <p>Coordinating with teammates or clients in different time zones is usually frustrating. Tools like world clocks or converters show individual times, but they don’t show how working hours align. Meet on Time fixes that by rendering time blocks side-by-side and highlighting overlaps for easy picking.</p>
+
+      <h2>🛠️ Key Features</h2>
+      <ul>
+        <li>Add up to four cities with auto-timezone detection</li>
+        <li>Each city shows 09:00–17:00 work hours in their local time</li>
+        <li>Overlap hours are highlighted for quick visibility</li>
+        <li>Dark/light mode toggle with localStorage sync</li>
+        <li>Mobile responsive layout with horizontal scroll</li>
+        <li>Works offline once loaded</li>
+      </ul>
+
+      <h2>🧠 How It Works</h2>
+      <p>Meet on Time uses the <code>Luxon</code> library to handle all date/time zone logic, including parsing user input and detecting current offsets. The main timeline renders from 00:00 to 23:00 UTC, and each city maps its work hours to that frame. Overlaps are computed dynamically on each render.</p>
+
+      <div class="code-block">
+<pre><code>// Determine overlap between multiple cities
+function getOverlapRange(cities) {
+  let start = -Infinity;
+  let end = Infinity;
+  for (const city of cities) {
+    start = Math.max(start, city.startUtc);
+    end = Math.min(end, city.endUtc);
+  }
+  return start &lt; end ? { start, end } : null;
+}
+</code></pre>
+      </div>
+
+      <h2>📱 Mobile Friendly</h2>
+      <p>Built from the ground up to be responsive, the timeline scrolls smoothly on mobile. Controls like city input and theme toggle adapt cleanly to small screens. Tap selection and city reordering are coming next.</p>
+
+      <h2>🎯 Design Philosophy</h2>
+      <p>I aimed for clarity over complexity. Each city row is uniform, showing a visual block of hours rather than numbers. The dark mode isn't just a feature — it’s part of the overall look, highlighting active hours more effectively.</p>
+
+      <blockquote>"Scheduling isn’t about converting time — it’s about seeing it clearly. Meet on Time makes overlapping hours visible at a glance." – Saheef</blockquote>
+
+      <div class="try-button-container">
+        <a href="https://abdulsaheef.github.io/projects/meet-on-time/" class="try-button" target="_blank">
+          Try it now
+        </a>
+      </div>
+
+      <h2>🔮 What's Next?</h2>
+      <ul>
+        <li>Ability to label meetings and export selected time</li>
+        <li>Auto-link sharable URLs with selected cities</li>
+        <li>Drag-and-highlight to select meeting hours</li>
+        <li>Save preset teams for quick reuse</li>
+      </ul>
+
+      <div class="share-buttons-icon" id="shareButtons"></div>
+
+      <script>
+        const shareURL = window.location.href;
+        const shareHTML = `
+          <a href="https://twitter.com/intent/tweet?url=${encodeURIComponent(shareURL)}" class="btn-icon twitter" target="_blank" title="Share on Twitter"><i class="fab fa-twitter"></i></a>
+          <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareURL)}" class="btn-icon facebook" target="_blank" title="Share on Facebook"><i class="fab fa-facebook-f"></i></a>
+          <a href="https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(shareURL)}" class="btn-icon linkedin" target="_blank" title="Share on LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+          <a href="https://api.whatsapp.com/send?text=${encodeURIComponent(shareURL)}" class="btn-icon whatsapp" target="_blank" title="Share on WhatsApp"><i class="fab fa-whatsapp"></i></a>
+          <a href="mailto:?subject=Check%20this%20post&body=${encodeURIComponent(shareURL)}" class="btn-icon email" title="Share via Email"><i class="fas fa-envelope"></i></a>
+        `;
+        document.getElementById('shareButtons').innerHTML = shareHTML;
+      </script>
+
+    </div>
+  </div>
+
+  <footer>
+    © <span id="year"></span> Saheef. All rights reserved.
+  </footer>
+
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+    const toggle = document.getElementById('themeToggle');
+    const body = document.body;
+
+    if (localStorage.getItem('theme') === 'dark') {
+      body.classList.add('dark-mode');
+      toggle.checked = true;
+    }
+
+    toggle.addEventListener('change', () => {
+      if (toggle.checked) {
+        body.classList.add('dark-mode');
+        localStorage.setItem('theme', 'dark');
+      } else {
+        body.classList.remove('dark-mode');
+        localStorage.setItem('theme', 'light');
+      }
+    });
+  </script>
+
+</body>
+</html>
