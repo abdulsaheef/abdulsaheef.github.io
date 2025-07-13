@@ -169,6 +169,31 @@
       document.getElementById('shareButtons').innerHTML = shareHTML;
     </script>
   </main>
+  
+ <footer>
+    © <span id="year"></span> Saheef. All rights reserved.
+  </footer>
+
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+    const toggle = document.getElementById('themeToggle');
+    const body = document.body;
+
+    if (localStorage.getItem('theme') === 'dark') {
+      body.classList.add('dark-mode');
+      toggle.checked = true;
+    }
+
+    toggle.addEventListener('change', () => {
+      if (toggle.checked) {
+        body.classList.add('dark-mode');
+        localStorage.setItem('theme', 'dark');
+      } else {
+        body.classList.remove('dark-mode');
+        localStorage.setItem('theme', 'light');
+      }
+    });
+  </script>
 
 </body>
 </html
