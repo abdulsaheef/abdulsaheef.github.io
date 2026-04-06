@@ -1,67 +1,66 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://saheef.in/</loc>
+    <loc>https://saheef.com/</loc>
     <lastmod>2025-07-05</lastmod>
     <priority>1.00</priority>
   </url>
   <!-- Individual project pages -->
   <url>
-    <loc>https://saheef.in/projects/solar-explorer/index.html</loc>
+    <loc>https://saheef.com/projects/solar-explorer/index.html</loc>
     <lastmod>2025-07-05</lastmod>
     <priority>0.80</priority>
   </url>
   <url>
-    <loc>https://saheef.in/projects/digital-compass/index.html</loc>
+    <loc>https://saheef.com/projects/digital-compass/index.html</loc>
     <lastmod>2025-07-05</lastmod>
     <priority>0.80</priority>
   </url>
   <url>
-    <loc>https://saheef.in/projects/meet-on-time/index.html</loc>
+    <loc>https://saheef.com/projects/meet-on-time/index.html</loc>
     <lastmod>2025-07-05</lastmod>
     <priority>0.80</priority>
   </url>
   <url>
-    <loc>https://saheef.in/projects/trademock/index.html</loc>
+    <loc>https://saheef.com/projects/trademock/index.html</loc>
     <lastmod>2025-07-05</lastmod>
     <priority>0.80</priority>
   </url>
   <url>
-    <loc>https://saheef.in/projects/duebook/index.html</loc>
+    <loc>https://saheef.com/projects/duebook/index.html</loc>
     <lastmod>2025-07-05</lastmod>
     <priority>0.80</priority>
   </url>
   <!-- Individual posts pages -->
   <url>
-    <loc>https://saheef.in/posts/solar-explorer.html</loc>
+    <loc>https://saheef.com/posts/solar-explorer.html</loc>
     <lastmod>2025-07-05</lastmod>
     <priority>0.70</priority>
   </url>
   <url>
-    <loc>https://saheef.in/posts/duebook.html</loc>
+    <loc>https://saheef.com/posts/duebook.html</loc>
     <lastmod>2025-07-05</lastmod>
     <priority>0.70</priority>
   </url>
   <url>
-    <loc>https://saheef.in/posts/meet-on-time.html</loc>
+    <loc>https://saheef.com/posts/meet-on-time.html</loc>
     <lastmod>2025-07-05</lastmod>
     <priority>0.70</priority>
   </url>
   <url>
-    <loc>https://saheef.in/posts/digital-compass.html</loc>
+    <loc>https://saheef.com/posts/digital-compass.html</loc>
     <lastmod>2025-07-05</lastmod>
     <priority>0.70</priority>
   </url>
   <!-- Individual article pages -->
   <url>
-    <loc>https://saheef.in/articles/player-456-eliminated.html</loc>
+    <loc>https://saheef.com/articles/player-456-eliminated.html</loc>
     <lastmod>2025-07-14</lastmod>
     <priority>0.70</priority>
   </url>
-<url>
-    <loc>https://saheef.in/articles/understanding-the-stock-market.html</loc>
+  <url>
+    <loc>https://saheef.com/articles/understanding-the-stock-market.html</loc>
     <lastmod>2025-07-22</lastmod>
     <priority>0.70</priority>
   </url>
 </urlset>
-
