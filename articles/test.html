@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<!-- ===== META ===== -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>{{TITLE}} | Saheef</title>
+<meta name="description" content="{{DESCRIPTION}}">
+
+<!-- ===== GLOBAL STYLES ===== -->
+<link href="/style.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+
+<!-- ===== ARTICLE SYSTEM ===== -->
+<style>
+
+body {
+  background: #0b0b0b;
+  margin: 0;
+}
+
+/* Container */
+.article {
+  max-width: 760px;
+  margin: auto;
+  padding: 40px 20px;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Hero */
+.article-hero h1 {
+  font-size: 34px;
+  color: #e5e5e5;
+  line-height: 1.25;
+  margin-bottom: 10px;
+}
+
+.article-sub {
+  color: #9ca3af;
+  font-size: 15px;
+  margin-bottom: 16px;
+}
+
+.article-meta {
+  font-size: 13px;
+  color: #6b7280;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* Body */
+.article-body {
+  margin-top: 30px;
+  font-size: 16px;
+  line-height: 1.85;
+  color: #d1d5db;
+}
+
+.article-body p {
+  margin-bottom: 18px;
+}
+
+.article-body h2 {
+  margin-top: 36px;
+  font-size: 22px;
+  color: #f3f4f6;
+  position: relative;
+}
+
+.article-body h2::before {
+  content: "";
+  position: absolute;
+  left: -14px;
+  top: 6px;
+  width: 2px;
+  height: 18px;
+  background: #444;
+}
+
+/* Lead */
+.lead {
+  font-size: 18px;
+  color: #e5e5e5;
+}
+
+/* Code */
+.code-block {
+  background: #0d0d0d;
+  border: 1px solid #222;
+  padding: 16px;
+  border-radius: 10px;
+  font-size: 13px;
+  overflow-x: auto;
+}
+
+/* Insight */
+.insight {
+  margin: 24px 0;
+  padding: 14px;
+  border-left: 3px solid #fff;
+  background: #111;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+/* Quote */
+blockquote {
+  border-left: 2px solid #444;
+  padding-left: 12px;
+  color: #9ca3af;
+  margin: 20px 0;
+  font-style: italic;
+}
+
+/* Progress Bar */
+.progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 2px;
+  background: #fff;
+  width: 0%;
+  z-index: 999;
+}
+
+/* Footer */
+.article-footer {
+  margin-top: 50px;
+  padding-top: 20px;
+  border-top: 1px solid #222;
+  color: #9ca3af;
+  font-size: 14px;
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+  .article {
+    padding: 20px 14px;
+  }
+
+  .article-hero h1 {
+    font-size: 26px;
+  }
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- ===== NAVBAR (GLOBAL INCLUDE) ===== -->
+<!-- Keep your existing navbar here -->
+
+<div class="progress-bar"></div>
+
+<main class="article">
+
+  <!-- ===== HERO ===== -->
+  <header class="article-hero">
+    <h1>{{TITLE}}</h1>
+
+    <p class="article-sub">
+      {{SUBTITLE}}
+    </p>
+
+    <div class="article-meta">
+      <span>{{AUTHOR}}</span>
+      <span>•</span>
+      <span>{{DATE}}</span>
+      <span>•</span>
+      <span>{{READ_TIME}}</span>
+    </div>
+  </header>
+
+  <!-- ===== BODY ===== -->
+  <article class="article-body">
+
+    <p class="lead">
+      {{LEAD_PARAGRAPH}}
+    </p>
+
+    <!-- ===== CONTENT START ===== -->
+
+    <h2>{{SECTION_TITLE}}</h2>
+    <p>{{PARAGRAPH}}</p>
+
+    <div class="code-block">
+{{CODE_SNIPPET}}
+    </div>
+
+    <div class="insight">
+      {{INSIGHT_TEXT}}
+    </div>
+
+    <blockquote>
+      {{QUOTE}}
+    </blockquote>
+
+    <!-- ===== CONTENT END ===== -->
+
+  </article>
+
+  <!-- ===== FOOTER ===== -->
+  <div class="article-footer">
+    <p>© Saheef • Built with precision</p>
+  </div>
+
+</main>
+
+<!-- ===== SCRIPT ===== -->
+<script>
+window.addEventListener("scroll", () => {
+  const scroll = window.scrollY;
+  const height = document.body.scrollHeight - window.innerHeight;
+  document.querySelector(".progress-bar").style.width =
+    (scroll / height) * 100 + "%";
+});
+</script>
+
+</body>
+</html>
