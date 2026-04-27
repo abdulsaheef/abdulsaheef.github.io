@@ -1,195 +1,98 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{TITLE}}</title>
+  <meta name="description" content="{{DESCRIPTION}}">
 
-<title>{{TITLE}} | Saheef</title>
-<meta name="description" content="{{DESCRIPTION}}">
-
-<link href="/style.css" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
-
-<style>
-
-/* ===== SAME DESIGN (UNCHANGED) ===== */
-
-.article {
-  max-width: 760px;
-  margin: auto;
-  padding: 40px 20px;
-  font-family: 'Poppins', sans-serif;
-}
-
-/* Hero */
-.article-hero h1 {
-  font-size: 34px;
-  color: #e5e5e5;
-  line-height: 1.25;
-  margin-bottom: 10px;
-}
-
-.article-sub {
-  color: #9ca3af;
-  font-size: 15px;
-  margin-bottom: 16px;
-}
-
-.article-meta {
-  font-size: 13px;
-  color: #6b7280;
-  display: flex;
-  gap: 8px;
-}
-
-/* Body */
-.article-body {
-  margin-top: 30px;
-  font-size: 16px;
-  line-height: 1.85;
-  color: #d1d5db;
-}
-
-.article-body p {
-  margin-bottom: 18px;
-}
-
-.article-body h2 {
-  margin-top: 36px;
-  font-size: 22px;
-  color: #f3f4f6;
-  position: relative;
-}
-
-.article-body h2::before {
-  content: "";
-  position: absolute;
-  left: -14px;
-  top: 6px;
-  width: 2px;
-  height: 18px;
-  background: #444;
-}
-
-/* Lead */
-.lead {
-  font-size: 18px;
-  color: #e5e5e5;
-}
-
-/* Code */
-.code-block {
-  background: #0d0d0d;
-  border: 1px solid #222;
-  padding: 16px;
-  border-radius: 10px;
-  font-size: 13px;
-  overflow-x: auto;
-}
-
-/* Insight */
-.insight {
-  margin: 24px 0;
-  padding: 14px;
-  border-left: 3px solid #fff;
-  background: #111;
-  border-radius: 8px;
-  font-size: 14px;
-}
-
-/* Quote */
-blockquote {
-  border-left: 2px solid #444;
-  padding-left: 12px;
-  color: #9ca3af;
-  margin: 20px 0;
-  font-style: italic;
-}
-
-/* Progress Bar */
-.progress-bar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 2px;
-  background: #fff;
-  width: 0%;
-  z-index: 999;
-}
-
-/* Footer */
-.article-footer {
-  margin-top: 50px;
-  padding-top: 20px;
-  border-top: 1px solid #222;
-  color: #9ca3af;
-  font-size: 14px;
-}
-
-/* Mobile */
-@media (max-width: 600px) {
-  .article {
-    padding: 20px 14px;
-  }
-
-  .article-hero h1 {
-    font-size: 26px;
-  }
-}
-
-</style>
+  <link href="/style.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 </head>
 
 <body>
 
-<div class="progress-bar"></div>
-
-<main class="article">
-
-  <!-- HERO -->
-  <header class="article-hero">
-    <h1>{{TITLE}}</h1>
-
-    <p class="article-sub">
-      {{SUBTITLE}}
-    </p>
-
-    <div class="article-meta">
-      <span>{{AUTHOR}}</span>
-      <span>•</span>
-      <span>{{DATE}}</span>
-      <span>•</span>
-      <span>{{READ_TIME}}</span>
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="toggle-theme">
+      <input type="checkbox" id="themeToggle" />
+      <label for="themeToggle" class="switch"></label>
     </div>
-  </header>
 
-  <!-- BODY -->
-  <article class="article-body">
+    <div class="container">
+      <a href="/" class="brand">Saheef</a>
+      <ul class="nav-links">
+        <li><a href="/#about">About</a></li>
+        <li><a href="/#projects">Projects</a></li>
+        <li><a href="/#contact">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
 
-    <p class="lead">
-      {{LEAD}}
-    </p>
+  <!-- ARTICLE -->
+  <main class="container post-content">
 
+    <h1>{{POST_TITLE}}</h1>
+    <p class="post-subtitle">{{SUBTITLE}}</p>
+
+    <div class="post-meta">
+      <i class="fas fa-calendar-alt"></i> <span>{{DATE}}</span>
+      <span class="dot">•</span>
+      <i class="fas fa-feather-alt"></i> <span>{{AUTHOR}}</span>
+    </div>
+
+    <!-- CONTENT START -->
     {{CONTENT}}
+    <!-- CONTENT END -->
 
-  </article>
+    <hr />
+
+    <!-- SHARE -->
+    <div class="share-buttons-icon" id="shareButtons"></div>
+
+    <script>
+      const shareURL = window.location.href;
+      const shareHTML = `
+        <a href="https://twitter.com/intent/tweet?url=${encodeURIComponent(shareURL)}" class="btn-icon twitter" target="_blank"><i class="fab fa-twitter"></i></a>
+        <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareURL)}" class="btn-icon facebook" target="_blank"><i class="fab fa-facebook-f"></i></a>
+        <a href="https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(shareURL)}" class="btn-icon linkedin" target="_blank"><i class="fab fa-linkedin-in"></i></a>
+        <a href="https://api.whatsapp.com/send?text=${encodeURIComponent(shareURL)}" class="btn-icon whatsapp" target="_blank"><i class="fab fa-whatsapp"></i></a>
+        <a href="mailto:?subject=Check%20this%20post&body=${encodeURIComponent(shareURL)}" class="btn-icon email"><i class="fas fa-envelope"></i></a>
+      `;
+      document.getElementById('shareButtons').innerHTML = shareHTML;
+    </script>
+
+  </main>
 
   <!-- FOOTER -->
-  <div class="article-footer">
-    <p>© Saheef • Built with precision</p>
-  </div>
+  <footer>
+    © <span id="year"></span> Saheef. All rights reserved.
+  </footer>
 
-</main>
+  <!-- GLOBAL SCRIPT -->
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
 
-<script>
-window.addEventListener("scroll", () => {
-  const scroll = window.scrollY;
-  const height = document.body.scrollHeight - window.innerHeight;
-  document.querySelector(".progress-bar").style.width =
-    (scroll / height) * 100 + "%";
-});
-</script>
+    const toggle = document.getElementById('themeToggle');
+    const body = document.body;
+
+    if (localStorage.getItem('theme') === 'dark') {
+      body.classList.add('dark-mode');
+      toggle.checked = true;
+    }
+
+    toggle.addEventListener('change', () => {
+      if (toggle.checked) {
+        body.classList.add('dark-mode');
+        localStorage.setItem('theme', 'dark');
+      } else {
+        body.classList.remove('dark-mode');
+        localStorage.setItem('theme', 'light');
+      }
+    });
+  </script>
 
 </body>
 </html>
