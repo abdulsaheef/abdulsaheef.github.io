@@ -1,17 +1,5 @@
-backend:
-  name: git-gateway
-  branch: main
+title: Saheef
+description: My personal blog
+markdown: kramdown
 
-media_folder: "images/uploads"
-public_folder: "/images/uploads"
-
-collections:
-  - name: "blog"
-    label: "Blog"
-    folder: "blog"
-    create: true
-    slug: "{{slug}}"
-    fields:
-      - { label: "Title", name: "title", widget: "string" }
-      - { label: "Publish Date", name: "date", widget: "datetime" }
-      - { label: "Body", name: "body", widget: "markdown" }
+permalink: /:title/
