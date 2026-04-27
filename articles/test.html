@@ -2,26 +2,19 @@
 <html lang="en">
 <head>
 
-<!-- ===== META ===== -->
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>{{TITLE}} | Saheef</title>
 <meta name="description" content="{{DESCRIPTION}}">
 
-<!-- ===== GLOBAL STYLES ===== -->
 <link href="/style.css" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
 
-<!-- ===== ARTICLE SYSTEM ===== -->
 <style>
 
-body {
-  background: #0b0b0b;
-  margin: 0;
-}
+/* ===== SAME DESIGN (UNCHANGED) ===== */
 
-/* Container */
 .article {
   max-width: 760px;
   margin: auto;
@@ -48,7 +41,6 @@ body {
   color: #6b7280;
   display: flex;
   gap: 8px;
-  flex-wrap: wrap;
 }
 
 /* Body */
@@ -151,14 +143,11 @@ blockquote {
 
 <body>
 
-<!-- ===== NAVBAR (GLOBAL INCLUDE) ===== -->
-<!-- Keep your existing navbar here -->
-
 <div class="progress-bar"></div>
 
 <main class="article">
 
-  <!-- ===== HERO ===== -->
+  <!-- HERO -->
   <header class="article-hero">
     <h1>{{TITLE}}</h1>
 
@@ -175,42 +164,24 @@ blockquote {
     </div>
   </header>
 
-  <!-- ===== BODY ===== -->
+  <!-- BODY -->
   <article class="article-body">
 
     <p class="lead">
-      {{LEAD_PARAGRAPH}}
+      {{LEAD}}
     </p>
 
-    <!-- ===== CONTENT START ===== -->
-
-    <h2>{{SECTION_TITLE}}</h2>
-    <p>{{PARAGRAPH}}</p>
-
-    <div class="code-block">
-{{CODE_SNIPPET}}
-    </div>
-
-    <div class="insight">
-      {{INSIGHT_TEXT}}
-    </div>
-
-    <blockquote>
-      {{QUOTE}}
-    </blockquote>
-
-    <!-- ===== CONTENT END ===== -->
+    {{CONTENT}}
 
   </article>
 
-  <!-- ===== FOOTER ===== -->
+  <!-- FOOTER -->
   <div class="article-footer">
     <p>© Saheef • Built with precision</p>
   </div>
 
 </main>
 
-<!-- ===== SCRIPT ===== -->
 <script>
 window.addEventListener("scroll", () => {
   const scroll = window.scrollY;
