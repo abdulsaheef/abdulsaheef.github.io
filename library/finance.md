@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: library
 title: Finance
 permalink: /library/finance/
 ---
