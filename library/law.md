@@ -1,5 +1,5 @@
 ---
-layout: law
+layout: library
 title: Law
 ---
 
