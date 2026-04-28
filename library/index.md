@@ -1,5 +1,5 @@
 ---
-layout: post
+layout: library
 title: Library
 permalink: /library/
 ---
