@@ -1,5 +1,5 @@
 ---
-layout: technology
+layout: library
 title: Technology
 ---
 
