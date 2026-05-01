@@ -30,6 +30,16 @@
   rel="stylesheet"
   href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
 />
+
+<!-- Canonical tag -->
+<link rel="canonical" href="{{ page.url | absolute_url }}">
+
+<meta property="og:title" content="{{ page.title }}">
+<meta property="og:description" content="{{ page.description }}">
+<meta property="og:url" content="{{ page.url | absolute_url }}">
+<meta property="og:type" content="article">
+<meta property="og:image" content="/images/og-default.jpg">
+
 </head>
 <body>
   <nav class="navbar">
