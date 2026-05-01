@@ -1,66 +1,93 @@
+---
+layout: null
+---
+
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+  <!-- Homepage -->
   <url>
-    <loc>https://saheef.com/</loc>
+    <loc>{{ site.url }}/</loc>
     <lastmod>2025-07-05</lastmod>
     <priority>1.00</priority>
   </url>
-  <!-- Individual project pages -->
+
+  <!-- Projects -->
   <url>
-    <loc>https://saheef.com/projects/solar-explorer/index.html</loc>
+    <loc>{{ site.url }}/projects/solar-explorer/index.html</loc>
     <lastmod>2025-07-05</lastmod>
     <priority>0.80</priority>
   </url>
+
   <url>
-    <loc>https://saheef.com/projects/digital-compass/index.html</loc>
+    <loc>{{ site.url }}/projects/digital-compass/index.html</loc>
     <lastmod>2025-07-05</lastmod>
     <priority>0.80</priority>
   </url>
+
   <url>
-    <loc>https://saheef.com/projects/meet-on-time/index.html</loc>
+    <loc>{{ site.url }}/projects/meet-on-time/index.html</loc>
     <lastmod>2025-07-05</lastmod>
     <priority>0.80</priority>
   </url>
+
   <url>
-    <loc>https://saheef.com/projects/trademock/index.html</loc>
+    <loc>{{ site.url }}/projects/trademock/index.html</loc>
     <lastmod>2025-07-05</lastmod>
     <priority>0.80</priority>
   </url>
+
   <url>
-    <loc>https://saheef.com/projects/duebook/index.html</loc>
+    <loc>{{ site.url }}/projects/duebook/index.html</loc>
     <lastmod>2025-07-05</lastmod>
     <priority>0.80</priority>
   </url>
-  <!-- Individual posts pages -->
+
+  <!-- Old static posts -->
   <url>
-    <loc>https://saheef.com/posts/solar-explorer.html</loc>
+    <loc>{{ site.url }}/posts/solar-explorer.html</loc>
     <lastmod>2025-07-05</lastmod>
     <priority>0.70</priority>
   </url>
+
   <url>
-    <loc>https://saheef.com/posts/duebook.html</loc>
+    <loc>{{ site.url }}/posts/duebook.html</loc>
     <lastmod>2025-07-05</lastmod>
     <priority>0.70</priority>
   </url>
+
   <url>
-    <loc>https://saheef.com/posts/meet-on-time.html</loc>
+    <loc>{{ site.url }}/posts/meet-on-time.html</loc>
     <lastmod>2025-07-05</lastmod>
     <priority>0.70</priority>
   </url>
+
   <url>
-    <loc>https://saheef.com/posts/digital-compass.html</loc>
+    <loc>{{ site.url }}/posts/digital-compass.html</loc>
     <lastmod>2025-07-05</lastmod>
     <priority>0.70</priority>
   </url>
-  <!-- Individual article pages -->
+
+  <!-- Articles -->
   <url>
-    <loc>https://saheef.com/articles/player-456-eliminated.html</loc>
+    <loc>{{ site.url }}/articles/player-456-eliminated.html</loc>
     <lastmod>2025-07-14</lastmod>
     <priority>0.70</priority>
   </url>
+
   <url>
-    <loc>https://saheef.com/articles/understanding-the-stock-market.html</loc>
+    <loc>{{ site.url }}/articles/understanding-the-stock-market.html</loc>
     <lastmod>2025-07-22</lastmod>
     <priority>0.70</priority>
   </url>
+
+  <!-- NEW: Jekyll blog posts -->
+  {% for post in site.posts %}
+  <url>
+    <loc>{{ site.url }}{{ post.url }}</loc>
+    <lastmod>{{ post.date | date_to_xmlschema }}</lastmod>
+    <priority>0.80</priority>
+  </url>
+  {% endfor %}
+
 </urlset>
