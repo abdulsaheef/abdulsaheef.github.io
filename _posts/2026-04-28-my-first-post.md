@@ -73,7 +73,7 @@ They move where expectations change faster than reality.
 - Long-term thinking is more effective than short-term speculation  
 - Simplicity is a strong advantage in investing  
 
-
+<br><br>
 
 ## FAQs
 
