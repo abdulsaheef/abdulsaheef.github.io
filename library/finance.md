@@ -8,29 +8,15 @@ permalink: /library/finance/
 
 
 
-<div class="library-buttons">
+<div class="library-list">
 
 {% for post in site.posts %}
 
   {% if post.category == "finance" %}
 
-  <a class="library-button" href="{{ post.url }}">
+  <a class="library-list-item" href="{{ post.url }}">
 
-    <span class="library-button-title">
-
-      {{ post.title }}
-
-    </span>
-
-    {% if post.subtitle %}
-
-      <span class="library-button-subtitle">
-
-        {{ post.subtitle }}
-
-      </span>
-
-    {% endif %}
+    {{ post.title }}
 
   </a>
 
