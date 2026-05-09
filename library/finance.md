@@ -8,27 +8,29 @@ permalink: /library/finance/
 
 
 
-<div class="library-grid">
+<div class="library-buttons">
 
 {% for post in site.posts %}
 
   {% if post.category == "finance" %}
 
-  <a class="library-card" href="{{ post.url }}">
+  <a class="library-button" href="{{ post.url }}">
 
-    <h2>{{ post.title }}</h2>
+    <span class="library-button-title">
+
+      {{ post.title }}
+
+    </span>
 
     {% if post.subtitle %}
 
-      <p>{{ post.subtitle }}</p>
+      <span class="library-button-subtitle">
+
+        {{ post.subtitle }}
+
+      </span>
 
     {% endif %}
-
-    <span class="library-meta">
-
-      {{ post.date | date: "%B %d, %Y" }}
-
-    </span>
 
   </a>
 
@@ -37,4 +39,3 @@ permalink: /library/finance/
 {% endfor %}
 
 </div>
-
