@@ -539,3 +539,40 @@ animation: scroll-left 40s linear infinite;
   font-style: italic;
 }
 
+
+
+.library-grid {
+  display: grid;
+  gap: 24px;
+  margin-top: 40px;
+}
+
+.library-card {
+  display: block;
+  padding: 28px;
+  border-radius: 18px;
+  background: rgba(255,255,255,0.05);
+  text-decoration: none;
+  transition: 0.2s ease;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.library-card:hover {
+  transform: translateY(-4px);
+}
+
+.library-card h2 {
+  margin: 0 0 12px;
+  font-size: 1.5rem;
+}
+
+.library-card p {
+  margin: 0 0 18px;
+  opacity: 0.8;
+  line-height: 1.7;
+}
+
+.library-meta {
+  font-size: 0.9rem;
+  opacity: 0.6;
+}
