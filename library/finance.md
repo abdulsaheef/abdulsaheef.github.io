@@ -6,8 +6,20 @@ permalink: /library/finance/
 
 ## Finance Articles
 
+<ul>
+
 {% for post in site.posts %}
+
   {% if post.category == "finance" %}
-    <p><a href="{{ post.url }}">{{ post.title }}</a></p>
+
+    <li>
+
+      <a href="{{ post.url }}">{{ post.title }}</a>
+
+    </li>
+
   {% endif %}
+
 {% endfor %}
+
+</ul
