@@ -6,7 +6,7 @@ permalink: /library/finance/
 
 ## Finance Articles
 
-<ul>
+
 
 {% for post in site.posts %}
 
@@ -22,4 +22,3 @@ permalink: /library/finance/
 
 {% endfor %}
 
-</ul
