@@ -541,38 +541,37 @@ animation: scroll-left 40s linear infinite;
 
 
 
-.library-grid {
-  display: grid;
-  gap: 24px;
+.library-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
   margin-top: 40px;
 }
 
-.library-card {
+.library-button {
   display: block;
-  padding: 28px;
+  padding: 22px 24px;
   border-radius: 18px;
-  background: rgba(255,255,255,0.05);
   text-decoration: none;
-  transition: 0.2s ease;
+  background: rgba(255,255,255,0.06);
   border: 1px solid rgba(255,255,255,0.08);
+  transition: 0.2s ease;
 }
 
-.library-card:hover {
-  transform: translateY(-4px);
+.library-button:hover {
+  transform: translateY(-3px);
 }
 
-.library-card h2 {
-  margin: 0 0 12px;
-  font-size: 1.5rem;
+.library-button-title {
+  display: block;
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 8px;
 }
 
-.library-card p {
-  margin: 0 0 18px;
-  opacity: 0.8;
-  line-height: 1.7;
-}
-
-.library-meta {
-  font-size: 0.9rem;
-  opacity: 0.6;
+.library-button-subtitle {
+  display: block;
+  opacity: 0.75;
+  line-height: 1.6;
+  font-size: 0.95rem;
 }
