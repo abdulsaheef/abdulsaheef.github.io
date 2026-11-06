@@ -1,5 +1,6 @@
 title: Saheef
 markdown: kramdown
 permalink: /:title/
+future: true
 
 url: https://saheef.com
