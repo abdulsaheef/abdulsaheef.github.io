@@ -23,7 +23,7 @@ An examination of India's historical timekeeping systems, the adoption of Indian
 
 ## Executive Summary
 
-India currently follows one official time zone: **Indian Standard Time (IST), UTC+05:30**, based on the standard meridian of **82°30′ E**, near [[Mirzapur]] in Uttar Pradesh.
+India currently follows one official time zone: **Indian Standard Time (IST), UTC+05:30**, based on the standard meridian of **82°30′ E**, near [[https://en.wikipedia.org/wiki/Mirzapur|Mirzapur]] in Uttar Pradesh.
 
 India's east–west geographical span creates a substantial difference between local solar time in its western and eastern regions. A single national clock simplifies administration, transport, communication and national coordination, but it does not align equally well with daylight across the country.
 
