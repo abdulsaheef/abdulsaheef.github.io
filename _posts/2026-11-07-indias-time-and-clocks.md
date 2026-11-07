@@ -16,7 +16,7 @@ permalink: /indias-time-and-clocks/
 
 An examination of India's historical timekeeping systems, the adoption of Indian Standard Time, and a proposed three-zone framework based on longitude. This report brings together the historical development of regional clocks, railway and telegraph standardisation, post-independence policy, and a possible future arrangement that balances national coordination with local daylight.
 
-[[https://en.wikipedia.org/wiki/Indian_Standard_Time|Indian Standard Time]] [[Bombay Time]] [[Madras Time]] [[Calcutta Time]] [[Railway Time in British India]] [[Battle of Clocks]] [[Time Zones]] [[UTC]] [[Standard Meridian of India]]
+[[https://en.wikipedia.org/wiki/Indian_Standard_Time/|Indian Standard Time]] [[Bombay Time]] [[Madras Time]] [[Calcutta Time]] [[Railway Time in British India]] [[Battle of Clocks]] [[Time Zones]] [[UTC]] [[Standard Meridian of India]]
 
 > [!IMPORTANT] Proposal status
 > This document combines historical research with a proposed future framework developed in discussion. The three-zone system is a proposal, not current Indian policy. The proposed Bombay, Madras and Calcutta offsets are new calculations relative to IST; they are not the historical colonial offsets.
