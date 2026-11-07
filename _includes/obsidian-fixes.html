@@ -217,15 +217,18 @@ document.addEventListener("DOMContentLoaded", function () {
         const link = document.createElement("a");
         link.textContent = label;
 
-        if (page) {
-          link.href = "/" + slugify(page) + "/";
-          if (heading) {
-            link.href += "#" + slugify(heading);
-          }
-        } else if (heading) {
-          link.href = "#" + slugify(heading);
-        }
-
+        if (/^https?:\/\//i.test(target)) {
+  link.href = target;
+  link.target = "_blank";
+  link.rel = "noopener noreferrer";
+} else if (page) {
+  link.href = "/" + slugify(page) + "/";
+  if (heading) {
+    link.href += "#" + slugify(heading);
+  }
+} else if (heading) {
+  link.href = "#" + slugify(heading);
+}
         link.className = "obsidian-wikilink";
         fragment.append(link);
 
