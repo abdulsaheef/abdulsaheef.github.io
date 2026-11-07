@@ -1,0 +1,297 @@
+
+<style>
+/* Obsidian article rendering */
+.post-body {
+  line-height: 1.85;
+  overflow-wrap: anywhere;
+}
+
+.post-body h1,
+.post-body h2,
+.post-body h3,
+.post-body h4 {
+  line-height: 1.4;
+  margin: 2em 0 0.8em;
+}
+
+.post-body p {
+  margin: 0 0 1.2em;
+}
+
+.post-body a {
+  color: #3987db;
+  text-decoration: none;
+}
+
+.post-body a:hover {
+  text-decoration: underline;
+}
+
+.post-body ul,
+.post-body ol {
+  padding-left: 1.6em;
+  margin-bottom: 1.4em;
+}
+
+.post-body li {
+  margin-bottom: 0.45em;
+}
+
+.post-body blockquote {
+  border-left: 3px solid #888;
+  margin: 1.5em 0;
+  padding: 0.7em 1.2em;
+  background: rgba(128,128,128,0.08);
+  border-radius: 0 8px 8px 0;
+}
+
+.post-body table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5em 0;
+  display: block;
+  overflow-x: auto;
+}
+
+.post-body th,
+.post-body td {
+  padding: 12px 15px;
+  border: 1px solid rgba(128,128,128,0.3);
+  text-align: left;
+}
+
+.post-body th {
+  font-weight: 700;
+  background: rgba(128,128,128,0.12);
+}
+
+.post-body pre {
+  overflow-x: auto;
+  padding: 16px;
+  border-radius: 8px;
+  background: rgba(128,128,128,0.12);
+}
+
+.post-body code {
+  font-family: monospace;
+}
+
+.post-body img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+/* Callouts */
+.post-body .callout {
+  border-left: 4px solid var(--callout-color, #3987db);
+  border-radius: 8px;
+  padding: 14px 18px;
+  margin: 1.5em 0;
+  background: var(--callout-bg, rgba(128,128,128,0.09));
+}
+
+.post-body .callout-title {
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: var(--callout-color, #3987db);
+}
+
+.post-body .callout-content > :last-child {
+  margin-bottom: 0;
+}
+
+.post-body .callout-note {
+  --callout-color: #3987db;
+  --callout-bg: rgba(57,135,219,0.09);
+}
+
+.post-body .callout-tip,
+.post-body .callout-hint,
+.post-body .callout-success {
+  --callout-color: #269b67;
+  --callout-bg: rgba(38,155,103,0.09);
+}
+
+.post-body .callout-important,
+.post-body .callout-warning,
+.post-body .callout-caution {
+  --callout-color: #d58b26;
+  --callout-bg: rgba(213,139,38,0.10);
+}
+
+.post-body .callout-danger,
+.post-body .callout-error,
+.post-body .callout-failure {
+  --callout-color: #d84a4a;
+  --callout-bg: rgba(216,74,74,0.09);
+}
+
+.post-body .callout-info,
+.post-body .callout-todo {
+  --callout-color: #8b70d6;
+  --callout-bg: rgba(139,112,214,0.09);
+}
+
+.post-body .callout summary {
+  cursor: pointer;
+  list-style: none;
+}
+
+.post-body .callout summary::-webkit-details-marker {
+  display: none;
+}
+
+.post-body .callout summary::after {
+  content: "＋";
+  float: right;
+}
+
+.post-body .callout[open] summary::after {
+  content: "−";
+}
+
+.post-body .wikilink-missing {
+  opacity: 0.75;
+  border-bottom: 1px dashed currentColor;
+}
+</style>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const article = document.querySelector(".post-body");
+  if (!article) return;
+
+  /* Convert Obsidian wikilinks */
+  function slugify(value) {
+    return value
+      .trim()
+      .toLowerCase()
+      .replace(/['"]/g, "")
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-|-$/g, "");
+  }
+
+  function convertWikilinks(root) {
+    const walker = document.createTreeWalker(
+      root,
+      NodeFilter.SHOW_TEXT,
+      {
+        acceptNode(node) {
+          if (!node.nodeValue.includes("[[")) {
+            return NodeFilter.FILTER_REJECT;
+          }
+
+          if (node.parentElement.closest(
+            "a, code, pre, script, style, textarea"
+          )) {
+            return NodeFilter.FILTER_REJECT;
+          }
+
+          return NodeFilter.FILTER_ACCEPT;
+        }
+      }
+    );
+
+    const nodes = [];
+    while (walker.nextNode()) nodes.push(walker.currentNode);
+
+    nodes.forEach(node => {
+      const text = node.nodeValue;
+      const regex = /\[\[([^\]]+)\]\]/g;
+      let last = 0;
+      let match;
+      const fragment = document.createDocumentFragment();
+
+      while ((match = regex.exec(text)) !== null) {
+        fragment.append(text.slice(last, match.index));
+
+        const parts = match[1].split("|");
+        const target = parts[0].trim();
+        const label = (parts[1] || target).trim();
+
+        const targetParts = target.split("#");
+        const page = targetParts[0].trim();
+        const heading = targetParts[1];
+
+        const link = document.createElement("a");
+        link.textContent = label;
+
+        if (page) {
+          link.href = "/" + slugify(page) + "/";
+          if (heading) {
+            link.href += "#" + slugify(heading);
+          }
+        } else if (heading) {
+          link.href = "#" + slugify(heading);
+        }
+
+        link.className = "obsidian-wikilink";
+        fragment.append(link);
+
+        last = regex.lastIndex;
+      }
+
+      fragment.append(text.slice(last));
+      node.parentNode.replaceChild(fragment, node);
+    });
+  }
+
+  /* Convert Obsidian callouts */
+  function convertCallouts(root) {
+    const blocks = root.querySelectorAll("blockquote");
+
+    blocks.forEach(block => {
+      const firstParagraph = block.querySelector("p");
+      if (!firstParagraph) return;
+
+      const match = firstParagraph.textContent.match(
+        /^\s*\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION|INFO|SUCCESS|QUESTION|DANGER|ERROR|FAILURE|BUG|EXAMPLE|QUOTE|ABSTRACT|SUMMARY|TODO|HINT)\]([+-])?\s*/i
+      );
+
+      if (!match) return;
+
+      const type = match[1].toLowerCase();
+      const collapse = match[2];
+
+      const title = document.createElement("div");
+      title.className = "callout-title";
+      title.textContent =
+        type.charAt(0).toUpperCase() + type.slice(1);
+
+      firstParagraph.textContent =
+        firstParagraph.textContent.replace(match[0], "");
+
+      const content = document.createElement("div");
+      content.className = "callout-content";
+
+      while (block.firstChild) {
+        content.appendChild(block.firstChild);
+      }
+
+      if (collapse) {
+        const details = document.createElement("details");
+        details.className = "callout callout-" + type;
+
+        if (collapse === "+") details.open = true;
+
+        const summary = document.createElement("summary");
+        summary.className = "callout-title";
+        summary.textContent =
+          type.charAt(0).toUpperCase() + type.slice(1);
+
+        details.append(summary, content);
+        block.replaceWith(details);
+      } else {
+        const wrapper = document.createElement("div");
+        wrapper.className = "callout callout-" + type;
+        wrapper.append(title, content);
+        block.replaceWith(wrapper);
+      }
+    });
+  }
+
+  convertCallouts(article);
+  convertWikilinks(article);
+});
+</script>
